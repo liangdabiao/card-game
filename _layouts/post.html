@@ -58,7 +58,7 @@ show_cat: false
 	<!-- Previous/Next Post Navigation Cards -->
 	<div class="post-nav-cards">
 	  {% if page.previous.url %}
-	  <a href="{{page.previous.url}}" class="post-nav-card prev-card">
+	  <a href="{{ page.previous.url | relative_url }}" class="post-nav-card prev-card">
 	    <span class="nav-label"><i class="fa fa-chevron-left"></i> 上一篇</span>
 	    <div class="nav-card-content">
 	      {% if page.previous.featured and page.previous.images.cover %}
@@ -76,7 +76,7 @@ show_cat: false
 	  </a>
 	  {% endif %}
 	  {% if page.next.url %}
-	  <a href="{{page.next.url}}" class="post-nav-card next-card">
+	  <a href="{{ page.next.url | relative_url }}" class="post-nav-card next-card">
 	    <span class="nav-label">下一篇 <i class="fa fa-chevron-right"></i></span>
 	    <div class="nav-card-content">
 	      {% if page.next.featured and page.next.images.cover %}

@@ -10,7 +10,7 @@ layout: default
             <h3>文章</h3>
             <ul>
                 {% for post in site.posts %}
-                    <li><a href="{{ post.url }}">{{ post.title }}</a></li>
+                    <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a></li>
                 {% endfor %}
             </ul>
         {% endif %}
@@ -23,7 +23,7 @@ layout: default
                 {% assign ignore_pagination = page.path | split: "/" %}
 
                 {% unless ignore contains page.path or ignore_pagination contains "index.html" or ignore_pagination contains "css" %}
-                    <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+                    <li><a href="{{ page.url | relative_url }}">{{ page.title }}</a></li>
                 {% endunless %}
             {% endfor %}  
             </ul>

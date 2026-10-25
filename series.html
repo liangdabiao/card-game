@@ -95,7 +95,7 @@ toc: false
             {% else %}
               {% assign post_order = post.series_order %}
             {% endif %}
-          <a href="{{ post.url }}" class="series-card-post">
+          <a href="{{ post.url | relative_url }}" class="series-card-post">
             <span class="post-number">{{ post_order }}</span>
             <div class="post-info">
               <h4>{{ post.title }}</h4>

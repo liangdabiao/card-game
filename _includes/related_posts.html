@@ -22,7 +22,7 @@
   <h3><i class="fa fa-bookmark"></i> 相关文章</h3>
   <div class="related-posts-grid">
     {% for post in related_posts limit: max_related %}
-    <a href="{{ post.url }}" class="related-post-card">
+    <a href="{{ post.url | relative_url }}" class="related-post-card">
       <div class="related-post-image">
         {% if post.featured and post.images.cover %}
           <img src="{{ site.baseurl }}/{{ post.images.cover }}" alt="{{ post.title }}" loading="lazy">

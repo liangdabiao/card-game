@@ -17,7 +17,7 @@ layout: default
     <!-- Hero Featured Post -->
     <div class="featured-hero">
       <div class="card">
-        <a href="{{ hero.url }}">
+        <a href="{{ hero.url | relative_url }}">
           {% if hero.images.animated-cover %}
             <img class="card-img" src="{{ site.baseurl }}/{{ hero.images.animated-cover }}" alt="{{ hero.title }}">
           {% elsif hero.images.cover %}
@@ -35,7 +35,7 @@ layout: default
         <div class="card-body">
           <span class="label label-primary">精选</span>
           <h1 class="card-title">
-            <a href="{{ hero.url }}">{{ hero.title }}</a>
+            <a href="{{ hero.url | relative_url }}">{{ hero.title }}</a>
           </h1>
           <p class="card-meta">
             {{ hero.date | date: "%Y-%m-%d" }}
@@ -55,7 +55,7 @@ layout: default
       {% for post in featured offset:1 %}
       <div class="col-sm-6">
         <div class="card">
-          <a href="{{ post.url }}">
+          <a href="{{ post.url | relative_url }}">
             {% if post.images.animated-cover %}
               <img class="card-img" src="{{ site.baseurl }}/{{ post.images.animated-cover }}" alt="{{ post.title }}" loading="lazy">
             {% elsif post.images.cover %}
@@ -73,7 +73,7 @@ layout: default
           <div class="card-body">
             <span class="label label-primary">精选</span>
             <h3 class="card-title">
-              <a href="{{ post.url }}">{{ post.title }}</a>
+              <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
             </h3>
             <p class="card-meta">
               {{ post.date | date: "%Y-%m-%d" }}
@@ -111,7 +111,7 @@ layout: default
           {% endif %}
           <div class="col-sm-4">
             <div class="post-card">
-              <a href="{{ post.url }}">
+              <a href="{{ post.url | relative_url }}">
                 <!-- Non-featured posts use their image: frontmatter -->
                 {% if post.image %}
                   <img class="card-img" src="{{ site.baseurl }}/{{ post.image }}" alt="{{ post.title }}" loading="lazy">
@@ -121,7 +121,7 @@ layout: default
               </a>
               <div class="card-body">
                 <h4 class="card-title">
-                  <a href="{{ post.url }}">{{ post.title }}</a>
+                  <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
                 </h4>
                 <p class="card-meta">
                   {{ post.date | date: "%Y-%m-%d" }}

@@ -6,11 +6,11 @@
   "@type": "BlogPosting",
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "{{ site.url }}/{{ page.permalink }}"
+    "@id": "{{ site.url }}{{ site.baseurl }}/{{ page.permalink }}"
   },
   "headline": {{ page.title | jsonify }},
   "description": {{ page.content | strip_html | truncate: 160 | jsonify }},
-  "image": "{{ site.url }}/{{ page.image }}",
+  "image": "{{ site.url }}{{ site.baseurl }}/{{ page.image }}",
   "author": {
     "@type": "Person",
     "name": "{{ page.author | default: 'Benny Cheung' }}",
@@ -21,7 +21,7 @@
     "name": "{{ site.title }}",
     "logo": {
       "@type": "ImageObject",
-      "url": "{{ site.url }}/assets/avtar.jpg"
+      "url": "{{ site.url }}{{ site.baseurl }}/assets/avtar.jpg"
     }
   },
   "datePublished": "{{ page.date | date_to_xmlschema }}",
@@ -44,7 +44,7 @@
       "@type": "ListItem",
       "position": 2,
       "name": {{ page.title | jsonify }},
-      "item": "{{ site.url }}/{{ page.permalink }}"
+      "item": "{{ site.url }}{{ site.baseurl }}/{{ page.permalink }}"
     }
   ]
 }

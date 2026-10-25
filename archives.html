@@ -21,7 +21,7 @@ toc: false
     <div class="archive-year-posts" {% unless forloop.first %}style="display: none;"{% endunless %}>
       {% for post in year.items %}
       <div class="media archive-post">
-        <a class="media-left" href="{{ post.url }}">
+        <a class="media-left" href="{{ post.url | relative_url }}">
           {% if post.featured and post.images.cover %}
             <!-- Featured posts use images.cover (supports video) -->
             <img src="{{ site.baseurl }}/{{ post.images.cover }}" class="archive-cover" alt="{{ post.title }}" loading="lazy">
@@ -42,7 +42,7 @@ toc: false
             &bull; {{ reading_time }} 分钟阅读
           </p>
           <h4 class="media-heading">
-            <a href="{{ post.url }}">{{ post.title }}</a>
+            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
           </h4>
           <p class="archive-excerpt">{{ post.excerpt | strip_html | truncate: 200 }}</p>
         </div>
