@@ -2,7 +2,7 @@
 layout: post
 title: 在 Windows 10 上挖以太坊
 date: 2017-09-17 01:00:00.000000000 -05:00
-permalink: ethereum-mining-on-windows-10
+permalink: ethereum-mining-on-windows-10/
 author: Benny Cheung
 artwork:
   author: Clara Cheung

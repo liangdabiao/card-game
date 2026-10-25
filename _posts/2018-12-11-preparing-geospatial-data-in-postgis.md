@@ -2,7 +2,7 @@
 layout: post
 title: 在 PostGIS 中准备地理空间数据
 date: 2018-12-11 00:00:00.000000000 -00:00
-permalink: preparing-geospatial-data-in-postgis
+permalink: preparing-geospatial-data-in-postgis/
 author: Benny Cheung
 artwork:
   author: Style of Kandinsky’s Transverse Line transfer to a global projected map

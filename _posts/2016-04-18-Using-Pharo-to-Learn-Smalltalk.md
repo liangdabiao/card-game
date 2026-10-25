@@ -2,7 +2,7 @@
 layout: post
 title: 用 Pharo 学习 Smalltalk
 date: 2016-04-18 12:00:00.000000000 -05:00
-permalink: using-pharo-to-learn-smalltalk
+permalink: using-pharo-to-learn-smalltalk/
 author: Benny Cheung
 tags:
   - Smalltalk

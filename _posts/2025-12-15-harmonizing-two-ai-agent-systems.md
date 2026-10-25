@@ -2,7 +2,7 @@
 layout: post
 title: 调和两套 AI 代理系统——一段实践之旅
 date: 2025-12-15 12:00:00.000000000 -00:00
-permalink: harmonizing-two-ai-agent-systems
+permalink: harmonizing-two-ai-agent-systems/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro (Nano Banana Pro)

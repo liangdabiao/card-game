@@ -2,7 +2,7 @@
 layout: post
 title: 空间推理详解
 date: 2016-06-08 12:00:00.000000000 -05:00
-permalink: spatial-reasoning-explained
+permalink: spatial-reasoning-explained/
 author: Benny Cheung
 tags:
   - Spatial Reasoning

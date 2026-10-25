@@ -2,7 +2,7 @@
 layout: post
 title: 思维的抽象让 AI 成为更好的推理者
 date: 2025-12-01 12:00:00.000000000 -00:00
-permalink: abstraction-of-thought-makes-ai-better-reasoners
+permalink: abstraction-of-thought-makes-ai-better-reasoners/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro (Nano Banana Pro)

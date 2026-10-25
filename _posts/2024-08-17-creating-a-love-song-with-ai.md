@@ -2,7 +2,7 @@
 layout: post
 title: 用 AI 创作一首情歌
 date: 2024-08-17 12:00:00.000000000 -00:00
-permalink: creating-a-love-song-with-ai
+permalink: creating-a-love-song-with-ai/
 author: Benny Cheung
 artwork:
   author: iStock

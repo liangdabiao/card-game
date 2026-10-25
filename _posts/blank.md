@@ -2,7 +2,7 @@
 layout: post
 title: Theory
 date: 2018-07-01 00:00:00.000000000 -00:00
-permalink: theory
+permalink: theory/
 author: Benny Cheung
 artwork:
   author: Style of text data transfer to Malevich's Bureau and Room

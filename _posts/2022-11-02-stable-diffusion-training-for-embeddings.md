@@ -2,7 +2,7 @@
 layout: post
 title: Stable Diffusion 个人嵌入训练
 date: 2022-11-02 12:00:00.000000000 -00:00
-permalink: stable-diffusion-training-for-embeddings
+permalink: stable-diffusion-training-for-embeddings/
 author: Benny Cheung
 artwork:
   author: Stable Diffusion AI

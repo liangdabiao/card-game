@@ -2,7 +2,7 @@
 layout: post
 title: 用 Docker 玩微服务的存在主义危机
 date: 2018-10-08 00:00:00.000000000 -00:00
-permalink: existential-crisis-with-microservices-using-docker
+permalink: existential-crisis-with-microservices-using-docker/
 author: Benny Cheung
 artwork:
   author: Style of blocks transfer to Klee's Gradation Red

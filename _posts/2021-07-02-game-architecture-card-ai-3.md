@@ -2,7 +2,7 @@
 layout: post
 title: 卡牌游戏 AI 的游戏架构（第 3 部分）
 date: 2021-07-03 12:00:00.000000000 -00:00
-permalink: game-architecture-card-ai-3
+permalink: game-architecture-card-ai-3/
 author: Benny Cheung
 artwork:
   author: Board Game Arena, Race for the Galaxy Board Game

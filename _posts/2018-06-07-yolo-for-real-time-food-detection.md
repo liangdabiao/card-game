@@ -2,7 +2,7 @@
 layout: post
 title: 用 YOLO 做实时食物检测
 date: 2018-06-07 01:00:00.000000000 -05:00
-permalink: yolo-for-real-time-food-detection
+permalink: yolo-for-real-time-food-detection/
 author: Benny Cheung
 artwork:
   author: Style of Kandinsky's TransverseLine transfer to food images

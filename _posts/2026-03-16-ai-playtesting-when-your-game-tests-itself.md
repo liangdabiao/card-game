@@ -2,7 +2,7 @@
 layout: post
 title: "AI 游戏测试——当你的桌游自己测试自己"
 date: 2026-03-16 12:00:00.000000000 -00:00
-permalink: ai-playtesting-when-your-game-tests-itself
+permalink: ai-playtesting-when-your-game-tests-itself/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro

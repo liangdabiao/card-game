@@ -2,7 +2,7 @@
 layout: post
 title: 破解 Q* 的魔咒——问题求解的新方法
 date: 2023-11-28 12:00:00.000000000 -00:00
-permalink: q-star-new-method-in-problem-solving
+permalink: q-star-new-method-in-problem-solving/
 author: Benny Cheung
 artwork:
   author: DALL.E 3

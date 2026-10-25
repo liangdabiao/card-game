@@ -2,7 +2,7 @@
 layout: post
 title: 用怀特海式框架的过程哲学设计 AI 代理
 date: 2026-01-01 12:00:00.000000000 -00:00
-permalink: process-philosophy-for-ai-agent-design
+permalink: process-philosophy-for-ai-agent-design/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro (Nano Banana Pro)

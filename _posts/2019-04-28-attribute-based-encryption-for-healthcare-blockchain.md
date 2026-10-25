@@ -2,7 +2,7 @@
 layout: post
 title: 面向医疗区块链的属性基加密
 date: 2019-04-28 00:00:00.000000000 -00:00
-permalink: attribute-based-encryption-for-healthcare-blockchain
+permalink: attribute-based-encryption-for-healthcare-blockchain/
 author: Benny Cheung
 artwork:
   author: Style of Byzantine mosaics transfer to many faces

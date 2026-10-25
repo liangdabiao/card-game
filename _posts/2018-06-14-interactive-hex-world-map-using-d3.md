@@ -2,7 +2,7 @@
 layout: post
 title: 用 D3 制作交互式六边形世界地图
 date: 2018-06-14 00:00:00.000000000 -05:00
-permalink: interactive-hex-world-map-using-d3
+permalink: interactive-hex-world-map-using-d3/
 author: Benny Cheung
 artwork:
   author: Style of Kandinsky's TransverseLine transfer to World Hex Grid

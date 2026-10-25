@@ -2,7 +2,7 @@
 layout: post
 title: 卡牌游戏模型的游戏架构（第 1 部分）
 date: 2021-06-27 12:00:00.000000000 -00:00
-permalink: game-architecture-card-ai-1
+permalink: game-architecture-card-ai-1/
 author: Benny Cheung
 artwork:
   author: Thomas Lehmann - Race for the Galaxy Cards

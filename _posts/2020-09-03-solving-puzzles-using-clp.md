@@ -2,7 +2,7 @@
 layout: post
 title: 用 Prolog 约束逻辑编程求解谜题
 date: 2020-09-03 12:00:00.000000000 -00:00
-permalink: solving-puzzles-using-clp
+permalink: solving-puzzles-using-clp/
 author: Benny Cheung
 artwork:
   author: Gijs Van Vaerenbergh

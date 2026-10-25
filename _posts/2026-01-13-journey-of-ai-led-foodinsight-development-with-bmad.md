@@ -2,7 +2,7 @@
 layout: post
 title: 用 BMAD 走完 AI 主导的 FoodInsight 开发之旅
 date: 2026-01-13 12:00:00.000000000 -05:00
-permalink: journey-of-ai-led-foodinsight-development-with-bmad
+permalink: journey-of-ai-led-foodinsight-development-with-bmad/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro

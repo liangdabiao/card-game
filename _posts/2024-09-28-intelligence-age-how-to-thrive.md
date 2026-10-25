@@ -2,7 +2,7 @@
 layout: post
 title: 智能时代与如何在其中繁荣
 date: 2024-09-28 12:00:00.000000000 -00:00
-permalink: intelligence-age-how-to-thrive
+permalink: intelligence-age-how-to-thrive/
 author: Benny Cheung
 artwork:
   author: DALLE-3

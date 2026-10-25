@@ -2,7 +2,7 @@
 layout: post
 title: 解锁桌游本体论的奥秘
 date: 2025-02-24 12:00:00.000000000 -00:00
-permalink: unlocking-secrets-of-tabletop-games-ontology
+permalink: unlocking-secrets-of-tabletop-games-ontology/
 author: Benny Cheung
 artwork:
   author: Catan

@@ -2,7 +2,7 @@
 layout: post
 title: 用树莓派监视零食
 date: 2016-04-28 12:00:00.000000000 -05:00
-permalink: snack-watching-with-raspberry-pi
+permalink: snack-watching-with-raspberry-pi/
 author: Benny Cheung
 tags:
   - SnackWatcher

@@ -2,7 +2,7 @@
 layout: post
 title: "卡牌语法——教机器理解复杂卡牌游戏的规则"
 date: 2026-03-30 00:00:00.000000000 -00:00
-permalink: card-grammar-for-complex-card-games
+permalink: card-grammar-for-complex-card-games/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro

@@ -2,7 +2,7 @@
 layout: post
 title: 空间构造模型
 date: 2016-07-05 12:00:00.000000000 -05:00
-permalink: model-of-spatial-construction
+permalink: model-of-spatial-construction/
 author: Benny Cheung
 tags:
   - Spatial Reasoning

@@ -2,7 +2,7 @@
 layout: post
 title: "生成式本体：从游戏知识到游戏创造"
 date: 2026-03-10 12:00:00.000000000 -00:00
-permalink: generative-ontology-from-game-knowledge-to-game-creation
+permalink: generative-ontology-from-game-knowledge-to-game-creation/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro

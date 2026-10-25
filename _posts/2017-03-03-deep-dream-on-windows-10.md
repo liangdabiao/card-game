@@ -2,7 +2,7 @@
 layout: post
 title: 在 Windows 10 上用 Caffe 运行 Deep Dream
 date: 2017-03-03 12:00:00.000000000 -05:00
-permalink: deep-dream-on-windows-10
+permalink: deep-dream-on-windows-10/
 author: Benny Cheung
 artwork:
   author: Style of Kandinsky transfer to Ralph McQuarrie "Robot Dream"

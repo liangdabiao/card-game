@@ -2,7 +2,7 @@
 layout: post
 title: Dify - 你的周末 GenAI 魔法
 date: 2024-05-05 12:00:00.000000000 -00:00
-permalink: dify-your-weekend-genai-magics
+permalink: dify-your-weekend-genai-magics/
 author: Benny Cheung
 artwork:
   author: Clara Cheung

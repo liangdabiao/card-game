@@ -2,7 +2,7 @@
 layout: post
 title: "Nova——学习你品味的 AI 联合设计师"
 date: 2026-02-13 12:00:00.000000000 -00:00
-permalink: nova-the-ai-co-designer-that-learns-your-taste
+permalink: nova-the-ai-co-designer-that-learns-your-taste/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro

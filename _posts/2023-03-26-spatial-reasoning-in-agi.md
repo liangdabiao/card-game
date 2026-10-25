@@ -2,7 +2,7 @@
 layout: post
 title: AGI 中的空间推理——来自哲学视角的洞见
 date: 2023-03-26 12:00:00.000000000 -00:00
-permalink: spatial-reasoning-in-agi
+permalink: spatial-reasoning-in-agi/
 author: Benny Cheung
 artwork:
   author: Stable Diffusion AI

@@ -2,7 +2,7 @@
 layout: post
 title: 用 Prolog 求解逻辑谜题
 date: 2016-04-21 12:00:00.000000000 -05:00
-permalink: using-prolog-to-solve-logic-puzzles
+permalink: using-prolog-to-solve-logic-puzzles/
 author: Benny Cheung
 tags:
   - AI

@@ -2,7 +2,7 @@
 layout: post
 title: 精益 AI - 如何降低 LLM 成本？
 date: 2024-04-12 12:00:00.000000000 -00:00
-permalink: lean-ai-reduce-llm-cost
+permalink: lean-ai-reduce-llm-cost/
 author: Benny Cheung
 artwork:
   author: Stable Diffusion

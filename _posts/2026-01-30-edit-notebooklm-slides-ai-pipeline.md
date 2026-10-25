@@ -2,7 +2,7 @@
 layout: post
 title: "编辑 NotebookLM 幻灯片：一条四工具流水线"
 date: 2026-01-30 12:00:00.000000000 -00:00
-permalink: edit-notebooklm-slides-ai-pipeline
+permalink: edit-notebooklm-slides-ai-pipeline/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro

@@ -2,7 +2,7 @@
 layout: post
 title: "GameGrammar 亮相：AI 驱动的桌游设计"
 date: 2026-02-03 00:00:00.000000000 -00:00
-permalink: introducing-gamegrammar-ai-powered-board-game-design
+permalink: introducing-gamegrammar-ai-powered-board-game-design/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro

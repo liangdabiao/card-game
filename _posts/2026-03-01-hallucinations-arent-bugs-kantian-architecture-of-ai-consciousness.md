@@ -2,7 +2,7 @@
 layout: post
 title: "幻觉不是 Bug：AI 意识的康德式架构"
 date: 2026-03-01 00:00:00.000000000 -00:00
-permalink: hallucinations-arent-bugs-kantian-architecture-of-ai-consciousness
+permalink: hallucinations-arent-bugs-kantian-architecture-of-ai-consciousness/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro

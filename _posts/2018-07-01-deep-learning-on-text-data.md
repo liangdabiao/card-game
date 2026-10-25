@@ -2,7 +2,7 @@
 layout: post
 title: 文本数据上的深度学习
 date: 2018-07-01 00:00:00.000000000 -00:00
-permalink: deep-learning-on-text-data
+permalink: deep-learning-on-text-data/
 author: Benny Cheung
 artwork:
   author: Style of text data transfer to Malevich's Bureau and Room

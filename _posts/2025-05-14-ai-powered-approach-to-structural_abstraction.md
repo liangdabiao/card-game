@@ -2,7 +2,7 @@
 layout: post
 title: "AI 驱动的结构抽象方法——逆向工程中的 KRA 模型"
 date: 2025-05-14 12:00:00.000000000 -00:00
-permalink: ai-powered-approach-to-structural_abstraction
+permalink: ai-powered-approach-to-structural_abstraction/
 author: Benny Cheung
 artwork:
   author: GPT-4o

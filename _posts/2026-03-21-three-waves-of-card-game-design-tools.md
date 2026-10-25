@@ -2,7 +2,7 @@
 layout: post
 title: "卡牌游戏设计工具的三次浪潮"
 date: 2026-03-21 12:00:00.000000000 -00:00
-permalink: three-waves-of-card-game-design-tools
+permalink: three-waves-of-card-game-design-tools/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro

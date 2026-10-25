@@ -2,7 +2,7 @@
 layout: post
 title: "从手绘到 AI 增强：构建思维导图数字化工作流"
 date: 2026-01-07 12:00:00.000000000 -00:00
-permalink: mindmap-digitization-workflow
+permalink: mindmap-digitization-workflow/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro (Nano Banana Pro)

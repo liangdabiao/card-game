@@ -2,7 +2,7 @@
 layout: post
 title: 借明斯基之眼探索 LLM 与通用智能
 date: 2023-12-10 12:00:00.000000000 -00:00
-permalink: exploring-llms-on-universal-intelligence
+permalink: exploring-llms-on-universal-intelligence/
 author: Benny Cheung
 artwork:
   author: DALL.E 3

@@ -2,7 +2,7 @@
 layout: post
 title: "超越上下文窗口——可信赖 AI 联合设计师的架构"
 date: 2026-07-23 00:00:00.000000000 -00:00
-permalink: beyond-the-context-window-architecture-of-a-trustworthy-ai-co-designer
+permalink: beyond-the-context-window-architecture-of-a-trustworthy-ai-co-designer/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro

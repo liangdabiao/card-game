@@ -2,7 +2,7 @@
 layout: post
 title: 本体论——让软件考古学拥有可查询的大脑
 date: 2025-11-01 12:00:00.000000000 -00:00
-permalink: ontology-the-queryable-brain-of-software-archaeology
+permalink: ontology-the-queryable-brain-of-software-archaeology/
 author: Benny Cheung
 artwork:
   author: Nano Banana

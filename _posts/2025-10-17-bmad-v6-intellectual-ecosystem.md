@@ -2,7 +2,7 @@
 layout: post
 title: BMAD V6：理解遗留软件的智识生态系统
 date: 2025-10-17 12:00:00.000000000 -00:00
-permalink: bmad-v6-intellectual-ecosystem
+permalink: bmad-v6-intellectual-ecosystem/
 author: Benny Cheung
 artwork:
   author: Nano Banana

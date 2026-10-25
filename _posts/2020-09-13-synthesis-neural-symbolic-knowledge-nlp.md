@@ -2,7 +2,7 @@
 layout: post
 title: 面向 NLP 系统的神经到符号知识综合
 date: 2020-09-13 12:00:00.000000000 -00:00
-permalink: synthesis-neural-symbolic-knowledge-nlp
+permalink: synthesis-neural-symbolic-knowledge-nlp/
 author: Benny Cheung
 artwork:
   author: M.C. Escher - Metamorphosis II

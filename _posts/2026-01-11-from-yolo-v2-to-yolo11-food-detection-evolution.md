@@ -2,7 +2,7 @@
 layout: post
 title: "You Only Look Once：八年食物检测演进"
 date: 2026-01-11 12:00:00.000000000 -05:00
-permalink: from-yolo-v2-to-yolo11-food-detection-evolution
+permalink: from-yolo-v2-to-yolo11-food-detection-evolution/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro (Nano Banana Pro)

@@ -2,7 +2,7 @@
 layout: post
 title: 星际争霸 II 深度强化学习历险记
 date: 2019-11-15 00:00:00.000000000 -00:00
-permalink: adventures-in-deep-reinforcement-learning
+permalink: adventures-in-deep-reinforcement-learning/
 author: Benny Cheung
 artwork:
   author: AI

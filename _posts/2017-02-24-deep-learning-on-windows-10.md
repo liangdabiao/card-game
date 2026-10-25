@@ -2,7 +2,7 @@
 layout: post
 title: 在 Windows 10 上用 GPU 做深度学习
 date: 2017-02-24 12:00:00.000000000 -05:00
-permalink: deep-learning-on-windows-10
+permalink: deep-learning-on-windows-10/
 author: Benny Cheung
 artwork:
   author: Vincent van Gogh "Starry Night"

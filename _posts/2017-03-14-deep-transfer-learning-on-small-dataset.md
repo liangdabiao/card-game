@@ -2,7 +2,7 @@
 layout: post
 title: 小数据集上的深度迁移学习
 date: 2017-03-14 01:00:00.000000000 -05:00
-permalink: deep-transfer-learning-on-small-dataset
+permalink: deep-transfer-learning-on-small-dataset/
 author: Benny Cheung
 tags:
   - Deep Learning

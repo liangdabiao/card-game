@@ -2,7 +2,7 @@
 layout: post
 title: AI 赋能的超级个体之崛起
 date: 2025-08-22 12:00:00.000000000 -00:00
-permalink: rise-of-the-ai-powered-super-individual
+permalink: rise-of-the-ai-powered-super-individual/
 author: Benny Cheung
 artwork:
   author: FLUX Kontext

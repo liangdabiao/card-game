@@ -2,7 +2,7 @@
 layout: post
 title: 用 Python 实现 FireSQL
 date: 2022-04-29 12:00:00.000000000 -00:00
-permalink: firesql-in-python
+permalink: firesql-in-python/
 author: Benny Cheung
 artwork:
   author: Unknown

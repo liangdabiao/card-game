@@ -2,7 +2,7 @@
 layout: post
 title: SingularityNET AI 服务集成
 date: 2018-02-18 01:00:00.000000000 -05:00
-permalink: singularitynet-ai-service-integration
+permalink: singularitynet-ai-service-integration/
 author: Benny Cheung
 artwork:
   author: Style of Kandinsky transfer to an AI head image

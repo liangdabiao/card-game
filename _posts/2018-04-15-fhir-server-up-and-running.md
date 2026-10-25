@@ -2,7 +2,7 @@
 layout: post
 title: FHIR 服务器搭建与运行
 date: 2018-04-15 01:00:00.000000000 -05:00
-permalink: fhir-server-up-and-running
+permalink: fhir-server-up-and-running/
 author: Benny Cheung
 artwork:
   author: Style of Kandinsky transfer to a blockchain image

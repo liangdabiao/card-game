@@ -2,7 +2,7 @@
 layout: post
 title: 创建个人动画 AI 形象
 date: 2023-02-22 12:00:00.000000000 -00:00
-permalink: create-personal-animated-ai-avatar
+permalink: create-personal-animated-ai-avatar/
 author: Benny Cheung
 artwork:
   author: Stable Diffusion AI

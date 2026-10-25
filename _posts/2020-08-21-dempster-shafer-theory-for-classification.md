@@ -2,7 +2,7 @@
 layout: post
 title: 使用 Python 的 Dempster-Shafer 分类理论
 date: 2020-08-21 00:00:00.000000000 -00:00
-permalink: dempster-shafer-theory-for-classification
+permalink: dempster-shafer-theory-for-classification/
 author: Benny Cheung
 artwork:
   author: Gijs Van Vaerenbergh

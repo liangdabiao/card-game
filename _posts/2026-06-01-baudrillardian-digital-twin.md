@@ -2,7 +2,7 @@
 layout: post
 title: "鲍德里亚式数字孪生——对抗超真实的工程学"
 date: 2026-06-01 00:00:00.000000000 -00:00
-permalink: baudrillardian-digital-twin
+permalink: baudrillardian-digital-twin/
 author: Benny Cheung
 artwork:
   author: NVIDIA (Omniverse / Isaac Sim warehouse demo)

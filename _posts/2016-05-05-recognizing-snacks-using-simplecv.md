@@ -2,7 +2,7 @@
 layout: post
 title: 用 SimpleCV 识别零食
 date: 2016-05-05 12:00:00.000000000 -05:00
-permalink: recognizing-snacks-using-simplecv
+permalink: recognizing-snacks-using-simplecv/
 author: Benny Cheung
 tags:
   - SnackWatcher

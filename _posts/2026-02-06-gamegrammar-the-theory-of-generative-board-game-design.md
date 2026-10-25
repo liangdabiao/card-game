@@ -2,7 +2,7 @@
 layout: post
 title: "GameGrammar——生成式桌游设计理论"
 date: 2026-02-06 12:00:00.000000000 -00:00
-permalink: gamegrammar-the-theory-of-generative-board-game-design
+permalink: gamegrammar-the-theory-of-generative-board-game-design/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro

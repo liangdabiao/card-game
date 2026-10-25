@@ -2,7 +2,7 @@
 layout: post
 title: 用树莓派 3 做计算机视觉
 date: 2016-04-23 12:00:00.000000000 -05:00
-permalink: raspberry-pi-3-for-computer-vision
+permalink: raspberry-pi-3-for-computer-vision/
 author: Benny Cheung
 artwork:
   author: David Cheung

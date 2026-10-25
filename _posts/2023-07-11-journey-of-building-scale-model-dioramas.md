@@ -2,7 +2,7 @@
 layout: post
 title: 制作比例模型场景模型之旅
 date: 2023-07-11 12:00:00.000000000 -00:00
-permalink: journey-of-building-scale-model-dioramas
+permalink: journey-of-building-scale-model-dioramas/
 author: Benny Cheung
 artwork:
   author: Benny Cheung

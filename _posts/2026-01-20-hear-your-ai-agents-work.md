@@ -2,7 +2,7 @@
 layout: post
 title: "在 Claude Code 中听你的 AI 代理干活"
 date: 2026-01-25 12:00:00.000000000 -00:00
-permalink: hear-your-ai-agents-work
+permalink: hear-your-ai-agents-work/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro

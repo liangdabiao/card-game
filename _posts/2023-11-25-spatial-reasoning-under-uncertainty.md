@@ -2,7 +2,7 @@
 layout: post
 title: 不确定性下的空间推理
 date: 2023-11-25 12:00:00.000000000 -00:00
-permalink: spatial-reasoning-under-uncertainty
+permalink: spatial-reasoning-under-uncertainty/
 author: Benny Cheung
 artwork:
   author: Stable Diffusion AI

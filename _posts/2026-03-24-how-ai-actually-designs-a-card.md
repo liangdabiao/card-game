@@ -2,7 +2,7 @@
 layout: post
 title: "AI 究竟如何设计一张卡牌"
 date: 2026-03-24 00:00:00.000000000 -00:00
-permalink: how-ai-actually-designs-a-card
+permalink: how-ai-actually-designs-a-card/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro

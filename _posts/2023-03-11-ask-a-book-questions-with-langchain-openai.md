@@ -2,7 +2,7 @@
 layout: post
 title: 用 LangChain 与 OpenAI 向一本书提问
 date: 2023-03-12 12:00:00.000000000 -00:00
-permalink: ask-a-book-questions-with-langchain-openai
+permalink: ask-a-book-questions-with-langchain-openai/
 author: Benny Cheung
 artwork:
   author: Stable Diffusion AI

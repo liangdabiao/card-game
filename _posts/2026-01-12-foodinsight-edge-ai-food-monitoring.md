@@ -2,7 +2,7 @@
 layout: post
 title: "FoodInsight：本地优先架构的边缘 AI 食物监测"
 date: 2026-01-12 00:00:00.000000000 -05:00
-permalink: foodinsight-edge-ai-food-monitoring
+permalink: foodinsight-edge-ai-food-monitoring/
 author: Benny Cheung
 artwork:
   author: Gemini 3 Pro (Nano Banana Pro)

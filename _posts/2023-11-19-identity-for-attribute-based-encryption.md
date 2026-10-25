@@ -2,7 +2,7 @@
 layout: post
 title: 面向属性基加密的 X.509 身份
 date: 2023-11-19 00:00:00.000000000 -00:00
-permalink: identity-for-attribute-based-encryption
+permalink: identity-for-attribute-based-encryption/
 author: Benny Cheung
 artwork:
   author: Dmitriy Bragin

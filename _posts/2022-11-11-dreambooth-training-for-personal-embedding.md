@@ -2,7 +2,7 @@
 layout: post
 title: 用 Dreambooth 训练个人嵌入
 date: 2022-11-11 12:00:00.000000000 -00:00
-permalink: dreambooth-training-for-personal-embedding
+permalink: dreambooth-training-for-personal-embedding/
 author: Benny Cheung
 artwork:
   author: Stable Diffusion AI

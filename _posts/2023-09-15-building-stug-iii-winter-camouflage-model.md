@@ -2,7 +2,7 @@
 layout: post
 title: 制作冬季迷彩三号突击炮模型
 date: 2023-09-15 12:00:00.000000000 -00:00
-permalink: building-stug-iii-winter-camouflage-model
+permalink: building-stug-iii-winter-camouflage-model/
 author: Benny Cheung
 artwork:
   author: Benny Cheung

@@ -2,7 +2,7 @@
 layout: post
 title: BMAD 实战——在 AI 开发中夺回控制权
 date: 2025-10-01 12:00:00.000000000 -00:00
-permalink: bmad-reclaiming-control-in-ai-dev
+permalink: bmad-reclaiming-control-in-ai-dev/
 author: Benny Cheung
 artwork:
   author: GPT-4o

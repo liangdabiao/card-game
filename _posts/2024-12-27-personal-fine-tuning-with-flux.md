@@ -2,7 +2,7 @@
 layout: post
 title: 在 Replicate 上用 FLUX 模型做个人嵌入与微调
 date: 2024-12-27 12:00:00.000000000 -00:00
-permalink: personal-fine-tuning-with-flux
+permalink: personal-fine-tuning-with-flux/
 author: Benny Cheung
 artwork:
   author: FLUX.1

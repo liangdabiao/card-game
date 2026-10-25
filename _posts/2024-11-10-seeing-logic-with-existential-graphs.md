@@ -2,7 +2,7 @@
 layout: post
 title: 看见逻辑——存在图与视觉思维的力量
 date: 2024-11-10 12:00:00.000000000 -00:00
-permalink: seeing-logic-with-existential-graphs
+permalink: seeing-logic-with-existential-graphs/
 author: Benny Cheung
 artwork:
   author: DALLE-3

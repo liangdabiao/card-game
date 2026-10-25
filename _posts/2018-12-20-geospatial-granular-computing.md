@@ -2,7 +2,7 @@
 layout: post
 title: 地理空间粒度计算
 date: 2018-12-20 00:00:00.000000000 -00:00
-permalink: geospatial-granular-computing
+permalink: geospatial-granular-computing/
 author: Benny Cheung
 artwork:
   author: Style of Byzantine mosaics transfer to a global projected map
