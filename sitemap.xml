@@ -5,7 +5,7 @@
       {% if site.posts %}
           {% assign sitemap_posts = site.posts | where_exp: "post", "post.unlisted != true" %}
           {% for post in sitemap_posts %}
-              <url><loc>{{ site.url }}{{ post.url }}</loc><lastmod>{{ post.date | date: "%Y-%m-%d" }}</lastmod></url>
+              <url><loc>{{ site.url }}{{ site.baseurl }}{{ post.url }}</loc><lastmod>{{ post.date | date: "%Y-%m-%d" }}</lastmod></url>
           {% endfor %}
       {% endif %}
 
@@ -15,7 +15,7 @@
               {% assign ignore_pagination = page.path | split: "/" %}
 
               {% unless ignore contains page.path or ignore_pagination contains "index.html" or ignore_pagination contains "css" %}
-                  <url><loc>{{ site.url }}{{ page.url }}</loc><lastmod>{{ page.date | date: "%Y-%m-%d" }}</lastmod></url>
+                  <url><loc>{{ site.url }}{{ site.baseurl }}{{ page.url }}</loc><lastmod>{{ page.date | date: "%Y-%m-%d" }}</lastmod></url>
               {% endunless %}
           {% endfor %}
       {% endif %}

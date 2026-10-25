@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "GameGrammar - The Theory of Generative Board Game Design"
+title: "GameGrammar——生成式桌游设计理论"
 date: 2026-02-06 12:00:00.000000000 -00:00
 permalink: gamegrammar-the-theory-of-generative-board-game-design
 author: Benny Cheung
@@ -27,386 +27,386 @@ series_order: 6
 ---
 
 <!--excerpt.start-->
-A poet needs grammar. A game designer needs structure. This article lays out the design theory behind GameGrammar, a theory born from one practical question: Can structured tools help create playable board games? The answer turned out to require more than clever prompting. It required a shared vocabulary for what games are, a way to generate what games could be, and a collaborative process for refining what games should become. What follows is that theory, and a direct answer to two questions every designer asks: Can AI really understand "fun"? And can AI be genuinely creative?
+诗人需要语法，游戏设计师需要结构。本文阐述了 GameGrammar 背后的设计理论。这一理论源于一个实际问题：结构化工具能帮助创造出可玩的桌游吗？事实证明，答案所需要的远不止巧妙的提示词：它需要一套描述“游戏是什么”的共享词汇、一种生成“游戏可以是什么”的方法，以及一个打磨“游戏应当成为什么”的协作流程。接下来呈现的便是这套理论，以及对每位设计师都会问的两个问题的直接回答：AI 真的能理解“有趣”吗？AI 真的具有创造力吗？
 <!--excerpt.end-->
 
-![GameGrammar: Structured Generative Play]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/GameGrammar_Theme.jpg)
+![GameGrammar：结构化生成式游戏]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/GameGrammar_Theme.jpg)
 
-_Figure. Structure meets imagination. The left half shows the blueprint, the right half shows the finished piece. GameGrammar bridges both worlds._
+_图。结构遇见想象。左半边是蓝图，右半边是成品。GameGrammar 在这两个世界之间架起桥梁。_
 
-GameGrammar did not begin as a theory. It began as a practical experiment at [Dynamind Research](https://www.dynamindresearch.com) [7]: type a theme into a box, let six specialized agents generate a structured first draft, and see what comes out. What came out, after months of iteration, was not just a tool but a set of ideas about how design works, why AI can be a trustworthy creative partner, and what that means for human designers.
+GameGrammar 并非始于理论，而是始于 [Dynamind Research](https://www.dynamindresearch.com) [7] 的一项实践实验：在一个输入框里键入一个主题，让六个专职智能体生成一份结构化初稿，看看会得到什么。经过数月的迭代，得到的不仅是一件工具，更是一组关于设计如何运作、AI 为何能成为值得信赖的创意伙伴，以及这对人类设计师意味着什么的想法。
 
-In a [previous article]({{ site.baseurl }}introducing-gamegrammar-ai-powered-board-game-design), we showed what GameGrammar produces: twelve words in, a structured first draft out in 73 seconds. This article goes deeper. It explains the *why* behind the *what*, the design thinking that makes human-AI game design not just possible, but genuinely new.
+在[上一篇文章]({{ site.baseurl }}/introducing-gamegrammar-ai-powered-board-game-design)中，我们展示了 GameGrammar 的产出：输入十二个词，73 秒后输出一份结构化初稿。本文将更深入一步，解释*是什么*背后的*为什么*，也就是让人类与 AI 协作设计游戏不仅可行、而且真正焕然一新的设计思维。
 
 ---
 
-## Where GameGrammar Fits: The Board Game Production Pipeline
+## GameGrammar 的定位：桌游生产流水线
 
-Before we explore the ideas, it helps to understand *where* GameGrammar sits in a game designer's workflow. The journey from idea to published box on a shelf is a nine-stage pipeline, and most people only see the last few stages [7]:
+在深入这些想法之前，先了解 GameGrammar 在游戏设计师工作流程中处于*哪个环节*会很有帮助。从一个点子到货架上的成品盒装，要经历一条九阶段的流水线，而大多数人只看到最后几个阶段 [7]：
 
-| Stage | Phase | What Happens |
+| 阶段 | 时期 | 发生什么 |
 |-------|-------|--------------|
-| **1** | **Concept & Early Design** | Core idea, initial mechanics, paper prototype |
-| **2** | **Iterative Playtesting** | Cut, merge, rewrite rules; stress-test systems |
-| 3-9 | Design Lock through Post-Launch | Development, art, manufacturing, marketing, distribution, support |
+| **1** | **概念与早期设计** | 核心创意、初始机制、纸面原型 |
+| **2** | **迭代式游戏测试** | 裁剪、合并、重写规则；对系统进行压力测试 |
+| 3-9 | 从设计锁定到发售后 | 开发、美术、制造、营销、发行、售后支持 |
 
-The graveyard is in Stages 1 and 2. This is where designers spend the most time, where most "cool mechanics" die (and should), and where motivation quietly erodes. The blank page is the first enemy. Before you can even begin the playtesting gauntlet, you need a concept worth testing: not just a theme, but a coherent combination of mechanics, components, player dynamics, and victory conditions.
+设计的坟场就在第 1 和第 2 阶段。设计师在这里花费的时间最多，大多数“酷炫机制”在这里夭折（而且理应如此），动力也在这里悄然消磨。空白页是第一个敌人。在开始游戏测试的重重考验之前，你需要一个值得测试的概念：不只是主题，而是机制、配件、玩家动态与胜利条件的连贯组合。
 
-![The Intervention: GameGrammar accelerating speed to insight]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/GameGrammar_Pipeline_Intervention.jpg)
+![介入：GameGrammar 加速洞见的达成]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/GameGrammar_Pipeline_Intervention.jpg)
 
-_Figure. GameGrammar sits between Concept and Testing, providing rapid variant generation, automated stress-testing, and rule structure scaffolding. It helps designers move faster through the friction-heavy early pipeline, but does not design the game for you._
+_图。GameGrammar 位于概念与测试之间，提供快速的变体生成、自动化的压力测试和规则结构脚手架。它帮助设计师更快地穿越摩擦重重的早期流水线，但不会替你设计游戏。_
 
-**GameGrammar lives at Stages 1 and 2.** It is a design workbench for the earliest and most uncertain phases of game creation:
+**GameGrammar 正是立足于第 1 和第 2 阶段。**它是为游戏创作中最早、最不确定的阶段准备的设计工作台：
 
-- **Stage 1**: Generate structured first drafts from a theme and constraints. Beat blank-page paralysis. Explore mechanism combinations drawn from real published games.
-- **Stage 2**: Iterate rapidly with automated consistency checking, balance analysis, section-by-section rewriting, and plain-language editing. Catch issues that would normally take weeks of playtesting to surface.
+- **阶段 1**：从一个主题和约束条件生成结构化初稿。战胜空白页瘫痪。探索取材于真实已发行游戏的机制组合。
+- **阶段 2**：通过自动一致性检查、平衡性分析、逐节重写和自然语言编辑快速迭代。提前发现通常要经过数周游戏测试才会暴露的问题。
 
-GameGrammar does not touch Stages 3 through 9. It will not lock your design, pitch to publishers, produce art, or manage manufacturing. It sits precisely where you need the most help and where computational tools can do the most good: turning a theme into a testable design, and helping you refine that design through structured iteration.
+GameGrammar 不触及第 3 到第 9 阶段。它不会锁定你的设计、向出版商提案、制作美术或管理生产。它恰好位于你最需要帮助、计算工具最能发挥作用的环节：把主题变成可测试的设计，并帮助你通过结构化迭代打磨这个设计。
 
-The positioning matters. GameGrammar is a **design accelerator** that helps you move faster through the early pipeline. It is not a replacement for your craft. You remain the designer. The AI is your instrument.
-
----
-
-## The Core Idea
-
-**Game design is a structured creative act. It can be broken into a shared vocabulary of game elements, powered by AI generation, and refined through back-and-forth collaboration between human and machine. The result is something neither purely human nor purely AI, but a co-designed partnership that plays to the strengths of both.**
-
-This idea rests on three observations:
-
-1. **Games share a common structure.** Beneath the surface diversity of tabletop games lies a shared language: mechanisms, components, player dynamics, turn structures, scoring systems. That language can be captured in useful detail.
-
-2. **Structure makes generation possible.** When you encode that language as a detailed template, AI can generate within it. The template becomes a grammar that enables valid, coherent, novel designs, not by limiting creativity, but by giving it a vocabulary to be creative *within*.
-
-3. **Design is iterative, not instantaneous.** No generated design is finished. The real work happens in the refinement loop: spotting contradictions, updating connected sections, rewriting what has gone stale, translating your intent into concrete changes. This loop needs your judgment, guided by AI analysis.
+这一定位很重要。GameGrammar 是帮助你更快通过早期流水线的**设计加速器**。它不能取代你的手艺。你依然是设计师，AI 是你的工具。
 
 ---
 
-## Why Constraints Enable Creativity
+## 核心理念
 
-The theory starts with a paradox familiar to many designers. Without structure, there is no coherent creation.
+**游戏设计是一种结构化的创造性活动。它可以拆解为一套关于游戏元素的共享词汇，由 AI 生成提供动力，并通过人与机器之间来回往复的协作加以打磨。其结果既非纯粹属于人类，也非纯粹属于 AI，而是一种发挥双方所长的共同设计伙伴关系。**
 
-> A poet needs grammar. A game designer needs structure.
+这一理念建立在三个观察之上：
 
-If you ask a general-purpose AI to "design a board game," you get fluent, confident text that falls apart the moment you try to prototype it. No concrete card counts. No defined end condition. No actual scoring math. The structured vocabulary that GameGrammar uses is what makes valid generation possible. The constraints do not limit creativity. They are the *reason* creativity can happen.
+1. **游戏共享一种共同结构。**在桌游表面的多样性之下，潜藏着一种共同语言：机制、配件、玩家动态、回合结构、计分系统。这套语言可以被有效地详细捕捉下来。
 
-Think of it this way: most game design vocabularies describe what games *are*. GameGrammar's vocabulary creates what games *could be*. By capturing game design knowledge as a detailed template, with required fields, defined mechanism categories, and relationships between parts, we turn a passive description into a generative starting point. The template says: *every game must have a goal, an end condition, mechanisms that create player choices, and components that bring those mechanisms to life.* Within those boundaries, infinite games are possible. Without them, no valid game comes out.
+2. **结构让生成成为可能。**当你把这套语言编码成一份详细的模板，AI 就能在其中进行生成。模板成为一种语法，让有效、连贯、新颖的设计成为可能——不是通过限制创造力，而是通过给创造力提供一个可以在*其中*施展的词汇表。
 
----
-
-## The Philosophical Thread
-
-There is a philosophical idea running beneath all of this, drawn from Alfred North Whitehead's process philosophy [1][2], which we explored in depth in a [previous article]({{ site.baseurl }}process-philosophy-for-ai-agent-design). The key distinction is between **abstract patterns** (like worker placement, deck building, or area control as general concepts) and **concrete games** (where those patterns become specific cards, tokens, rules, and boards).
-
-![The Whiteheadian Connection]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/Whiteheadian_Connection.jpg)
-
-_Figure. Abstract patterns become concrete games. The patterns constrain but do not determine. The creativity is real, but it is structured creativity._
-
-GameGrammar's job is to move from abstract patterns to concrete games. The vocabulary provides the patterns; AI generation produces the specific instances. Each generated game is genuinely new, a fresh combination of familiar building blocks arranged in a way that did not exist before.
+3. **设计是迭代的，而非一蹴而就的。**没有任何生成的设计是完成品。真正的工作发生在打磨循环中：发现矛盾、更新相关联的章节、重写已经过时的内容、把你的意图转化为具体的修改。这个循环需要你的判断力，并由 AI 分析加以引导。
 
 ---
 
-## Bridging Structure and Imagination
+## 约束何以成就创造力
 
-Structure and imagination have opposite strengths:
+这套理论始于一个许多设计师都熟悉的悖论：没有结构，就没有连贯的创作。
 
-| | Structured Vocabulary | AI Generation |
+> 诗人需要语法，游戏设计师需要结构。
+
+如果你让一个通用 AI“设计一款桌游”，你会得到流畅、自信、但一着手制作原型就土崩瓦解的文本：没有具体的卡牌数量，没有明确的结束条件，没有真实的计分数学。GameGrammar 所使用的结构化词汇正是让有效生成成为可能的关键。约束并没有限制创造力，它们正是创造力得以发生的*原因*。
+
+不妨这样想：大多数游戏设计词汇表描述的是游戏*是什么*，而 GameGrammar 的词汇表创造的是游戏*可以是什么*。通过把游戏设计知识捕捉为一份详细模板——包含必填字段、定义好的机制类别以及各部分之间的关系——我们把一份被动的描述变成了一个生成式的起点。模板宣告：*每款游戏必须有目标、结束条件、创造玩家选择的机制，以及让这些机制活起来的配件。*在这些边界之内，无限的游戏成为可能；离开它们，任何有效游戏都无法产出。
+
+---
+
+## 哲学脉络
+
+这一切背后贯穿着一个哲学思想，它来自阿尔弗雷德·诺思·怀特海（Alfred North Whitehead）的过程哲学 [1][2]，我们在[先前的一篇文章]({{ site.baseurl }}/process-philosophy-for-ai-agent-design)中深入探讨过。关键的区别在于**抽象模式**（如作为一般概念的工人放置、牌库构筑或区域控制）与**具体游戏**（这些模式变成特定的卡牌、标记、规则和棋盘）之间。
+
+![怀特海式的联结]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/Whiteheadian_Connection.jpg)
+
+_图。抽象模式成为具体游戏。模式加以约束却不加以决定。创造力是真实的，但它是结构化的创造力。_
+
+GameGrammar 的任务就是从抽象模式走向具体游戏。词汇表提供模式；AI 生成产出具体实例。每一款被生成的游戏都是真正的新游戏——用熟悉的积木以从未存在过的方式排列组合而成。
+
+---
+
+## 在结构与想象之间架起桥梁
+
+结构与想象拥有相反的优势：
+
+| | 结构化词汇 | AI 生成 |
 |-|----------------------|---------------|
-| **Strength** | Precise, valid, complete | Creative, fluent, novel |
-| **Weakness** | Cannot create new designs | Creates without structural understanding |
+| **优势** | 精确、有效、完整 | 有创造力、流畅、新颖 |
+| **劣势** | 无法创造新设计 | 在缺乏结构理解的情况下进行创造 |
 
-![The Synthesis: Bridging the Gap]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/Bridging_the_Gap.jpg)
+![综合：跨越鸿沟]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/Bridging_the_Gap.jpg)
 
-_Figure. GameGrammar brings together what structure and imagination each do best. The result is designs that are both novel and valid, something that could not exist without both halves working together._
+_图。GameGrammar 把结构与想象各自最擅长的事情结合在一起。其结果是既新颖又有效的设计——若没有两半协同工作，这种设计不可能存在。_
 
-GameGrammar combines both. The structured vocabulary provides the constraints; the AI provides the creative substance. The result is designs that could not come from either half alone.
+GameGrammar 将两者结合。结构化词汇提供约束；AI 提供创意实质。其结果是无法单靠任何一半产生的设计。
 
-### The Six-Agent Pipeline
+### 六智能体流水线
 
-Generation is not a single prompt. It is a pipeline of six specialized agents, each focused on one area of game design [7]:
+生成不是单次提示。它是一条由六个专职智能体组成的流水线，每个智能体专注于游戏设计的一个领域 [7]：
 
-![The Generative Pipeline: Multi-Agent Synthesis]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/Multi_Agent_Pipeline.jpg)
+![生成流水线：多智能体综合]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/Multi_Agent_Pipeline.jpg)
 
-_Figure. Six specialized agents working in sequence. Each agent sees the complete output of all previous agents, building on their work like a relay team of expert consultants._
+_图。六个专职智能体依次工作。每个智能体都能看到此前所有智能体的完整输出，像一支专家顾问接力团队那样在前人工作的基础上继续构建。_
 
-The **Mechanics Architect** picks mechanisms from a curated library of 35 game mechanisms drawn from Engelstein and Shalev's taxonomy [3]. The **Theme Weaver** dresses the mechanics in your theme. The **Component Designer** specifies every physical piece with concrete counts. The **Detail Expander** writes out turn phases, card examples, and scoring rules. The **Balance Critic** flags potential issues in the numbers. The **Design Evaluator** scores six dimensions of design quality, maps the emotional arc across game phases, and measures how original your mechanism combination is. You get a creative profile, not just a single rating.
+**机制建筑师**（Mechanics Architect）从一座精心策划的、取材自 Engelstein 和 Shalev 分类法 [3] 的 35 种游戏机制库中挑选机制。**主题织手**（Theme Weaver）用你的主题为机制披上外衣。**配件设计师**（Component Designer）以具体数量指定每一件实体配件。**细节扩展者**（Detail Expander）写出回合阶段、卡牌示例和计分规则。**平衡批评家**（Balance Critic）标记数字中的潜在问题。**设计评估师**（Design Evaluator）为六个设计质量维度打分，绘制跨游戏阶段的情感弧线，并衡量你的机制组合有多原创。你得到的是一份创意画像，而不只是一个单一评分。
 
-### Grounded in Real Games
+### 扎根于真实游戏
 
-Generated designs are not invented from thin air. GameGrammar draws on a reference library of 2000+ existing games from BoardGameGeek [6]. When generating a worker placement game, the system looks at successful worker placement designs, their component counts, player counts, mechanism pairings, and balance approaches, and uses them as guideposts for your new design. This keeps generated games grounded in patterns that have proven themselves in published, well-regarded games.
+生成的设计并非凭空捏造。GameGrammar 汲取了一个来自 BoardGameGeek [6] 的 2000 多款现有游戏的参考库。在生成一款工人放置游戏时，系统会考察成功的工人放置设计——它们的配件数量、玩家人数、机制搭配和平衡处理方式——并将其作为你新设计的路标。这使生成的游戏扎根于那些已在已发行、口碑良好的游戏中得到验证的模式。
 
-The same reference library serves a second purpose: **measuring originality**. After generation, your design's mechanism combination is compared against the full collection of existing games. This produces a novelty score. "Your combination of worker placement plus real-time resolution appears in only 3% of reference games." It is consistent, explainable, and genuinely rewarding when you discover you are exploring uncharted design territory.
-
----
-
-## Three Layers: Game, Depth, and Process
-
-Your game design in GameGrammar lives on three separate layers, and keeping them separate turned out to be one of the more useful design decisions we made. This separation is not just convenient engineering. It follows directly from the distinction between abstract patterns and concrete instances described earlier. The game itself (Layer 1) holds the patterns. The details (Layer 2) hold the concrete instances. The process (Layer 3) holds the history of how one became the other.
-
-![The 3-Layer Architecture]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/Three_Layer_Architecture.jpg)
-
-_Figure. Three layers keep generation clean, editing informed, and your design's evolution visible. Most design tools mix the game with the process of making it. GameGrammar separates them._
-
-**Layer 1, Your Game**, captures the building blocks of any tabletop game: mechanisms, components, turn structure, player dynamics, scoring. These are the abstract patterns, the eternal building blocks that exist across all games, whether you are designing a quick party game or a sprawling civilization epic.
-
-**Layer 2, The Details**, is where patterns become *this specific game*. Concrete specifics: what actually happens during each turn phase, example card text, scoring formulas with real numbers. This is the difference between "this game has a drafting phase" and "in the drafting phase, each player picks one card from a shared pool of 5, resolving simultaneously."
-
-**Layer 3, The Design Process**, captures something traditional design tools ignore entirely. If you have ever maintained a game design in a shared Google doc, with crossed-out rules, margin notes that contradict each other, and version 14 saved as "final_FINAL_v2"... you know the pain. Layer 3 solves it. It tracks which sections need updating after your changes, flags consistency issues before you discover them in playtesting, holds AI suggestions you have saved for later, and maintains a full version history with comparison and rollback. It is the organized contractor's clipboard that keeps the renovation from becoming chaos.
-
-### The House Metaphor
-
-Think of it like building a house:
-
-![The House Metaphor]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/House_Metaphor.jpg)
-
-_Figure. Layer 1 is the blueprints. Layer 2 is the interior design. Layer 3 is the contractor's clipboard._
-
-Layer 1 is the **blueprints**: foundation and load-bearing walls. You cannot live in them, but you cannot build without them. Layer 2 is the **interior design**: furniture and paint. You can swap the couch without tearing down walls. Layer 3 is the **contractor's clipboard**: the punch list, renovation history, and building permits. A record of the work being done, not the building itself.
-
-This metaphor also explains what happens when you make a big change. If you move a load-bearing wall (change a core mechanism), the furniture layout becomes outdated: the sofa is now halfway through a wall. GameGrammar tracks these connections automatically.
-
-![Staleness Propagation]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/Staleness_Propagation.jpg)
-
-_Figure. When you change the blueprints, the interior needs reviewing. The contractor's clipboard is never outdated; it just records that renovation is underway._
-
-Say you change your hand limit from seven cards to three. Suddenly your drafting phase description is wrong, your "discard to activate" power needs rebalancing, and your endgame scoring assumes players have cards they can no longer hold. In a traditional design doc, you might not catch these ripple effects for weeks. Layer 3 flags every affected section immediately.
-
-Here is what happens next. You open GameGrammar and see three sections marked stale: Drafting Phase, Card Powers, and Endgame Scoring. You click Drafting Phase. The AI shows you the problem: "Players draft from a pool of 5, but with a hand limit of 3, they can only keep 3 cards total. The drafting round either ends too early or forces repeated discards." It proposes two options: reduce the draft pool to 3, or let players draft then discard down. You pick the second option because you want the tension of choosing what to keep. You preview the rewritten section, adjust one sentence, and apply.
-
-The card powers section updates next, and the AI flags that "discard to activate" now competes directly with your hand limit. It suggests making activation free for one card per turn. You disagree. That tension is the whole point of your game. You dismiss the suggestion and mark the section as reviewed.
-
-Endgame scoring needs a number change: the bonus for "most cards in hand" no longer makes sense at three cards. You accept the AI's proposal to replace it with "most sets completed."
-
-Three sections, five minutes, done. In your old workflow, you might have caught the drafting issue in your next playtest, the scoring issue two playtests after that, and the card power conflict never.
-
+同一个参考库还有第二个用途：**衡量原创性**。生成之后，你的设计的机制组合会与现有游戏的完整集合进行比对，由此得出一个新颖度分数。“工人放置加实时结算的组合仅出现在 3% 的参考游戏中。”它前后一致、可以解释，而当你发现自己正在探索未有人踏足的设计领域时，它还会带来真正的成就感。
 
 ---
 
-## The Co-Design Partnership: Generation Is Not Design
+## 三个层次：游戏、深度与过程
 
-Here is the most important insight behind GameGrammar: **generating a game is not the same as designing one.** A generated first draft, no matter how good, is a starting point. The real design happens in the back-and-forth that follows.
+你在 GameGrammar 中的游戏设计存在于三个相互独立的层次上，而保持它们的分离被证明是我们所做的更有用的设计决策之一。这种分离不只是工程上的便利，它直接源自前文所述的抽象模式与具体实例之间的区别。游戏本身（第 1 层）承载模式，细节（第 2 层）承载具体实例，过程（第 3 层）承载一方如何变成另一方的历史。
 
-![The Co-Design Paradigm]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/Co_Design_Paradigm.jpg)
+![三层架构]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/Three_Layer_Architecture.jpg)
 
-_Figure. The co-design loop: you edit, connected sections update, the AI spots emerging issues, you choose how to refine, changes get versioned. Generation sits at the center, but design lives in the cycle around it._
+_图。三个层次让生成保持干净、编辑有据可依、设计的演进清晰可见。大多数设计工具把游戏与制作游戏的过程混为一谈，GameGrammar 则将它们分开。_
 
-After your first draft is generated, the design enters a continuous refinement cycle. You make changes. Connected sections get flagged for review. The AI spots contradictions and emerging issues. You choose a path forward. The AI proposes solutions with clear reasoning. You preview everything before it touches your design. You accept, modify, or reject. Your evaluation scores update, showing which dimensions improved and which declined. The cycle continues.
+**第 1 层，你的游戏**，捕捉任何桌游的构件：机制、配件、回合结构、玩家动态、计分。这些是抽象模式，是存在于所有游戏之中、超越时间的积木，无论你设计的是一款快速的聚会游戏还是一部宏大的文明史诗。
 
-One rule is absolute: **the AI never changes your design without your permission.** Every modification follows a preview-before-apply pattern. The AI shows you what it wants to change and why. You decide. This is not just a convenience feature. It follows from the theory's core claim: generation is not design. If the AI could just change things, it would be designing. The preview step is what keeps the human in the designer's chair.
+**第 2 层，细节**，是模式变成*这一款具体游戏*的地方。具体到细节：每个回合阶段实际发生什么、卡牌示例文本、带有真实数字的计分公式。这就是“这款游戏有一个轮抽阶段”与“在轮抽阶段，每位玩家从一个 5 张牌的公共牌池中挑选一张牌，同时结算”之间的差别。
 
-> **AI proposes. You decide.**
+**第 3 层，设计过程**，捕捉了传统设计工具完全忽视的东西。如果你曾经在共享的 Google 文档里维护一个游戏设计——划掉的规则、相互矛盾的页边批注、以及存成“final_FINAL_v2”的第 14 版……你就懂得这种痛苦。第 3 层解决了它。它追踪你的修改之后哪些章节需要更新，在你于游戏测试中发现一致性问题之前就将其标记出来，保存你留待以后处理的 AI 建议，并维护一份带对比和回滚功能的完整版本历史。它就像那位有条理的承包商的记事板，让装修不至于变成一团混乱。
 
-Think of it this way: the AI is a mechanic, not a mystic. It can tell you that your engine has a misfire, that your cooperative game has conflicting competitive scoring. But it cannot tell you whether the rumble of that misfire is exactly the tension you intended. It reads the blueprint. You read the room.
+### 房子的比喻
 
-### Five Ways the AI Can Help
+不妨把它想象成建造一座房子：
 
-The partnership offers five distinct modes of assistance, each suited to different moments in your design process:
+![房子的比喻]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/House_Metaphor.jpg)
 
-![Four Modes of AI Assistance]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/Four_Modes_AI_Assistance.jpg)
+_图。第 1 层是蓝图，第 2 层是室内设计，第 3 层是承包商的记事板。_
 
-_Figure. From precise fixes to open-ended creative guidance. You choose which mode fits your current need._
+第 1 层是**蓝图**：地基与承重墙。你无法住在里面，但没有它就无法建造。第 2 层是**室内设计**：家具与油漆。你可以换掉沙发而不必拆墙。第 3 层是**承包商的记事板**：遗留问题清单、装修历史和建筑许可证。它记录的是正在进行的工作，而不是建筑本身。
 
-| Mode | What the AI Does | Your Role |
+这个比喻也解释了当你做出重大改动时会发生什么。如果你移动一面承重墙（更换一个核心机制），家具布局就会过时：沙发现在一半嵌进了墙里。GameGrammar 会自动追踪这些关联。
+
+![过时的传播]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/Staleness_Propagation.jpg)
+
+_图。当你更改蓝图时，室内设计需要重新审视。承包商的记事板从不过时；它只是记录下装修正在进行。_
+
+假设你把手牌上限从七张改为三张。突然之间，你的轮抽阶段描述错了，你的“弃牌以激活”能力需要重新平衡，而你的终局计分还假设玩家持有他们已经拿不住的牌。在传统的设计文档里，你可能几周都发现不了这些连锁效应。第 3 层则会立即标记每一个受影响的章节。
+
+接下来会发生什么。你打开 GameGrammar，看到三个被标记为过时的章节：轮抽阶段、卡牌能力和终局计分。你点击轮抽阶段。AI 向你展示问题：“玩家从 5 张的牌池中轮抽，但手牌上限为 3 时，他们总共只能保留 3 张牌。轮抽回合要么过早结束，要么迫使玩家反复弃牌。”它提出两个选项：把轮抽牌池缩减到 3 张，或者让玩家先轮抽再弃牌到上限。你选择第二个方案，因为你想要那种取舍保留什么牌的张力。你预览重写后的章节，调整一个句子，然后应用。
+
+接着更新卡牌能力章节，AI 标记出“弃牌以激活”现在与你的手牌上限直接冲突。它建议改为每回合可以免费激活一张牌。你不同意——那种张力正是你这款游戏的全部意义所在。你驳回了建议，并把该章节标记为已审阅。
+
+终局计分需要一处数字修改：在手牌上限为三张的情况下，“手牌最多”的奖励已不再合理。你接受了 AI 的提案，把它替换为“完成组合数最多”。
+
+三个章节，五分钟，搞定。在旧的工作流程里，你可能要在下一次游戏测试时才发现轮抽问题，再往后两次游戏测试才发现计分问题，而卡牌能力的冲突可能永远发现不了。
+
+
+---
+
+## 共同设计的伙伴关系：生成不等于设计
+
+这是 GameGrammar 背后最重要的洞见：**生成一款游戏并不等于设计一款游戏。**无论多好，生成的初稿都只是一个起点。真正的设计发生在其后的反复往来之中。
+
+![共同设计范式]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/Co_Design_Paradigm.jpg)
+
+_图。共同设计循环：你进行编辑，相关联的章节得到更新，AI 发现新出现的问题，你选择如何打磨，修改被记录进版本历史。生成居于中心，但设计存在于围绕它的循环之中。_
+
+初稿生成之后，设计就进入一个持续打磨的循环。你做出修改。相关联的章节被标记以待审阅。AI 发现矛盾与新出现的问题。你选择前进的方向。AI 给出理由清晰的解决方案。在一切触及你的设计之前，你都先预览。你接受、修改或拒绝。你的评估分数随之更新，显示哪些维度提升、哪些下降。循环继续。
+
+有一条规则是绝对的：**没有你的许可，AI 绝不改动你的设计。**每一处修改都遵循先预览后应用的模式。AI 向你展示它想改什么以及为什么。由你决定。这不只是一个便利功能，它源自这套理论的核心主张：生成不是设计。如果 AI 可以随意改动，那它就是在设计。预览这一步正是让人类坐稳设计师之位的关键。
+
+> **AI 提议，你决定。**
+
+不妨这样想：AI 是一名机械师，而不是神秘主义者。它能告诉你你的引擎缺火了，你的合作游戏里混入了互相矛盾的竞争性计分。但它无法告诉你那声缺火的轰鸣是不是恰恰就是你想要的张力。它读的是蓝图，你读的是现场。
+
+### AI 助力的五种方式
+
+这种伙伴关系提供五种不同的协助模式，各自适合你设计过程中的不同时刻：
+
+![四种 AI 协助模式]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/Four_Modes_AI_Assistance.jpg)
+
+_图。从精确修复到开放式的创意引导。由你选择哪种模式符合当下的需要。_
+
+| 模式 | AI 做什么 | 你的角色 |
 |------|-------------------|-----------|
-| **Rewrite Section** | Rewrites one outdated section using your current full design as context | Review and accept or reject |
-| **Fix Contradiction** | Proposes a targeted fix for a specific inconsistency | Preview the change, confirm or skip |
-| **Smart Edit** | Translates your plain-language instruction into concrete design changes | Review what it changed, pick which parts to keep |
-| **Smart Suggestions** | Generates 3-7 improvement ideas with priorities and reasoning | Apply now, save for later, or dismiss |
-| **Re-Evaluate** | Scores 6 design dimensions, maps the emotional arc, measures originality | Study the profile, find weak spots, decide what to improve |
+| **重写章节** | 以你当前的完整设计为上下文，重写一个过时的章节 | 审阅后接受或拒绝 |
+| **修复矛盾** | 针对某个具体的不一致提出有针对性的修复方案 | 预览修改，确认或跳过 |
+| **智能编辑** | 把你的自然语言指令转化为具体的设计修改 | 审阅它改了什么，选择保留哪些部分 |
+| **智能建议** | 生成 3 到 7 条带有优先级和理由的改进想法 | 立即应用、留待以后，或不予理会 |
+| **重新评估** | 为 6 个设计维度打分，绘制情感弧线，衡量原创性 | 研究画像，找到薄弱点，决定改进什么 |
 
-Re-evaluation is especially powerful because it closes the feedback loop. After making changes through any of the other modes, you can re-score your design and see what moved. Dimensions that improved flash green; those that declined flash amber. This turns the cycle from "edit and hope" into "edit, measure, and iterate with direction."
-
----
-
-## Your Design Workbench: Four Stages of Creation
-
-A game design in GameGrammar moves through four recognizable stages, each with its own rhythm and its own set of AI tools:
-
-![The Design Workbench: Stages of Creation]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/Design_Workbench_Stages.jpg)
-
-_Figure. Four stages from first draft to final polish. The workbench is fluid: you move between stages as the design evolves._
-
-**Stage 1, Genesis.** You provide a theme, some constraints (player count, complexity, play time), and optionally pick a few mechanisms you want to include. The six-agent pipeline generates your complete first draft. You receive a full game design with a creative profile: six scored design dimensions displayed as a radar chart, an emotional arc across game phases, a theme cohesion score, and an originality percentile.
-
-**Stage 2, Shaping.** You start editing. Swapping mechanisms, adjusting numbers, reworking the turn structure. Each change flags connected sections that may need updating. The AI helps with change tracking, section rewrites, and consistency checking.
-
-**Stage 3, Refinement.** The big decisions are made. Now you fine-tune: adjusting balance, clarifying card effects, tightening scoring. AI assistance shifts to targeted fixes, plain-language editing ("make the hand limit 7 instead of 5"), and proactive suggestions for improvements you might not have considered.
-
-**Stage 4, Polish.** Your game works. Now you focus on coherence, theme integration, and overall quality. The Creative Coach dashboard gives you the complete picture at a glance: your radar chart, originality score, theme cohesion, and emotional arc.
-
-These stages are not a rigid sequence. You might be fine-tuning in Stage 3 when a mechanism swap sends you back to Stage 2. You might spot a weak dimension on your radar chart in Stage 4 that sparks a whole new direction. The workbench moves with you.
+重新评估尤其强大，因为它闭合了反馈循环。在通过其他任何模式做出修改之后，你可以为设计重新打分，看看哪些数字发生了变化。提升的维度闪绿光，下降的维度闪琥珀色。这让循环从“编辑然后祈祷”变成“编辑、度量、带着方向迭代”。
 
 ---
 
-## Design Health: From Bug Checker to Creative Coach
+## 你的设计工作台：创作的四个阶段
 
-Early versions of GameGrammar's health system only measured what was *wrong* with a design: contradictions, outdated sections, unresolved suggestions. Those checks are useful, but they answer the wrong question. A game with zero contradictions is *functional*. It is not necessarily *good*.
+GameGrammar 中的一个游戏设计会经历四个清晰可辨的阶段，每个阶段都有自身的节奏和一套专属的 AI 工具：
 
-![Design Health: Two Levels]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/Design_Health_Two_Levels.jpg)
+![设计工作台：创作阶段]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/Design_Workbench_Stages.jpg)
 
-_Figure. Level 1 is the clipboard: structural soundness, the checklist that confirms nothing is broken. Level 2 is the radar chart: creative vitality, the profile that shows what makes your design special. The shift is from "What is wrong?" to "What makes this special?"_
+_图。从初稿到最终打磨的四个阶段。工作台是流动的：随着设计的演进，你可以在各阶段之间往返。_
 
-The deeper insight: as a designer, you need to know not just whether the blueprint is structurally sound, but whether the game has *soul*. We needed to move from "nothing is broken" to "here is what makes this design special."
+**阶段 1，创世。**你提供一个主题、一些约束条件（玩家人数、复杂度、游戏时长），并可选择勾选几项你希望包含的机制。六智能体流水线生成你的完整初稿。你会收到一份带有创意画像的完整游戏设计：以雷达图呈现的六个设计维度评分、跨游戏阶段的情感弧线、主题凝聚力得分，以及原创性百分位。
 
-GameGrammar now tracks your design on two levels:
+**阶段 2，塑形。**你开始编辑：更换机制、调整数字、重构回合结构。每一处修改都会标记出可能需要更新的相关联章节。AI 在修改追踪、章节重写和一致性检查方面提供帮助。
 
-**Level 1, Structural Soundness** (the floor, not the ceiling): consistency score, outdated section count, unresolved suggestions. Necessary housekeeping, but not what gets you excited.
+**阶段 3，精修。**重大决策已定，现在你进行微调：调整平衡、明确卡牌效果、收紧计分。AI 协助转向有针对性的修复、自然语言编辑（“把手牌上限从 5 改成 7”），以及主动提出你可能没想到的改进建议。
 
-**Level 2, Creative Vitality** (what you actually care about):
+**阶段 4，抛光。**你的游戏已经能玩了。现在你专注于连贯性、主题融合度和整体质量。创意教练（Creative Coach）仪表盘让你一眼看到全貌：你的雷达图、原创性得分、主题凝聚力和情感弧线。
 
-| Metric | What It Tells You |
+这些阶段并非僵硬的顺序。你可能正在阶段 3 微调，一次机制更换又把你送回阶段 2。你也可能在阶段 4 从雷达图上发现一个薄弱维度，从而激发出全新的方向。工作台随你而动。
+
+---
+
+## 设计健康度：从缺陷检查器到创意教练
+
+GameGrammar 健康度系统的早期版本只衡量设计的*问题*所在：矛盾、过时的章节、未处理的建议。这些检查有用，但它们回答的是错误的问题。一款零矛盾的游戏是*可用的*，却不一定是*好的*。
+
+![设计健康度：两个级别]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/Design_Health_Two_Levels.jpg)
+
+_图。第 1 级是记事板：结构健全性，确认没有任何东西损坏的检查清单。第 2 级是雷达图：创意活力，展示你的设计有何独特之处的画像。转变是从“哪里出了问题？”到“是什么让它与众不同？”_
+
+更深的洞见是：作为设计师，你不仅需要知道蓝图在结构上是否可靠，还需要知道这款游戏有没有*灵魂*。我们需要从“没有东西坏掉”走向“这就是让这个设计与众不同的地方”。
+
+GameGrammar 现在从两个级别追踪你的设计：
+
+**第 1 级，结构健全性**（是地板，不是天花板）：一致性得分、过时章节数、未处理的建议。必要的家务事，但不会让你兴奋。
+
+**第 2 级，创意活力**（你真正在意的）：
+
+| 指标 | 它告诉你什么 |
 |--------|-------------------|
-| **Six Design Dimensions** | How your game scores on strategic depth, tension, player agency, replayability, social interaction, and elegance, displayed as a radar chart |
-| **Originality Score** | How unique your mechanism combination is compared to 2000+ existing games (0-100 percentile) |
-| **Theme Cohesion** | How well your theme, mechanics, and components hold together as a unified experience (1-10) |
-| **Engagement Curve** | The emotional peaks and valleys players experience across your game's phases |
+| **六大设计维度** | 你的游戏在策略深度、张力、玩家自主性、重玩性、社交互动和优雅性上的得分，以雷达图呈现 |
+| **原创性得分** | 你的机制组合与 2000 多款现有游戏相比有多独特（0-100 百分位） |
+| **主题凝聚力** | 你的主题、机制与配件作为一个统一体验结合得有多紧密（1-10） |
+| **投入度曲线** | 玩家在游戏各阶段经历的情感峰谷 |
 
-The six dimensions turn the vague question "is this fun?" into actionable creative directions. Instead of a single number, you see *where* your design is strong and *where* it could grow. Strategic depth might be a 9 while social interaction sits at a 4, and that is perfectly fine if you are designing a solo puzzle game.
+这六个维度把“这个好玩吗？”这个模糊的问题转化为可执行的创作方向。你看到的不是一个孤立的数字，而是你的设计*在哪儿*强、*在哪儿*可以成长。策略深度可能是 9 分，而社交互动只有 4 分——如果你设计的是一款单人解谜游戏，这完全没问题。
 
-The **Originality Score** gives you a creative thrill by showing how your mechanism combination compares to published games. A score of 87 means "only 13% of existing games share this combination." It rewards you for venturing into unexplored design space.
+**原创性得分**通过展示你的机制组合与已发行游戏的对比，给你带来创作的兴奋感。87 分意味着“只有 13% 的现有游戏拥有这种组合”。它奖励你踏入未曾探索的设计空间。
 
-![The Engagement Curve]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/Engagement_Curve.jpg)
+![投入度曲线]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/Engagement_Curve.jpg)
 
-_Figure. Mapping the soul of the game. The dramatic curve spikes toward the end. The flowing curve builds steadily. Neither is wrong. The curve shows what your game does emotionally, not what it should do._
+_图。为游戏的灵魂绘制地图。戏剧化的曲线在尾声急剧上扬，流畅的曲线稳步攀升。两者都没有错。曲线展示的是你的游戏在情感上做了什么，而不是它应该做什么。_
 
-The **Engagement Curve** maps the emotional arc of your game across its phases. A flat line suggests a one-note experience; peaks and valleys suggest drama. A horror game *should* spike. A meditative engine-builder *should* flow smoothly. But a flat curve is not automatically a problem. Some of the best engine-building games have a slow, meditative build by design. The curve shows you what your game does emotionally. Whether that matches your intention is your call, not the AI's.
+**投入度曲线**描绘你的游戏在各阶段的情感弧线。一条平线暗示单调乏味的体验；峰谷起伏暗示戏剧性。恐怖游戏*理应*上扬，冥想式的引擎构筑游戏*理应*平缓流淌。但平缓的曲线并不自动等于问题。一些最优秀的引擎构筑游戏就是刻意设计成缓慢、冥想式的积累。曲线向你展示你的游戏在情感上做了什么；这是否符合你的意图，由你说了算，而不是 AI。
 
-These metrics are not report cards. A low social interaction score is not a failing grade. Your game might not need social interaction. The dashboard answers *"What makes this design special?"* not *"What is wrong?"*
+这些指标不是成绩单。低的社交互动分数不是不及格。你的游戏可能根本不需要社交互动。仪表盘回答的是*“是什么让这个设计与众不同？”*，而不是*“哪里出了问题？”*
 
 ---
 
-## Can AI Understand "Fun"?
+## AI 能理解“有趣”吗？
 
-This is the question every designer asks, and it deserves a straight answer.
+这是每位设计师都会问的问题，它值得一个直截了当的回答。
 
-![Can AI Understand Fun?]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/Can_AI_Understand_Fun.jpg)
+![AI 能理解有趣吗？]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/Can_AI_Understand_Fun.jpg)
 
-_Figure. AI cannot feel fun, but it can recognize the patterns that cause it. Hidden info creates tension. Multiple options create agency. Escalating stakes create drama._
+_图。AI 无法感受乐趣，但它能识别产生乐趣的模式。隐藏信息制造张力，多重选项制造自主性，不断升级的赌注制造戏剧性。_
 
-The short answer: no, AI cannot *experience* fun. It has never felt the excitement of a close finish, the satisfaction of a clever combo, or the social electricity of pulling off a bluff. It has no taste. It has no feelings.
+简短的回答是：不能，AI 无法*体验*乐趣。它从未感受过胜负只在一线之间的激动、打出精妙组合的满足，或是成功诈唬时那种社交电流。它没有品味，也没有情感。
 
-But here is the thing: you do not need to *feel* fun to *recognize the design patterns that produce it*.
+但关键在于：你不需要*感受*乐趣，也能*识别产生乐趣的设计模式*。
 
-Fun in board games is not random magic. It comes from choices you make as a designer:
+桌游中的乐趣并非随机的魔法。它来自你作为设计师做出的选择：
 
-| What You Design | What Players Feel | Can AI Detect It? |
+| 你设计的 | 玩家感受到的 | AI 能检测到吗？ |
 |-----------------|-------------------|-------------------|
-| Multiple real options each turn | Agency, meaningful choice | Yes, from your turn structure |
-| Hidden information between players | Tension, suspense | Yes, from your mechanism choices |
-| Escalating stakes toward the endgame | Drama, narrative arc | Yes, as the engagement curve |
-| Few rules that create many strategies | Elegance, "easy to learn, hard to master" | Yes, by comparing rule count to strategic depth |
-| Actions that directly affect other players | Social interaction, negotiation | Yes, from mechanism analysis |
-| Unusual mechanism combinations | Novelty, surprise | Yes, by comparison to existing games |
+| 每回合多个真实选项 | 自主性、有意义的选择 | 能，从你的回合结构中 |
+| 玩家之间的隐藏信息 | 张力、悬念 | 能，从你的机制选择中 |
+| 朝终局不断升级的赌注 | 戏剧性、叙事弧线 | 能，体现为投入度曲线 |
+| 少量规则创造大量策略 | 优雅性、“易学难精” | 能，通过比较规则数量与策略深度 |
+| 直接影响其他玩家的行动 | 社交互动、谈判 | 能，从机制分析中 |
+| 不寻常的机制组合 | 新颖性、惊喜 | 能，通过与现有游戏比较 |
 
-A bridge engineer does not need to "feel beauty" to know the math that makes a bridge elegant. A music teacher can explain why a chord progression creates tension and release without weeping every time they hear it. Analysis and experience operate on different levels.
+桥梁工程师不需要“感受美”，也能掌握让桥梁优雅的数学。音乐教师能够解释为什么一段和弦进行制造了紧张与释放，而不必每次听到都热泪盈眶。分析与经验运行在不同的层面上。
 
-But here is what the analogy misses: a bridge has one purpose. A board game has as many purposes as it has players. The same mechanic that creates delicious tension for one group might fall flat for another. The AI can analyze the structural ingredients of fun (meaningful choices, hidden information, escalating stakes) but it cannot predict the alchemy that happens when four friends sit down together on a Friday night. That alchemy is yours.
+但这个类比漏掉了一点：桥梁只有一个目的，而一款桌游有多少玩家，就有多少目的。为某个群体制造美妙张力的机制，换一个群体可能完全失灵。AI 可以分析乐趣的结构性成分（有意义的选择、隐藏信息、不断升级的赌注），但它无法预测四个朋友在周五晚上围坐在一起时发生的那种炼金术。那种炼金术属于你。
 
-There are parts of fun that stay irreducibly personal: the chemistry of your play group, the cultural resonance of a theme, the satisfying weight of wooden tokens in your hand, the occasional magic that defies explanation. AI cannot evaluate those. This is exactly why the ground rule exists: **AI proposes, you decide.** The AI provides structural analysis. You decide whether it matters for *this* game and *this* group of players.
+乐趣中总有一部分是无法化约为共性的：你的玩伴团体之间的化学反应、主题引发的文化共鸣、木制标记握在手中那种令人满足的分量、以及偶尔出现的无法解释的魔法时刻。AI 无法评估这些。这正是那条基本规则存在的原因：**AI 提议，你决定。**AI 提供结构性分析，由你决定它对*这款*游戏和*这批*玩家是否重要。
 
-The useful question is not "Can AI understand fun?" but "Can AI spot the design patterns that tend to produce fun, so you can focus your energy on the parts only a human designer can provide?" The answer to the first is no. The answer to the second is yes, and that is the only question that matters for a design tool.
-
----
-
-## Is AI "Creative"?
-
-A related question: Can AI be genuinely creative, or does it just shuffle existing ideas around? This question is about *generation*, not evaluation, and it has a surprisingly good answer.
-
-![Is AI Creative?]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/Is_AI_Creative.jpg)
-
-_Figure. Existing elements become novel structures through synthesis. The human provides intention (the why). The system provides recombination (the how)._
-
-The philosopher Whitehead defined creativity not as making something from nothing, but as *the novel combination of existing elements* [1]. Every creative act borrows from what came before but achieves something new in how it brings those pieces together. A poet inherits language, meter, and tradition; the poem is new. An architect inherits materials, engineering, and precedent; the building is new. Creativity is not the absence of inheritance. It is the *fresh synthesis* of what you have inherited.
-
-This is exactly what GameGrammar does. The vocabulary provides the inherited building blocks of game design: worker placement, deck building, area control, set collection, hidden bidding. These patterns have been discovered, tested, and refined across thousands of published games. The AI generates a specific new game that combines those building blocks in a configuration that did not previously exist.
-
-The criticism that "AI just recombines" is fair, but consider: much of human game design works the same way. Catan combined resource trading with hex grids and dice production: three familiar patterns, one landmark game. Dominion combined deck building with card drafting. Root combined area control with asymmetric player powers. A great deal of creativity in game design comes from the novel recombination of known mechanisms [3]. The difference is that human designers bring taste, experience, and intention to the process. GameGrammar makes the recombination step visible and fast, so you can spend more time on the parts that require your judgment.
-
-What AI genuinely lacks is *intention*. When you say "I want to create the feeling of surviving in a harsh wilderness," that vision, that lived experience compressed into a creative direction, is yours alone. The AI has no memories, no desires, no reasons to create *this* game rather than *that* one. This is why the process separates your vision (human) from generation (AI) from refinement (collaborative). You provide the "why." The AI provides the "how." The design that emerges from working together is genuinely new.
+有用的问题不是“AI 能理解乐趣吗？”，而是“AI 能发现那些往往会产生乐趣的设计模式，从而让你把精力集中在只有人类设计师才能提供的部分上吗？”第一个问题的答案是否定的，第二个问题的答案是肯定的，而对一个设计工具来说，唯有第二个问题才是重要的。
 
 ---
 
-## A New Way of Working
+## AI 有“创造力”吗？
 
-![A New Mental Model for Game Design]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/New_Mental_Model.jpg)
+一个相关的问题是：AI 能真正地进行创造，还是只是在既有想法之间来回搬运？这个问题关乎*生成*而非评估，而且它有一个出奇好的答案。
 
-_Figure. Design as structured creative partnership. Not a blank page, and not one-click magic either._
+![AI 有创造力吗？]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/Is_AI_Creative.jpg)
 
-GameGrammar suggests that game design works best as a three-part activity:
+_图。既有元素通过综合成为新颖的结构。人类提供意图（为什么），系统提供重组（怎么做）。_
 
-1. **Your Vision**: choosing the experience you want to create, the theme, player count, complexity, who will play it. This is entirely yours.
-2. **AI Generation**: translating that vision into a structured first draft, grounded in real game design knowledge. This is where AI does its best work.
-3. **Collaborative Refinement**: shaping the generated design through your judgment, assisted by AI analysis. This is where the partnership shines.
+哲学家怀特海把创造力定义为不是无中生有，而是*既有元素的新颖组合* [1]。每一次创造行为都借鉴了前人的成果，却在组合这些部件的方式上实现了新的东西。诗人继承了语言、格律和传统，而诗是新的；建筑师继承了材料、工程学和先例，而建筑是新的。创造力不是没有继承，而是对你所继承之物的*新鲜综合*。
 
-This is different from both traditional design (entirely solo, often unstructured, reliant on personal experience) and naive AI generation (typing "make me a board game" and hoping for the best). It positions design as a *creative partnership* where your vision and AI capability each contribute what they do best.
+这正是 GameGrammar 所做的。词汇表提供了游戏设计中那些被继承的积木：工人放置、牌库构筑、区域控制、集合收集、暗标。这些模式在数千款已发行游戏中被发现、测试和打磨。AI 生成一款具体的新游戏，以一种此前从未存在过的构型组合这些积木。
 
-![What Human Designers Gain]({{ site.baseurl }}images/gamegrammar-the-theory-of-generative-board-game-design/What_Designers_Gain.jpg)
+“AI 只是在重新组合”的批评是公允的，但请想一想：人类的大量游戏设计也是这么运作的。《卡坦岛》（Catan）把资源交易、六角格地形与骰子产出结合在一起：三个熟悉的模式，成就一款里程碑式的游戏。《领土》（Dominion）把牌库构筑与卡牌轮抽结合在一起。《茂林源记》（Root）把区域控制与非对称玩家能力结合在一起。游戏设计中大量的创造力正来自对已知机制的新颖重组 [3]。区别在于，人类设计师在这个过程中带入了品味、经验和意图。GameGrammar 让重组这一步变得可见而迅速，从而让你可以把更多时间花在需要你判断力的部分上。
 
-_Figure. The blank page becomes a structured first draft. Manual tracking becomes automatic change detection. Gut feeling becomes measurable creative vitality._
+AI 真正缺乏的是*意图*。当你说“我想创造出在严酷荒野中求生的感觉”时，那个愿景——那段被压缩成一个创作方向的生活体验——只属于你。AI 没有记忆，没有欲望，没有任何理由要创造*这款*游戏而非*那款*游戏。这正是这套流程把你的愿景（人类）、生成（AI）与打磨（协作）区分开的原因。你提供“为什么”，AI 提供“怎么做”，而从协作中诞生的设计是真正新颖的。
 
-| What You Need | Without GameGrammar | With GameGrammar |
+---
+
+## 一种新的工作方式
+
+![游戏设计的新心智模型]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/New_Mental_Model.jpg)
+
+_图。作为结构化创意伙伴关系的设计。既不是空白页，也不是一键魔法。_
+
+GameGrammar 认为，游戏设计作为一项由三部分组成的活动时运作得最好：
+
+1. **你的愿景**：选择你想要创造的体验、主题、玩家人数、复杂度，以及谁来玩。这完全属于你。
+2. **AI 生成**：把那个愿景转化为一份扎根于真实游戏设计知识的结构化初稿。这是 AI 最能大显身手的地方。
+3. **协作打磨**：借助 AI 分析的辅助，通过你的判断力塑造生成的设计。这是这种伙伴关系大放异彩的地方。
+
+这既不同于传统设计（完全单人、常常缺乏结构、依赖个人经验），也不同于天真的 AI 生成（输入“给我做一款桌游”然后听天由命）。它把设计定位为一种*创意伙伴关系*，你的愿景与 AI 能力各自贡献自己最擅长的事情。
+
+![人类设计师收获什么]({{ site.baseurl }}/images/gamegrammar-the-theory-of-generative-board-game-design/What_Designers_Gain.jpg)
+
+_图。空白页变成结构化初稿。手动追踪变成自动的修改检测。直觉变成可度量的创意活力。_
+
+| 你的需求 | 没有 GameGrammar | 有 GameGrammar |
 |---------------|---------------------|------------------|
-| **Starting a design** | Blank page, overwhelming options | Structured first draft from your theme and constraints |
-| **Making sure nothing is missing** | Mental checklist, easy to overlook | Every required element guaranteed present |
-| **Catching contradictions early** | Often surfaces during playtesting | AI flags some issues before you reach the table |
-| **Updating connected sections** | Keeping it all in your head | Automatic change tracking across your design |
-| **Exploring alternatives** | Designing variants by hand | AI suggestions and plain-language editing |
-| **Measuring quality** | "I think it feels good?" | Six scored dimensions, originality percentile, engagement curve |
-| **Tracking versions** | File copies, or nothing at all | Full version history with comparison and rollback |
+| **开始一个设计** | 空白页、令人不知所措的选项 | 从你的主题和约束条件生成的结构化初稿 |
+| **确保没有遗漏** | 脑内清单，容易疏漏 | 保证每个必需元素都在场 |
+| **尽早发现矛盾** | 常常要到游戏测试才浮现 | 在你上桌之前，AI 就标记出部分问题 |
+| **更新相关联的章节** | 全靠脑子记 | 贯穿整个设计的自动修改追踪 |
+| **探索替代方案** | 手工设计变体 | AI 建议与自然语言编辑 |
+| **衡量质量** | “我觉得感觉不错？” | 六个评分维度、原创性百分位、投入度曲线 |
+| **追踪版本** | 复制文件，或者干脆没有 | 带对比与回滚的完整版本历史 |
 
-GameGrammar does not claim that AI can replace you. The theory puts the designer firmly in the author's chair and the AI in the assistant's seat. The AI can spot that your cooperative game has contradictory competitive elements. It cannot know whether you put that tension there on purpose. The value is in making the *structural* side of design faster and more visible, so you can pour your energy into the *creative* decisions that only a human designer can make.
-
----
-
-## Concluding Remarks
-
-GameGrammar's design theory can be stated simply:
-
-> **Games have shared structure. That structure makes generation possible. But generation is not design. Design is the back-and-forth refinement of a generated starting point, where AI proposes and the designer decides.**
-
-No single piece of this is revolutionary on its own. Structured game vocabularies exist. AI generation exists. Iterative design is as old as design itself. The contribution is the *synthesis*: a unified workbench where structured vocabulary, AI generation, change tracking, consistency checking, proactive suggestions, six-dimensional evaluation, and creative vitality metrics all work together as one coherent system.
-
-The three-layer model keeps your game separate from the process of making it. The preview-before-apply rule keeps you in control. The Creative Coach dashboard answers not "what is broken?" but "what makes this design special?" And the four-stage workbench, from genesis through shaping, refinement, and polish, gives you a natural rhythm for the work.
-
-For the design community, this offers a new way of working: not AI replacing designers, not designers ignoring AI, but a structured partnership where each contributes what they do best. The grammar constrains. The AI creates within those constraints. You decide what the game should be.
-
-The platform handles the mechanics. You bring the meaning. That division of labor is the whole theory in one sentence.
-
-The grammar does not write the poem. But without grammar, there is no poem to write.
-
-GameGrammar is available in public beta at [gamegrammar.dynamindresearch.com](https://gamegrammar.dynamindresearch.com). Already have a game in progress? You do not need to start from generation. Describe your existing design to Nova, and the platform will structure it for balance analysis and strategy testing — starting from the work you have already done. Try it. Generate a game from your favorite theme. Study the radar chart. Make some changes and hit Re-Evaluate. Watch the scores move. Then decide for yourself whether this partnership is worth having.
+GameGrammar 并不声称 AI 可以取代你。这套理论把设计师牢牢放在作者之位，把 AI 放在助手之席。AI 能发现你的合作游戏里存在相互矛盾的竞争元素，却无法知道那道张力是不是你刻意为之。它的价值在于让设计的*结构性*一面更快、更清晰可见，从而让你能把精力倾注到只有人类设计师才能做出的*创造性*决策上。
 
 ---
 
-## Series
+## 结语
 
-* [Unlocking the Secrets of Tabletop Games Ontology (Part 4)]({{ site.baseurl }}unlocking-secrets-of-tabletop-games-ontology)
-* [Introducing GameGrammar: AI-Powered Board Game Design (Part 5)]({{ site.baseurl }}introducing-gamegrammar-ai-powered-board-game-design)
-* **>>** [GameGrammar: The Theory of Generative Board Game Design (Part 6)]({{ site.baseurl }}gamegrammar-the-theory-of-generative-board-game-design)
+GameGrammar 的设计理论可以简单地陈述为：
+
+> **游戏拥有共同的结构。这种结构让生成成为可能。但生成不是设计。设计是对一个生成起点的反复打磨——AI 提议，设计师决定。**
+
+其中的任何单一片段本身都不算革命性的。结构化游戏词汇早已存在，AI 生成早已存在，迭代式设计与设计本身一样古老。贡献在于*综合*：一个统一的工作台，让结构化词汇、AI 生成、修改追踪、一致性检查、主动建议、六维度评估和创意活力指标作为一个连贯的系统协同运作。
+
+三层模型让你的游戏与制作它的过程彼此分离。先预览后应用的规则让你始终掌控全局。创意教练仪表盘回答的不是“哪里坏了？”而是“是什么让这个设计与众不同？”而四阶段工作台——从创世到塑形、精修再到抛光——为这项工作提供了自然的节奏。
+
+对于设计社区而言，这提供了一种新的工作方式：不是 AI 取代设计师，也不是设计师无视 AI，而是一种结构化的伙伴关系，双方各自贡献自己最擅长的事情。语法加以约束，AI 在约束之内创造，而你决定游戏应当成为什么。
+
+平台负责机制，你赋予意义。这一分工就是整套理论的一句话版本。
+
+语法不会替你写下诗篇。但没有语法，就没有诗可供书写。
+
+GameGrammar 已在 [gamegrammar.dynamindresearch.com](https://gamegrammar.dynamindresearch.com) 开放公测。已经有一款进行中的游戏？你不必从生成开始。把你现有的设计描述给 Nova，平台会为它建立结构，以进行平衡分析和策略测试——从你已完成的工作出发。试一试吧：用你最喜欢的主题生成一款游戏，研究那张雷达图，做一些修改然后点击“重新评估”，看着分数变动。然后由你自己判断这种伙伴关系是否值得拥有。
 
 ---
 
-## References
+## 系列
 
-[1] Alfred North Whitehead. [*Process and Reality*](https://archive.org/details/processreality00alfr). Free Press, 1929/1978.
-  - The philosophical foundation for how abstract design patterns become concrete games
+* [揭开桌游本体论的奥秘（第 4 部分）]({{ site.baseurl }}/unlocking-secrets-of-tabletop-games-ontology)
+* [GameGrammar 简介：AI 驱动的桌游设计（第 5 部分）]({{ site.baseurl }}/introducing-gamegrammar-ai-powered-board-game-design)
+* **>>** [GameGrammar：生成式桌游设计理论（第 6 部分）]({{ site.baseurl }}/gamegrammar-the-theory-of-generative-board-game-design)
 
-[2] Benny Cheung. [*Process Philosophy for AI Agent Design*]({{ site.baseurl }}process-philosophy-for-ai-agent-design). bennycheung.github.io, Jan 2026.
-  - A deeper exploration of how process philosophy connects to AI creativity
+---
 
-[3] Geoffrey Engelstein, Isaac Shalev. [*Building Blocks of Tabletop Game Design: An Encyclopedia of Mechanisms*](https://www.routledge.com/Building-Blocks-of-Tabletop-Game-Design-An-Encyclopedia-of-Mechanisms/Engelstein-Shalev/p/book/9781138365490). CRC Press, 2022.
-  - The definitive taxonomy of game mechanisms, and the source for GameGrammar's mechanism library
+## 参考文献
 
-[4] Natalya F. Noy, Deborah L. McGuinness. [*Ontology Development 101*](https://protege.stanford.edu/publications/ontology_development/ontology101.pdf). Stanford University.
-  - How to build structured vocabularies for complex domains
+[1] Alfred North Whitehead. [*Process and Reality*](https://archive.org/details/processreality00alfr)（《过程与实在》）. Free Press, 1929/1978.
+  - 关于抽象设计模式如何成为具体游戏的哲学基础
 
-[5] Benny Cheung. [*Unlocking the Secrets of Tabletop Games Ontology*]({{ site.baseurl }}unlocking-secrets-of-tabletop-games-ontology). bennycheung.github.io, Feb 2025.
-  - Where the structured game vocabulary began, analyzing 2,000+ published games
+[2] Benny Cheung. [*Process Philosophy for AI Agent Design*]({{ site.baseurl }}/process-philosophy-for-ai-agent-design)（《面向 AI 智能体设计的过程哲学》）. bennycheung.github.io, Jan 2026.
+  - 对过程哲学如何与 AI 创造力相联系的更深入探讨
 
-[6] [BoardGameGeek](https://boardgamegeek.com/). The largest board game database and community.
-  - Source for the 2,000+ game reference library used in generation and originality scoring
+[3] Geoffrey Engelstein, Isaac Shalev. [*Building Blocks of Tabletop Game Design: An Encyclopedia of Mechanisms*](https://www.routledge.com/Building-Blocks-of-Tabletop-Game-Design-An-Encyclopedia-of-Mechanisms/Engelstein-Shalev/p/book/9781138365490)（《桌游设计积木：机制百科全书》）. CRC Press, 2022.
+  - 游戏机制的权威分类法，也是 GameGrammar 机制库的来源
 
-[7] [Dynamind Research](https://www.dynamindresearch.com). Research and product development studio.
-  - Creator of GameGrammar
+[4] Natalya F. Noy, Deborah L. McGuinness. [*Ontology Development 101*](https://protege.stanford.edu/publications/ontology_development/ontology101.pdf)（《本体开发 101》）. Stanford University.
+  - 如何为复杂领域构建结构化词汇
 
-[8] Benny Cheung. [*Generative Ontology: When Structured Knowledge Learns to Create*](https://arxiv.org/abs/2602.05636). arXiv:2602.05636, Feb 2026.
-  - The formal paper describing GameGrammar's generative ontology framework, six-agent pipeline, and evaluation methodology
+[5] Benny Cheung. [*Unlocking the Secrets of Tabletop Games Ontology*]({{ site.baseurl }}/unlocking-secrets-of-tabletop-games-ontology)（《揭开桌游本体论的奥秘》）. bennycheung.github.io, Feb 2025.
+  - 结构化游戏词汇的起点，分析了 2000 多款已发行游戏
+
+[6] [BoardGameGeek](https://boardgamegeek.com/)。最大的桌游数据库与社区。
+  - 生成与原创性评分所使用的 2000 多款游戏参考库的来源
+
+[7] [Dynamind Research](https://www.dynamindresearch.com)。研究与产品开发工作室。
+  - GameGrammar 的创造者
+
+[8] Benny Cheung. [*Generative Ontology: When Structured Knowledge Learns to Create*](https://arxiv.org/abs/2602.05636)（《生成式本体：当结构化知识学会创造》）. arXiv:2602.05636, Feb 2026.
+  - 描述 GameGrammar 生成式本体框架、六智能体流水线与评估方法论的正式论文

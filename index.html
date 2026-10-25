@@ -19,30 +19,30 @@ layout: default
       <div class="card">
         <a href="{{ hero.url }}">
           {% if hero.images.animated-cover %}
-            <img class="card-img" src="/{{ hero.images.animated-cover }}" alt="{{ hero.title }}">
+            <img class="card-img" src="{{ site.baseurl }}/{{ hero.images.animated-cover }}" alt="{{ hero.title }}">
           {% elsif hero.images.cover %}
             {% if hero.images.cover contains '.mp4' or hero.images.cover contains '.webm' %}
               <video class="card-img" autoplay muted loop playsinline>
-                <source src="/{{ hero.images.cover }}" type="video/{% if hero.images.cover contains '.webm' %}webm{% else %}mp4{% endif %}">
+                <source src="{{ site.baseurl }}/{{ hero.images.cover }}" type="video/{% if hero.images.cover contains '.webm' %}webm{% else %}mp4{% endif %}">
               </video>
             {% else %}
-              <img class="card-img" src="/{{ hero.images.cover }}" alt="{{ hero.title }}">
+              <img class="card-img" src="{{ site.baseurl }}/{{ hero.images.cover }}" alt="{{ hero.title }}">
             {% endif %}
           {% elsif hero.image %}
-            <img class="card-img" src="/{{ hero.image }}" alt="{{ hero.title }}">
+            <img class="card-img" src="{{ site.baseurl }}/{{ hero.image }}" alt="{{ hero.title }}">
           {% endif %}
         </a>
         <div class="card-body">
-          <span class="label label-primary">Featured</span>
+          <span class="label label-primary">精选</span>
           <h1 class="card-title">
             <a href="{{ hero.url }}">{{ hero.title }}</a>
           </h1>
           <p class="card-meta">
-            {{ hero.date | date: "%b %d, %Y" }}
+            {{ hero.date | date: "%Y-%m-%d" }}
             {% assign words = hero.content | number_of_words %}
             {% assign reading_time = words | divided_by: 200 %}
             {% if reading_time < 1 %}{% assign reading_time = 1 %}{% endif %}
-            &bull; {{ reading_time }} min read
+            &bull; {{ reading_time }} 分钟阅读
           </p>
           <p class="card-text">{{ hero.excerpt | strip_html | truncate: 250 }}</p>
         </div>
@@ -57,30 +57,30 @@ layout: default
         <div class="card">
           <a href="{{ post.url }}">
             {% if post.images.animated-cover %}
-              <img class="card-img" src="/{{ post.images.animated-cover }}" alt="{{ post.title }}" loading="lazy">
+              <img class="card-img" src="{{ site.baseurl }}/{{ post.images.animated-cover }}" alt="{{ post.title }}" loading="lazy">
             {% elsif post.images.cover %}
               {% if post.images.cover contains '.mp4' or post.images.cover contains '.webm' %}
                 <video class="card-img" autoplay muted loop playsinline preload="metadata">
-                  <source src="/{{ post.images.cover }}" type="video/{% if post.images.cover contains '.webm' %}webm{% else %}mp4{% endif %}">
+                  <source src="{{ site.baseurl }}/{{ post.images.cover }}" type="video/{% if post.images.cover contains '.webm' %}webm{% else %}mp4{% endif %}">
                 </video>
               {% else %}
-                <img class="card-img" src="/{{ post.images.cover }}" alt="{{ post.title }}" loading="lazy">
+                <img class="card-img" src="{{ site.baseurl }}/{{ post.images.cover }}" alt="{{ post.title }}" loading="lazy">
               {% endif %}
             {% elsif post.image %}
-              <img class="card-img" src="/{{ post.image }}" alt="{{ post.title }}" loading="lazy">
+              <img class="card-img" src="{{ site.baseurl }}/{{ post.image }}" alt="{{ post.title }}" loading="lazy">
             {% endif %}
           </a>
           <div class="card-body">
-            <span class="label label-primary">Featured</span>
+            <span class="label label-primary">精选</span>
             <h3 class="card-title">
               <a href="{{ post.url }}">{{ post.title }}</a>
             </h3>
             <p class="card-meta">
-              {{ post.date | date: "%b %d, %Y" }}
+              {{ post.date | date: "%Y-%m-%d" }}
               {% assign words = post.content | number_of_words %}
               {% assign reading_time = words | divided_by: 200 %}
               {% if reading_time < 1 %}{% assign reading_time = 1 %}{% endif %}
-              &bull; {{ reading_time }} min read
+              &bull; {{ reading_time }} 分钟阅读
             </p>
             <p class="card-text">{{ post.excerpt | strip_html | truncate: 280 }}</p>
           </div>
@@ -93,7 +93,7 @@ layout: default
 
   <!-- Recent Posts Section with Pagination -->
   <div class="recent-posts">
-    <h2><i class="fa fa-clock-o"></i> Recent Posts</h2>
+    <h2><i class="fa fa-clock-o"></i> 最近文章</h2>
 
     <div class="posts-carousel">
       {% assign post_count = 0 %}
@@ -114,9 +114,9 @@ layout: default
               <a href="{{ post.url }}">
                 <!-- Non-featured posts use their image: frontmatter -->
                 {% if post.image %}
-                  <img class="card-img" src="/{{ post.image }}" alt="{{ post.title }}" loading="lazy">
+                  <img class="card-img" src="{{ site.baseurl }}/{{ post.image }}" alt="{{ post.title }}" loading="lazy">
                 {% else %}
-                  <img class="card-img" src="/images/default-cover.jpg" alt="{{ post.title }}" loading="lazy">
+                  <img class="card-img" src="{{ site.baseurl }}/images/default-cover.jpg" alt="{{ post.title }}" loading="lazy">
                 {% endif %}
               </a>
               <div class="card-body">
@@ -124,11 +124,11 @@ layout: default
                   <a href="{{ post.url }}">{{ post.title }}</a>
                 </h4>
                 <p class="card-meta">
-                  {{ post.date | date: "%b %d, %Y" }}
+                  {{ post.date | date: "%Y-%m-%d" }}
                   {% assign words = post.content | number_of_words %}
                   {% assign reading_time = words | divided_by: 200 %}
                   {% if reading_time < 1 %}{% assign reading_time = 1 %}{% endif %}
-                  &bull; {{ reading_time }} min read
+                  &bull; {{ reading_time }} 分钟阅读
                 </p>
                 <p class="card-excerpt">{{ post.excerpt | strip_html | truncate: 100 }}</p>
               </div>
@@ -159,7 +159,7 @@ layout: default
 
   <!-- Topic Cloud Section - D3 Word Cloud -->
   <div class="topic-cloud-section">
-    <h2><i class="fa fa-tags"></i> Popular Topics</h2>
+    <h2><i class="fa fa-tags"></i> 热门主题</h2>
     <div class="topic-cloud-container">
       <div id="topic-word-cloud"></div>
     </div>
@@ -229,7 +229,7 @@ html.dark-mode .topic-cloud-container {
 </style>
 
 <!-- D3.js Word Cloud for Home Page -->
-<script src="/js/d3/d3.v3.min.js"></script>
+<script src="{{ site.baseurl }}/js/d3/d3.v3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
 <script>
 window.addEventListener('load', function() {
@@ -317,7 +317,7 @@ window.addEventListener('load', function() {
       })
       .on("click", function(d) {
         var slug = d.text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-        window.location.href = '/tags/#' + slug;
+        window.location.href = '{{ site.baseurl }}/tags/#' + slug;
       });
   }
 

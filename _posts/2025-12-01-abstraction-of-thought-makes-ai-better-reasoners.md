@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Abstraction of Thought Makes AI Better Reasoners
+title: 思维的抽象让 AI 成为更好的推理者
 date: 2025-12-01 12:00:00.000000000 -00:00
 permalink: abstraction-of-thought-makes-ai-better-reasoners
 author: Benny Cheung
@@ -23,296 +23,295 @@ published: true
 ---
 
 <!--excerpt.start-->
-Chain-of-Thought made LLMs seem smart. But what if step-by-step thinking is the problem, not the solution? Human experts don't just plow through problems sequentially. Instead, we build mental models, identify overarching principles, and sketch out strategies *before* diving into details. This article explores Abstraction of Thought (AoT), a structured reasoning format that explicitly incorporates multiple levels of abstraction, demonstrating how teaching AI to think at different levels of abstraction dramatically improves reasoning performance.
+思维链让 LLM 看起来很聪明。但如果逐步思考本身就是问题、而非解法呢？人类专家不会只是按顺序硬推问题。相反，我们会在*深入细节之前*构建心智模型、识别统领性原则、勾勒策略。本文探讨思维抽象（Abstraction of Thought，AoT）——一种显式纳入多层次抽象的结构化推理格式，展示教会 AI 在不同抽象层级上思考如何显著提升推理性能。
 <!--excerpt.end-->
 
-![The Landscape of Abstract Thought]({{ site.baseurl }}images/abstraction-of-thought-makes-ai-better-reasoners/cover_map_notitle.jpg)
+![抽象思维的图景]({{ site.baseurl }}/images/abstraction-of-thought-makes-ai-better-reasoners/cover_map_notitle.jpg)
 
-*Figure. A cartographic abstraction of the reasoning landscape — from the "Abstract Heights" of high-level principles down through "Concrete Valleys" of detailed operations. Like explorers charting unknown territories, we navigate through "Hierarchical Forests," cross "Chain of Thought" rivers, and venture into "The Uncharted Depths" where reasoning challenges await. This map serves as a metaphor for how abstraction organizes our exploration of complex problem spaces.*
+*图：推理图景的制图学抽象——从高层原则的"抽象高地"一路下到细节操作的"具体谷地"。如同探险家绘制未知疆域，我们穿越"层次之森"、渡过"思维链之河"、闯入推理挑战等待的"未测深处"。这张地图是一个隐喻：抽象如何组织我们对复杂问题空间的探索。*
 
-The quest to imbue Artificial Intelligence with genuine reasoning capabilities remains one of the most significant challenges, and opportunities, in the field. While Large Language Models (LLMs) demonstrate remarkable fluency and knowledge retrieval, pushing them beyond pattern matching towards deeper understanding and complex problem-solving requires fundamentally new approaches. Current techniques like Chain of Thought (CoT), Tree of Thoughts (ToT), and Graph of Thoughts (GoT) represent important strides, primarily focusing on enumerative or sequential exploration of reasoning steps. However, a crucial element often missing is the ability to think *abstractly*, a hallmark of human cognition when tackling complex problems.
+赋予人工智能真正推理能力的探索，仍是该领域最重要的挑战与机遇之一。尽管大语言模型（LLM）展现了惊人的流畅性与知识检索能力，但要推动它们超越模式匹配、迈向更深理解与复杂问题求解，需要根本性的新方法。思维链（CoT）、思维树（ToT）、思维图（GoT）等当前技术代表了重要的进步，但主要聚焦于推理步骤的枚举式或顺序式探索。然而，一个常常缺失的关键要素是*抽象*思考的能力——这是人类认知处理复杂问题的标志。
 
-This article closely aligns with ideas from recent research on Abstraction-of-Thought [1] while connecting it to foundational work on abstraction in AI [2] and the broader challenge of measuring intelligence through abstraction [3]. We shall explore how structured, multi-level abstract thinking could be the key not only to unlocking superior AI reasoning but also to making these powerful systems more understandable, reliable, and perhaps even controllable.
+本文与近期关于 Abstraction-of-Thought 的研究 [1] 密切相关，同时把它与 AI 抽象的基础工作 [2]、以及通过抽象度量智能这一更大的挑战 [3] 联系起来。我们将探索：结构化的、多层次抽象思考如何不仅成为解锁更强 AI 推理的关键，还可能让这些强大的系统更可理解、更可靠，甚至更可控。
 
-## The Limitations of Linearity
+## 线性的局限
 
-Existing methods like Chain of Thought often encourage LLMs to generate a linear sequence of detailed steps. While effective for certain tasks, this approach can resemble plowing through a problem without first surveying the landscape. For truly complex challenges, human experts rarely operate this way. We build mental models, identify overarching principles, sketch out strategies, and *then* fill in the operational details. We leverage abstraction.
+思维链这类现有方法常常鼓励 LLM 生成线性的详细步骤序列。虽然对某些任务有效，这种做法就像没有先勘察地形就直接开垦。对真正复杂的挑战，人类专家极少这样工作。我们构建心智模型、识别统领性原则、勾勒策略，*然后*才填充操作细节。我们运用抽象。
 
-![AoT_vs_CoT_Reasoning]({{ site.baseurl }}images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction-of-Thought_Make_LLM_Better.jpg)
+![AoT_vs_CoT_Reasoning]({{ site.baseurl }}/images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction-of-Thought_Make_LLM_Better.jpg)
 
-*Figure. Reasoning with abstraction attempts to answer questions from the perspective of abstract essences, which may be overlooked by step-by-step Chain-of-Thought (CoT) reasoning. The lower levels (blue nodes) perform concrete reasoning rich in detail, while higher levels (red nodes) are abstractions that organize the entire reasoning process.*
+*图：带抽象的推理尝试从抽象本质的视角回答问题，而逐步的思维链（CoT）推理可能忽略这些本质。较低层（蓝色节点）执行细节丰富的具体推理，较高层（红色节点）是组织整个推理过程的抽象。*
 
-Consider solving a quadratic equation, $ax^2 + bx + c = 0$. A purely sequential approach might immediately start substituting values. Abstraction-of-Thought, however, mirrors a more expert process:
+以解一元二次方程 $ax^2 + bx + c = 0$ 为例。纯顺序的方法可能立刻开始代入数值。而 Abstraction-of-Thought 映照着更专家化的流程：
 
-1. **Abstract Level**: First identify the *type* of problem: "This is a quadratic equation."
-2. **Strategic Level**: Access the *general principle* for solving it: "The standard solution uses the quadratic formula: $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$."
-3. **Concrete Level**: Only then proceed to substitute the specific values of a, b, and c.
+1. **抽象层**：先识别问题的*类型*："这是一道一元二次方程。"
+2. **策略层**：提取求解的*一般原则*："标准解法使用求根公式：$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$。"
+3. **具体层**：只有在这之后，才代入 a、b、c 的具体数值。
 
-This initial abstract identification provides a robust blueprint. The model isn't just solving *one* equation; it understands the *class* of problems and the general method applicable to all instances of that class. This feels closer to genuine understanding than rote calculation.
+这种初始的抽象识别提供了稳健的蓝图。模型不只是在解*一道*方程；它理解这一*类*问题，以及适用于该类所有实例的一般方法。这感觉比死记硬算更接近真正的理解。
 
-## What is Abstraction?
+## 什么是抽象？
 
-Before diving deeper into how abstraction improves AI reasoning, we need to understand what abstraction actually means. Far from being a dusty academic concept, abstraction is a vital, pervasive tool that shapes how we interact with the world, how we think, and how we build intelligent systems.
+在深入探讨抽象如何改进 AI 推理之前，我们需要理解抽象究竟意味着什么。抽象远非一个落满灰尘的学术概念；它是一种重要而无处不在的工具，塑造我们与世界互动的方式、我们的思考方式，以及我们构建智能系统的方式。
 
-The word literally means "to draw away," but its meaning has evolved. It's not just about taking things away; it's about *purposeful simplification*. As Goldstone and Barsalou put it, "To abstract is to distill the essence from its superficial trappings" [5]. This process is found everywhere, in philosophy, mathematics, natural language, art, and our own cognitive processes. In computer science, it is completely vital; without abstraction, we couldn't possibly manage the sheer scale and intricacy of modern software.
+这个词的字面意思是"抽走"，但它的含义已经演化。它不只是把东西拿走；而是*有目的的简化*。正如 Goldstone 和 Barsalou 所说："抽象就是从表面的外衣中蒸馏出本质" [5]。这一过程无处不在：哲学、数学、自然语言、艺术，以及我们自己的认知过程。在计算机科学中，它绝对不可或缺；没有抽象，我们根本无法驾驭现代软件的庞大规模与错综复杂。
 
-### The Modus Operandi of Abstraction
+### 抽象的行动方式
 
-Based on the KRA (Knowledge Representation & Abstraction) model presented by Saitta and Zucker [2], abstraction operates through several key mechanisms:
+基于 Saitta 和 Zucker 提出的 KRA（知识表示与抽象）模型 [2]，抽象通过几个关键机制运作：
 
-**1. Focalization and Grouping**
+**1. 聚焦与分组**
 
-![Focalization_and_Grouping]({{ site.baseurl }}images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction_Modus_Operandi_01.jpg)
+![Focalization_and_Grouping]({{ site.baseurl }}/images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction_Modus_Operandi_01.jpg)
 
-*Figure. Focalization filters out irrelevant information to focus on what's important, while grouping aggregates related elements into coherent structures through part-of, member-of, or functional relations.*
+*图：聚焦过滤掉无关信息、只关注重要的东西，而分组通过 part-of、member-of 或功能关系把相关元素聚合成连贯的结构。*
 
-Focalization refers to *filtering out irrelevant information* to focus only on what's important. A satellite map abstracted to a simplified street map removes excess detail and leaves behind what's contextually meaningful. Grouping aggregates related elements into coherent structures. A bicycle becomes an abstraction of wheels, pedals, and handlebars; a forest becomes a collection of individual trees.
+聚焦指*过滤掉无关信息*，只关注重要的东西。一张卫星地图被抽象为简化的街道图，去掉了多余的细节，留下上下文中有意义的部分。分组把相关元素聚合成连贯的结构。一辆自行车成为轮子、踏板和车把的抽象；一片森林成为一棵棵树木的集合。
 
-**2. Equivalence and Concept Formation**
+**2. 等价与概念形成**
 
-![Equivalence_and_Concept_Formation]({{ site.baseurl }}images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction_Modus_Operandi_02.jpg)
+![Equivalence_and_Concept_Formation]({{ site.baseurl }}/images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction_Modus_Operandi_02.jpg)
 
-*Figure. Abstraction groups diverse instances into named concepts based on shared features, and discovers new higher-level concepts by recognizing patterns or structures.*
+*图：抽象把多样的实例按共享特征归入命名的概念，并通过识别模式或结构发现新的更高层概念。*
 
-Abstraction groups diverse instances into a single *named concept* based on shared features. All varied objects with legs, a seat, and a back become abstracted under the concept "Chair." More powerfully, abstraction can *create new higher-level concepts* by discovering patterns. In a network, densely connected nodes may be abstracted as a "community" while highly connected central nodes form a "hub."
+抽象把多样的实例按共享特征归入一个*命名的概念*。所有各式各样、有腿有座有背的物体，都被抽象进"椅子"这个概念。更有力的是，抽象可以通过发现模式*创造新的更高层概念*。在网络中，连接密集的节点可以被抽象为"社区"，而连接度极高的中心节点构成"枢纽"。
 
-**3. Building Hierarchies**
+**3. 构建层次**
 
-![Building_Hierarchies]({{ site.baseurl }}images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction_Modus_Operandi_03.jpg)
+![Building_Hierarchies]({{ site.baseurl }}/images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction_Modus_Operandi_03.jpg)
 
-*Figure. Hierarchical structuring creates multiple levels of detail, enabling reasoning at different granularities. This is similar to a Level of Detail (LOD) model showing an object rendered at different resolutions.*
+*图：层次化结构创建多个细节层级，支持在不同粒度上进行推理。这类似于细节层级（LOD）模型：同一对象以不同分辨率渲染。*
 
-Abstraction creates multiple *levels of detail*, enabling reasoning at different granularities. The "Level of Detail" (LOD) concept in graphics illustrates this perfectly. The same rabbit can be rendered with different triangle counts, each level a valid abstraction depending on the viewer's needs.
+抽象创建多个*细节层级*，支持在不同粒度上进行推理。图形学中的"细节层级"（LOD）概念完美地诠释了这一点。同一只兔子可以用不同的三角形数量渲染，每个层级都是有效的抽象，取决于观看者的需要。
 
-### Two Poles of Abstraction
+### 抽象的两极
 
-François Chollet's work on the ARC-AGI benchmark [3] reveals a profound distinction in how abstraction operates:
+François Chollet 关于 ARC-AGI 基准的工作 [3] 揭示了抽象运作方式上的一个深刻区分：
 
-![Two_Poles_of_Abstraction]({{ site.baseurl }}images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction_2_Poles_of_Abstraction.jpg)
+![Two_Poles_of_Abstraction]({{ site.baseurl }}/images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction_2_Poles_of_Abstraction.jpg)
 
-*Figure. Type 1 (Prototype-centric) abstraction represents concepts through typical examples and similarity measures, while Type 2 (Program-centric) abstraction generalizes over operations and behaviors as reusable computational patterns.*
+*图：类型 1（原型中心）抽象通过典型例子与相似度度量表示概念，而类型 2（程序中心）抽象把操作与行为泛化为可复用的计算模式。*
 
-**Type 1: Prototype-centric abstraction** focuses on representing a concept through a set of prototypes, such as typical or average examples, and using a distance function to measure similarity [3]. This is what deep learning excels at: clustering concrete examples around shared values or characteristics.
+**类型 1：原型中心抽象**聚焦于通过一组原型（例如典型或平均的例子）表示概念，并使用距离函数度量相似性 [3]。这正是深度学习所擅长的：把具体实例围绕共享的值或特征聚簇。
 
-**Type 2: Program-centric abstraction** concerns generalizing over *operations or behaviors*, not values [3]. A sorting function operates regardless of what list it receives because it abstracts over the specific content. This is achieved by merging multiple specialized functions into a single, reusable pattern.
+**类型 2：程序中心抽象**关乎对*操作或行为*的泛化，而非值 [3]。一个排序函数不管收到什么列表都能工作，因为它对具体内容做了抽象。这是通过把多个专门函数合并为一个可复用模式实现的。
 
-Understanding both poles is essential for advancing AI systems capable of learning, generalizing, and reasoning across domains [3][6].
+理解这两极，对推进能够跨领域学习、泛化与推理的 AI 系统至关重要 [3][6]。
 
-## The Knowledge Level: Abstraction in AI Systems
+## 知识层级：AI 系统中的抽象
 
-The importance of abstraction in AI has deep theoretical roots. In his seminal 1982 work, Allen Newell introduced the concept of the **Knowledge Level**, a distinct level of system description that lies above the symbol level (code, data structures, algorithms) [7]. This framework provides a compelling theoretical foundation for understanding why approaches like AoT work.
+抽象在 AI 中的重要性有着深厚的理论根基。Allen Newell 在其 1982 年的开山之作中引入了**知识层级**（Knowledge Level）的概念——一个位于符号层级（代码、数据结构、算法）之上的、独特的系统描述层级 [7]。这一框架为理解 AoT 这类方法为何有效提供了令人信服的理论基础。
 
-### The Knowledge Level Hypothesis
+### 知识层级假设
 
-Newell proposed that intelligent systems can be understood at multiple levels, each with its own medium and laws of behavior:
+Newell 提出智能系统可以在多个层级上被理解，每个层级都有自己的介质与行为定律：
 
-| Level | Medium | Focus |
+| 层级 | 介质 | 焦点 |
 |-------|--------|-------|
-| Device Level | Electrons, physical phenomena | Hardware physics |
-| Circuit Level | Voltage, current | Electronic components |
-| Logic/Bit Level | Bits, bit vectors | Binary operations |
-| Symbol Level | Symbols, expressions | Programs, data structures |
-| **Knowledge Level** | **Knowledge** | **Goals, beliefs, rationality** |
+| 器件层 | 电子、物理现象 | 硬件物理 |
+| 电路层 | 电压、电流 | 电子元件 |
+| 逻辑/位层 | 位、位向量 | 二进制运算 |
+| 符号层 | 符号、表达式 | 程序、数据结构 |
+| **知识层** | **知识** | **目标、信念、合理性** |
 
-The crucial insight is that the Knowledge Level is characterized by **knowledge as the medium** and **the principle of rationality as the law of behavior**:
+关键的洞见是：知识层的特征是**以知识为介质**，**以合理性原则为行为定律**：
 
-> "If the agent has knowledge that one of its actions will lead to one of its goals, then the agent will select that action."
+> "如果代理拥有'其某一行动将达成其某一目标'的知识，那么代理将选择该行动。"
 
-At this level, we don't need to understand *how* a system internally processes information. We predict its behavior by understanding *what it knows* and *what it wants to achieve*. This is precisely the kind of abstract reasoning that AoT aims to elicit in language models.
+在这个层级上，我们不需要理解系统内部*如何*处理信息。我们通过理解*它知道什么*与*它想达成什么*来预测其行为。这正是 AoT 试图在语言模型中引出的那类抽象推理。
 
-### World-Oriented vs. System-Oriented
+### 面向世界 vs. 面向系统
 
-Newell distinguished between two orientations:
+Newell 区分了两种取向：
 
-- **Symbol Level (System-oriented)**: Focuses on internal workings such as data structures, algorithms, and computational steps
-- **Knowledge Level (World-oriented)**: Focuses on what the agent knows *about the world* and its goals
+- **符号层（面向系统）**：聚焦内部运作，如数据结构、算法与计算步骤
+- **知识层（面向世界）**：聚焦代理*对世界*知道什么，以及它的目标
 
-This distinction maps remarkably well to AoT's structure:
+这一区分与 AoT 的结构惊人地吻合：
 
-| AoT Layer | Orientation | Content |
+| AoT 层 | 取向 | 内容 |
 |-----------|-------------|---------|
-| Abstract levels ($A^1$) | World-oriented | Problem type, domain principles, strategic goals |
-| Concrete levels ($A^k$) | System-oriented | Specific operations, calculations, implementations |
+| 抽象层（$A^1$） | 面向世界 | 问题类型、领域原则、战略目标 |
+| 具体层（$A^k$） | 面向系统 | 具体操作、计算、实现 |
 
-When AoT asks a model to first identify "This is a quadratic equation" before solving it, it's essentially asking the model to operate at the Knowledge Level, reasoning about the *type* of problem and the *general principles* that apply, before descending to the Symbol Level for concrete computation.
+当 AoT 要求模型在解题之前先识别"这是一道一元二次方程"时，它实质上是要求模型在知识层上运作：对问题的*类型*与适用的*一般原则*进行推理，然后才下探到符号层执行具体计算。
 
-### Why This Matters for AI Reasoning
+### 这对 AI 推理为什么重要
 
-The Knowledge Level framework reveals why Chain-of-Thought can fall short. CoT operates primarily at the Symbol Level, generating a sequence of computational steps. It's system-oriented, focused on *how* to execute operations. What's missing is the Knowledge Level perspective: the abstract understanding of *what kind of problem this is* and *what general knowledge applies*.
+知识层框架揭示了思维链为何会力有不逮。CoT 主要在符号层运作，生成一串计算步骤。它是面向系统的，聚焦于*如何*执行操作。缺失的是知识层的视角：对*这是什么类型的问题*、*适用什么一般知识*的抽象理解。
 
-AoT explicitly bridges these levels. By requiring each step to contain both abstract (why) and concrete (how) components, it forces models to maintain dual perspectives:
+AoT 显式地连接了这些层级。通过要求每一步同时包含抽象（为什么）与具体（怎么做）的成分，它迫使模型维持双重视角：
 
-1. **Knowledge Level**: What do I know about this class of problems? What's my goal?
-2. **Symbol Level**: What specific operations will I perform? What computations are needed?
+1. **知识层**：关于这一类问题我知道什么？我的目标是什么？
+2. **符号层**：我将执行哪些具体操作？需要哪些计算？
 
-This dual-level reasoning mirrors how human experts approach problems. A mathematician doesn't just manipulate symbols. They understand the *meaning* of the problem, recognize its type, recall relevant theorems, and *then* perform calculations. The Knowledge Level provides the strategic direction; the Symbol Level provides the tactical execution.
+这种双层推理映照着人类专家处理问题的方式。数学家不只是摆弄符号。他们理解问题的*含义*，识别其类型，回忆相关定理，*然后*才执行计算。知识层提供战略方向；符号层提供战术执行。
 
-### Knowledge Level Learning and LLMs
+### 知识层学习与 LLM
 
-Newell also distinguished types of learning relevant to understanding how LLMs improve:
+Newell 还区分了与理解 LLM 如何改进相关的学习类型：
 
-- **Symbol Level Learning**: Improvements only visible at the implementation level (e.g., caching, optimization)
-- **Deductive Knowledge Level Learning**: Accumulating facts and rules that expand what the system "knows"
-- **Non-Deductive Knowledge Level Learning**: Inductive learning that creates genuinely new knowledge
+- **符号层学习**：只在实现层面可见的改进（例如缓存、优化）
+- **演绎知识层学习**：积累事实与规则，扩展系统"知道"的内容
+- **非演绎知识层学习**：创造真正新知识的归纳学习
 
-Current LLMs primarily operate through a form of compiled knowledge, specifically massive pattern matching at the Symbol Level with Knowledge Level behavior emerging implicitly [7][8]. The AoT approach may help make Knowledge Level reasoning more explicit and systematic, potentially improving the reliability and interpretability of AI reasoning [1].
+当前的 LLM 主要通过一种编译后的知识运作：具体而言是在符号层进行海量模式匹配，知识层行为隐式地涌现 [7][8]。AoT 方法可能有助于让知识层推理变得更显式、更系统，从而潜在地提升 AI 推理的可靠性与可解释性 [1]。
 
-This connection between Newell's classic framework and modern prompting techniques reveals a deeper truth: the challenges we face in AI reasoning today are not entirely new. The distinction between knowing *what* to do and knowing *how* to do it has been central to AI since its inception. What AoT offers is a practical method to operationalize this distinction within the transformer architecture.
+Newell 的经典框架与现代提示技术之间的这一连接揭示了一个更深的真理：我们今天在 AI 推理中面临的挑战并非全新。知道*做什么*与知道*怎么做*之间的区分，自 AI 诞生以来就是核心。AoT 提供的是一种在 transformer 架构内把这一区分操作化的实用方法。
 
-## Abstraction of Thought: The Framework
+## 思维抽象：框架
 
-Abstraction-of-Thought (AoT) formalizes multi-level thinking. Researchers represent a reasoning process as a sequence of steps ($T_{AoT} = S_1, S_2, \ldots$). Crucially, each step ($S_i$) isn't monolithic; it contains an internal hierarchy of abstraction levels ($A^1_i, A^2_i, \ldots, A^k_i$):
+Abstraction-of-Thought（AoT）把多层次思考形式化。研究者把一个推理过程表示为步骤序列（$T_{AoT} = S_1, S_2, \ldots$）。关键在于：每个步骤（$S_i$）不是铁板一块；它包含抽象层级的内部层次（$A^1_i, A^2_i, \ldots, A^k_i$）：
 
-- **$A^1_i$**: Represents the highest level of abstraction for that step, including its core purpose or the general principle being applied.
-- **$A^k_i$**: Represents the most concrete level, including the specific operations, details, or data manipulations.
-- **Intermediate levels ($A^2_i$ to $A^{k-1}_i$)**: Bridge the gap between the high-level goal and the low-level execution.
+- **$A^1_i$**：该步骤的最高抽象层，包括其核心目的或所应用的一般原则。
+- **$A^k_i$**：最具体的层，包括具体操作、细节或数据操纵。
+- **中间层（$A^2_i$ 到 $A^{k-1}_i$）**：连接高层目标与低层执行之间的鸿沟。
 
-Each step encapsulates a mini-plan, moving from *why* (the abstract goal) to *how* (the concrete actions). This explicit structure distinguishes AoT fundamentally from CoT.
+每个步骤封装了一个小计划，从*为什么*（抽象目标）走向*怎么做*（具体动作）。这一显式结构从根本上区分了 AoT 与 CoT。
 
-![AoT_Illustrations]({{ site.baseurl }}images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction-of-Thought_Illustrations.jpg)
+![AoT_Illustrations]({{ site.baseurl }}/images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction-of-Thought_Illustrations.jpg)
 
-*Figure. Abstraction-of-Thought manifests as numbered steps, each beginning with a clear statement of its abstract purpose before elaborating on the details. The layering, meaning the visible hierarchy from abstract plan to concrete execution, is key.*
+*图：Abstraction-of-Thought 表现为编号步骤，每步都以对其抽象目的的清晰陈述开始，然后展开细节。分层——即从抽象计划到具体执行的可见层次结构——是关键。*
 
-### AoT in Practice
+### AoT 的实践
 
-This structured approach translates effectively to different domains:
+这种结构化方法可以有效转化到不同领域：
 
-**Natural Language**: AoT manifests as numbered steps, each beginning with a clear statement of its abstract purpose (e.g., "Step 1: Identify the core user need from the request") before elaborating on the details. The final answer is often explicitly marked for clarity.
+**自然语言**：AoT 表现为编号步骤，每步以对其抽象目的的清晰陈述开始（例如"Step 1: Identify the core user need from the request"），然后展开细节。最终答案通常被显式标记以保证清晰。
 
-**Code Generation**: AoT encourages modularity. Functions or classes represent abstracted components, with comments explaining their purpose (the abstraction). The main execution block then calls these components, acting as the high-level plan orchestrating the concrete implementations.
+**代码生成**：AoT 鼓励模块化。函数或类代表抽象后的组件，注释解释其用途（即抽象）。主执行块随后调用这些组件，充当编排具体实现的高层计划。
 
-In both cases, the layering, meaning the visible hierarchy from abstract plan to concrete execution, is key.
+两种情况下，分层——即从抽象计划到具体执行的可见层次结构——都是关键。
 
-## Teaching Abstraction: Empirical Results
+## 教授抽象：实证结果
 
-To enable models to reason in this structured way, researchers developed the "AoT Collection," a specialized dataset containing approximately 348,000 examples formatted according to AoT principles [1]. This dataset was generated using powerful LLMs in an automated pipeline, a fascinating instance of AI teaching AI to reason more effectively.
+为了让模型以这种结构化方式推理，研究者开发了"AoT Collection"——一个专门的数据集，包含约 348,000 个按 AoT 原则格式化的样本 [1]。该数据集通过自动化流水线用强大的 LLM 生成——这是 AI 教 AI 更有效推理的迷人实例。
 
-A key feature of the AoT Collection is its "hybrid" nature, incorporating reasoning examples expressed in both natural language and programming languages (like Python). This allows the model to learn flexibility, choosing the most appropriate modality for the task at hand.
+AoT Collection 的一个关键特性是其"混合"性质：既包含以自然语言表达的推理样本，也包含以编程语言（如 Python）表达的样本。这让模型学会灵活，为手头任务选择最合适的模态。
 
-When models fine-tuned on this AoT data were tested against challenging benchmarks like BigBench Hard (BBH), designed to push the boundaries of logical, mathematical, and linguistic reasoning, the results were striking [1]:
+在这个 AoT 数据上微调的模型，在旨在突破逻辑、数学与语言推理边界的严峻基准（如 BigBench Hard，BBH）上测试时，结果令人瞩目 [1]：
 
-| Finding | Details |
+| 发现 | 细节 |
 |---------|---------|
-| **Significant Performance Gains** | Models fine-tuned with AoT significantly outperformed counterparts using standard CoT. Llama 3 8B trained with AoT showed nearly **10% absolute improvement** on BBH. |
-| **Strength in Algorithmic Tasks** | Improvements were particularly pronounced on tasks requiring structured, step-by-step logical procedures such as mathematical reasoning and coding problems. |
-| **Structure is Key** | Models trained on the original AoT format performed better than those trained on AoT content rewritten into linear CoT format, isolating the benefit of hierarchical structure. |
-| **Data Efficiency** | Training with ~10,000 AoT examples yielded better performance than training on 300,000+ CoT examples. Learning the *structure* of abstract reasoning is more data-efficient. |
+| **显著的性能提升** | 用 AoT 微调的模型显著优于使用标准 CoT 的对照模型。AoT 训练的 Llama 3 8B 在 BBH 上取得近 **10% 的绝对提升**。 |
+| **算法类任务上的强势** | 改进在需要结构化、逐步逻辑流程的任务上尤为突出，如数学推理与编码问题。 |
+| **结构是关键** | 在原始 AoT 格式上训练的模型，优于在把 AoT 内容改写为线性 CoT 格式后训练的模型——这分离出了层次结构的收益。 |
+| **数据效率** | 用约 10,000 个 AoT 样本训练，胜过在 300,000+ 个 CoT 样本上训练。学习抽象推理的*结构*在数据上更高效。 |
 
-Perhaps most compellingly, the research indicated that learning the *structure* of abstract reasoning is significantly more data-efficient than simply processing more linear examples [1], a clear win for quality over quantity.
+也许最有说服力的是：研究表明，学习抽象推理的*结构*，比处理更多线性样本在数据上显著更高效 [1]——质量胜过数量的明证。
 
-## Where LLMs Fall on the AGI Trajectory
+## LLM 在 AGI 轨迹上的位置
 
-Understanding where current AI systems stand helps us appreciate why abstraction matters so much. Chollet's framework [3] provides a conceptual trajectory toward Artificial General Intelligence:
+理解当前 AI 系统的所处位置，有助于我们体会抽象为何如此重要。Chollet 的框架 [3] 给出了迈向人工通用智能的概念轨迹：
 
-![LLM_on_AGI_Trajectory]({{ site.baseurl }}images/abstraction-of-thought-makes-ai-better-reasoners/Abstract_Where_LLM_Locate_in_the_AGI_Trajectory.jpg)
+![LLM_on_AGI_Trajectory]({{ site.baseurl }}/images/abstraction-of-thought-makes-ai-better-reasoners/Abstract_Where_LLM_Locate_in_the_AGI_Trajectory.jpg)
 
-*Figure. A conceptual trajectory toward AGI, showing different stages of cognitive capability. LLMs currently operate primarily at the "Organized Knowledge" stage, capable of synthesizing and producing coherent answers but not yet building truly generalizable models or synthesizing solutions on-the-fly.*
+*图：迈向 AGI 的概念轨迹，展示认知能力的不同阶段。LLM 目前主要在"有组织的知识"阶段运作：能够综合并产出连贯的答案，但还不能构建真正可泛化的模型、或在运行中综合解法。*
 
-1. **Pointwise Factoids**: The lowest level, recalling isolated facts without meaningful structure.
-2. **Organized Knowledge** ← *LLMs are mostly here*: Models organize and contextualize knowledge, producing coherent answers by synthesizing from large corpora. But they primarily recombine existing information rather than building new models.
-3. **Generalizable Models**: Systems create abstract, transferable models reusable across different tasks and contexts.
-4. **On-the-Fly Model Synthesis**: Intelligence constructs models dynamically in response to novel problems, including real-time planning, abstraction, and reasoning.
-5. **Maximally Efficient Model Synthesis** (AGI Goal): Rapidly synthesizing the best possible models for any problem encountered.
+1. **点状事实**：最低层级，回忆孤立的事实而没有有意义的结构。
+2. **有组织的知识** ← *LLM 大多在这里*：模型组织并把知识语境化，通过综合大语料产出连贯的答案。但它们主要是重新组合既有信息，而非构建新模型。
+3. **可泛化的模型**：系统创建抽象的、可迁移的模型，可在不同任务与语境中复用。
+4. **实时模型综合**：智能动态地为新颖问题构建模型，包括实时规划、抽象与推理。
+5. **最大效率的模型综合**（AGI 目标）：对遇到的任何问题迅速综合出最佳模型。
 
-The path to AGI requires advancing beyond organized knowledge, enabling machines to autonomously create and refine internal models in a task-specific, abstract, and efficient way. This is precisely what abstraction-centric approaches like AoT aim to address.
+通往 AGI 的路径要求超越有组织的知识，让机器能够以任务特定、抽象而高效的方式自主创建与精炼内部模型。这正是 AoT 这类以抽象为中心的方法旨在解决的问题。
 
-## The ARC-AGI Challenge: Abstraction as the Benchmark
+## ARC-AGI 挑战：抽象作为基准
 
-The Abstraction and Reasoning Corpus (ARC) [3][4] provides concrete evidence that abstraction is the key frontier:
+抽象与推理语料库（ARC）[3][4] 提供了具体证据：抽象是关键前沿：
 
-![ARC1_vs_ARC2]({{ site.baseurl }}images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction_ARC1_vs_ARC2.jpg)
+![ARC1_vs_ARC2]({{ site.baseurl }}/images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction_ARC1_vs_ARC2.jpg)
 
-*Figure. ARC-AGI-1 (2019) challenged deep learning with tasks requiring novel abstraction. ARC-AGI-2 (2025) pushes further, specifically testing test-time reasoning and on-the-fly model synthesis.*
+*图：ARC-AGI-1（2019）用需要新颖抽象的任务挑战深度学习。ARC-AGI-2（2025）更进一步，专门测试测试时推理与实时模型综合。*
 
-- **ARC-AGI-1 (2019)** [3]: Challenged deep learning with visual reasoning tasks requiring novel abstraction from limited examples.
-- **ARC-AGI-2 (2025)** [4]: Specifically tests test-time reasoning, which is the ability to construct new mental models during problem-solving, not just apply learned patterns.
+- **ARC-AGI-1 (2019)** [3]：用需要从少量样本中进行新颖抽象的视觉推理任务挑战深度学习。
+- **ARC-AGI-2 (2025)** [4]：专门测试测试时推理——即在问题求解过程中构建新心智模型的能力，而不只是应用学到的模式。
 
-As Chollet argues, "Solely measuring skill at any given task falls short of measuring intelligence, because skill is heavily modulated by prior knowledge and experience" [3]. True intelligence is *skill-acquisition efficiency*, meaning how quickly a system can generalize from minimal examples. Abstraction is the mechanism that enables this generalization.
+正如 Chollet 所论："只度量任何给定任务上的技能，不足以度量智能，因为技能受先验知识与经验的高度调制" [3]。真正的智能是*技能习得效率*：一个系统能从最少样本中多快泛化。抽象正是实现这种泛化的机制。
 
-## Merging Deep Learning and Program Synthesis
+## 融合深度学习与程序综合
 
-The future likely lies in hybrid architectures that combine the best of both paradigms [2][3]:
+未来很可能在于结合两种范式之长的混合架构 [2][3]：
 
-![Merge_DL_and_Program_Synthesis]({{ site.baseurl }}images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction_Merge_DL_and_Program_Synthesis.jpg)
+![Merge_DL_and_Program_Synthesis]({{ site.baseurl }}/images/abstraction-of-thought-makes-ai-better-reasoners/Abstraction_Merge_DL_and_Program_Synthesis.jpg)
 
-*Figure. Hybrid architectures where deep learning handles perception and fuzzy matching while program synthesis provides structure and logic. This merger combines DL's ability to learn from data with program synthesis's ability to reason symbolically.*
+*图：混合架构：深度学习负责感知与模糊匹配，程序综合提供结构与逻辑。这一合并把 DL 从数据学习的能力与程序综合符号推理的能力结合起来。*
 
-**Side-by-side Integration:**
-- Deep Learning parses raw input into symbolic representations
-- DL models can be embedded into Domain-Specific Languages (DSLs) as functional components
-- Systems use retrieval-augmented or tool-enhanced models
+**并排集成：**
+- 深度学习把原始输入解析为符号表示
+- DL 模型可以作为功能组件嵌入领域专用语言（DSL）
+- 系统使用检索增强或工具增强的模型
 
-**DL Guiding Program Synthesis:**
-- DL learns to map from high-level task concepts to program "sketches"
-- It helps generate code snippet candidates and program embeddings
-- DL provides heuristic intuition over branching decisions, combating combinatorial explosion
+**DL 引导程序综合：**
+- DL 学习从高层任务概念映射到程序"草图"
+- 它帮助生成代码片段候选与程序嵌入
+- DL 在分支决策上提供启发式直觉，对抗组合爆炸
 
-This hybrid approach, where DL handles perception and generalization while program synthesis provides structure and precision, may be the path forward for building more flexible, intelligent, and general-purpose AI systems [3][6].
+这种混合方法——DL 处理感知与泛化，程序综合提供结构与精确性——可能是构建更灵活、更智能、更通用 AI 系统的前进之路 [3][6]。
 
-## Practical Implications
+## 实践启示
 
-The findings from AoT research have immediate practical implications:
+AoT 研究的发现具有直接的实践意义：
 
-### For Prompt Engineering
+### 对提示词工程
 
-When constructing prompts, explicitly encourage abstraction:
-- Ask the model to identify the *type* of problem before solving
-- Request a high-level strategy before implementation details
-- Structure prompts to elicit multiple levels of reasoning
+构建提示词时，显式鼓励抽象：
+- 要求模型在解题之前先识别问题的*类型*
+- 在实现细节之前先要求高层策略
+- 结构化提示词以引出多层次推理
 
-### For Model Training
+### 对模型训练
 
-The data efficiency finding is crucial [1]:
-- Quality of reasoning structure matters more than quantity of examples
-- Training data should explicitly demonstrate abstract-to-concrete reasoning flows
-- Hybrid formats (natural language + code) provide flexibility
+数据效率的发现至关重要 [1]：
+- 推理结构的质量比样本数量更重要
+- 训练数据应显式展示抽象到具体的推理流
+- 混合格式（自然语言 + 代码）提供灵活性
 
-### For System Design
+### 对系统设计
 
-When building AI systems for complex reasoning:
-- Incorporate explicit abstraction layers in the reasoning pipeline
-- Allow the system to operate at multiple levels of detail
-- Provide mechanisms for the system to "step back" and reconsider at higher abstraction levels
+构建面向复杂推理的 AI 系统时：
+- 在推理流水线中纳入显式的抽象层
+- 允许系统在多个细节层级上运作
+- 提供让系统"退后一步"、在更高抽象层级重新考虑的机制
 
-## Connection to Spatial Reasoning
+## 与空间推理的联系
 
-This work resonates with a 30-year thread connecting spatial reasoning to AI frontiers. My thesis work focused on spatial cognitive processes, specifically how humans represent and manipulate spatial knowledge mentally. The KRA model's concepts of focalization, grouping, and hierarchies [2] are fundamentally spatial operations: zooming in/out, chunking regions, and navigating levels of detail.
+这项工作与一条把空间推理与 AI 前沿连接起来的 30 年线索产生共鸣。我的论文工作聚焦空间认知过程——具体而言，人类如何在心智中表示与操纵空间知识。KRA 模型的聚焦、分组与层次概念 [2] 从根本上说就是空间操作：放大/缩小、分块区域、在不同细节层级之间导航。
 
-AoT represents a convergence of these ideas with modern language models. The ability to reason at multiple levels of abstraction is essentially the cognitive equivalent of having multiple "zoom levels" on a problem, seeing both the forest and the trees, and knowing when to switch between views.
+AoT 代表了这些思想与现代语言模型的汇聚。在多个抽象层级上推理的能力，本质上是认知意义上对问题拥有多个"缩放级别"：既见森林又见树木，并知道何时切换视图。
 
-The ARC-AGI benchmark [3][4] explicitly tests this spatial-abstract reasoning capability. Tasks require recognizing patterns, applying transformations, and generalizing from minimal examples, all operations that demand both Type 1 (pattern recognition) and Type 2 (program synthesis) abstraction working in concert [3].
+ARC-AGI 基准 [3][4] 显式测试这种空间-抽象推理能力。任务要求识别模式、施加变换、从最少样本泛化——所有这些操作都需要类型 1（模式识别）与类型 2（程序综合）抽象协同工作 [3]。
 
-## Concluding Remarks
+## 结语
 
-Abstraction of Thought represents a significant conceptual shift in pursuing advanced AI reasoning. By moving beyond purely sequential processing and embracing structured, multi-level abstraction within the reasoning process itself, AoT demonstrates compelling empirical benefits: improved performance on complex tasks, enhanced data efficiency, and a potential framework for more robust handling of context.
+Abstraction of Thought 代表了追求先进 AI 推理道路上一次重大的概念转向。通过超越纯顺序处理，在推理过程本身之内拥抱结构化、多层次抽象，AoT 展示了令人信服的实证收益：复杂任务上的性能提升、数据效率增强，以及一个更稳健处理上下文的潜在框架。
 
-More profoundly, AoT forces us to consider the very nature of thinking. The ability to conceptualize, to generalize, to plan at a high level before diving into specifics, is fundamental to human intelligence. Teaching our AI systems to explicitly manage abstraction may not just be a technique for better benchmark scores; it could be a critical step towards creating AI that reasons more deeply, understands more reliably, and collaborates with us more effectively on the complex challenges ahead.
+更深刻地说，AoT 迫使我们思考思维的本质。概念化、泛化、在深入细节之前高层规划的能力，是人类智能的根本。教我们的 AI 系统显式地管理抽象，可能不只是刷高基准分的技术；它可能是创造那种推理更深、理解更可靠、并在前方的复杂挑战中与我们更有效协作的 AI 的关键一步。
 
-The journey towards truly intelligent machines may depend on our ability to teach them not just *what* to think, but *how* to structure their thought, from the abstract heights down to the concrete ground.
+通往真正智能机器的旅程，可能取决于我们能否教会它们不只是*思考什么*，而是*如何结构化它们的思考*——从抽象的高处直到具体的地面。
 
-## References
+## 参考文献
 
 [1] Ruixin Hong, Hongming Zhang, Xiaoman Pan, Dong Yu, Changshui Zhang. [Abstraction-of-Thought Makes Language Models Better Reasoners](https://arxiv.org/abs/2406.12442). arXiv:2406.12442 [cs.CL], June 2024.
-  - Introduces the AoT framework and demonstrates significant improvements over Chain-of-Thought reasoning on BigBench Hard benchmarks.
+  - 提出 AoT 框架，展示在 BigBench Hard 基准上相对思维链推理的显著改进。
 
 [2] Lorenza Saitta and Jean-Daniel Zucker. [*Abstraction In Artificial Intelligence And Complex Systems*](https://www.amazon.ca/Abstraction-Artificial-Intelligence-Complex-Systems/dp/1489988742). Springer, May 2013.
-  - Presents the KRA (Knowledge Representation & Abstraction) model, providing a unified framework for understanding abstraction operators in AI.
+  - 提出 KRA（知识表示与抽象）模型，为理解 AI 中的抽象算子提供统一框架。
 
 [3] François Chollet. [On the Measure of Intelligence](https://arxiv.org/abs/1911.01547). arXiv:1911.01547 [cs.AI], November 2019.
-  - Articulates a formal definition of intelligence based on skill-acquisition efficiency and introduces the ARC benchmark for measuring human-like general fluid intelligence.
+  - 阐明基于技能习得效率的智能形式化定义，并引入度量类人通用流体智能的 ARC 基准。
 
 [4] ARC Prize Foundation. [ARC-AGI-2](https://github.com/arcprize/ARC-AGI-2). GitHub Repository, 2025.
-  - The second iteration of the Abstraction and Reasoning Corpus, specifically testing test-time reasoning capabilities.
+  - 抽象与推理语料库的第二代，专门测试测试时推理能力。
 
 [5] Robert Goldstone and Lawrence Barsalou. [Reuniting Perception and Conception](https://doi.org/10.1016/S0010-0277(97)00047-4). *Cognition* 65 (1998) 231-262.
-  - Illustrates ways in which conceptual processing is grounded in perception, relevant to understanding abstraction's cognitive foundations.
+  - 阐明概念处理如何扎根于知觉，与理解抽象的认知基础相关。
 
 [6] Ruocheng Wang, Eric Zelikman, Gabriel Poesia, Yewen Pu, Nick Haber, Noah D. Goodman. [Hypothesis Search: Inductive Reasoning with Language Models](https://arxiv.org/abs/2309.05660). arXiv:2309.05660 [cs.LG], May 2024.
-  - Proposes generating hypotheses at multiple levels of abstraction to improve inductive reasoning on ARC and similar benchmarks.
+  - 提出在多个抽象层级上生成假设，以改进在 ARC 及类似基准上的归纳推理。
 
 [7] Allen Newell. [The Knowledge Level](http://lidecc.cs.uns.edu.ar/~grs/InteligenciaArtificial/Allen%20Newell%20-%20The%20knowledge%20level.pdf). *Artificial Intelligence* 18(1):87-127, 1982.
-  - Introduces the Knowledge Level as a distinct computer systems level characterized by knowledge as the medium and the principle of rationality as the law of behavior.
+  - 引入知识层作为一个独特的计算机系统层级：以知识为介质、以合理性原则为行为定律。
 
 [8] B. Chandrasekaran. [Understanding Control at the Knowledge Level](https://cdn.aaai.org/Symposia/Fall/1994/FS-94-03/FS94-03-003.pdf). AAAI Technical Report FS-94-03, 1994.
-  - Applies Knowledge Level analysis to control systems, demonstrating how differences in knowledge availability determine solution architectures.
-
+  - 把知识层分析应用于控制系统，展示知识可得性的差异如何决定解法的架构。

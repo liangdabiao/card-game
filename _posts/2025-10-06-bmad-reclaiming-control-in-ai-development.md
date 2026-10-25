@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Applied BMAD - Reclaiming Control in AI Development
+title: BMAD 实战——在 AI 开发中夺回控制权
 date: 2025-10-01 12:00:00.000000000 -00:00
 permalink: bmad-reclaiming-control-in-ai-dev
 author: Benny Cheung
@@ -22,105 +22,102 @@ published: true
 ---
 
 <!--excerpt.start-->
-Enterprise leaders are pouring investment into AI-assisted development, but many are finding that the promised productivity gains come at a steep price: a loss of governance, traceability, and architectural integrity. Unstructured, prompt-driven AI use is creating "black box" codebases that are difficult to maintain, audit, and scale, introducing significant business risk. To move from ad-hoc experimentation to enterprise-grade AI integration, a new paradigm is required.
+企业领导者正在向 AI 辅助开发投入重金，但许多人发现，承诺的生产力收益伴随着高昂代价：治理、可追溯性与架构完整性的丧失。无结构的、提示词驱动的 AI 使用正在制造难以维护、难以审计、难以扩展的"黑箱"代码库，引入可观的业务风险。要从临时实验走向企业级 AI 集成，需要一种新范式。
 <!--excerpt.end-->
 
-We applied **BMAD Method** (Breakthrough Method for Agile AI-Driven Development) as a strategic framework to ensure that AI-driven development is not only fast but also predictable, compliant, and aligned with long-term business objectives. Integrated with robust version control, this method offers a transformative paradigm for AI engineering, enabling super individual to work with unparalleled precision and clarity.
+我们将 **BMAD 方法**（Breakthrough Method for Agile AI-Driven Development，敏捷 AI 驱动开发的突破性方法）作为战略框架来应用，以确保 AI 驱动的开发不仅快，而且可预测、可合规，并与长期业务目标保持一致。与健壮的版本控制相集成，这一方法为 AI 工程提供了一种变革性范式，让超级个体以前所未有的精确与清晰开展工作。
 
-![BMAD_From_Ad_Hoc_to_Enterprise_Ready_Dev]({{ site.baseurl }}images/bmad-reclaiming-control-in-ai-dev/BMAD_From_Ad_Hoc_to_Enterprise_Ready_Dev.png)
-_Figure. Visualizing the transformation from fragmented, high-risk AI experimentation to BMAD's structured, enterprise-ready development framework_
+![BMAD：从临时实验到企业就绪开发]({{ site.baseurl }}/images/bmad-reclaiming-control-in-ai-dev/BMAD_From_Ad_Hoc_to_Enterprise_Ready_Dev.png)
+_图：可视化展示从碎片化、高风险的 AI 实验，到 BMAD 结构化、企业就绪开发框架的转变_
 
-## The Abstraction Trap: Loss of Control
+## 抽象陷阱：控制的丧失
 
-The core problem stems from the inherent tension between **abstraction and control** in AI-assisted coding. As illustrated in the AI-generated code process, a high-level natural language prompt is transformed through AI models into source code, eventually becoming a running program. While this offers immense speed, it often acts as a black box.
+核心问题源于 AI 辅助编码中**抽象与控制**之间固有的张力。如 AI 生成代码的流程所示，一条高层自然语言提示词经 AI 模型转化为源代码，最终变成运行中的程序。这带来了巨大的速度，但它常常是个黑箱。
 
-![AI_Generated_Code_Process]({{ site.baseurl }}images/bmad-reclaiming-control-in-ai-dev/AI_Generated_Code_Process.png)
-_Figure. The typical AI code generation process today, illustrating a linear transformation from a high-level prompt to a running program. This "black box" approach often requires developers to iterate extensively on prompts, restarting the process with each change and hoping the AI interprets and corrects issues effectively (source: Philomatics 2024)._
+![AI 生成代码流程]({{ site.baseurl }}/images/bmad-reclaiming-control-in-ai-dev/AI_Generated_Code_Process.png)
+_图：当今典型的 AI 代码生成过程，展示了从高层提示词到运行程序的线性转换。这种"黑箱"方式常常要求开发者对提示词进行大量迭代，每次变更都要重启流程，寄望 AI 能有效解读并纠正问题（来源：Philomatics 2024）。_
 
-As programming languages and tools increase in their level of abstraction, developers gain immense speed but face a corresponding **loss of control**. Writing low-level code offers precision and accountability, while high-level code introduces efficiency at the expense of some oversight. With natural language prompts as our programming language to AI-generated programs, this trade-off deepens.
+随着编程语言和工具的抽象层级不断提高，开发者获得了巨大的速度，但也面临相应的**控制力丧失**。编写低层代码提供精确性与可问责性，而高层代码以牺牲部分监督为代价换取效率。当自然语言提示词成为我们面向 AI 生成程序的编程语言时，这种取舍进一步加深。
 
-![AI_Generated_Code_Process]({{ site.baseurl }}images/bmad-reclaiming-control-in-ai-dev/Level_of_Abstraction_and_Control.png)
-_Figure. Higher abstraction accelerates development but sacrifices control, with AI tools amplifying speed at the cost of precision and accountability (source: Philomatics 2024)._
+![抽象层级与控制]({{ site.baseurl }}/images/bmad-reclaiming-control-in-ai-dev/Level_of_Abstraction_and_Control.png)
+_图：更高的抽象加速了开发，却牺牲了控制力；AI 工具放大了速度，代价是精确性与可问责性（来源：Philomatics 2024）。_
 
- The philosophical underpinning, as Harrison Ainsworth's "Tractatus Computo Philosophicus" eloquently states, is that "Software is a logical construction," and "its correctness must ultimately be left to human judgement." Current AI tools, while powerful, lead to a noticeable "Loss of control" as the level of abstraction increases. This gap leaves developers and consultants struggling to ensure precision, track intent, and confidently modify AI-generated solutions. When an AI produces code that isn't quite right, the iterative process of refining prompts becomes a guessing game, devoid of structured collaboration or versioned accountability. This unstructured AI assistance, beneficial for individual tasks, falls short in multi-person, multi-stage team environments, leading to disparate outputs and a lack of collective understanding.
+其哲学根基，正如 Harrison Ainsworth 的 "Tractatus Computo Philosophicus" 所精辟阐述的："软件是一种逻辑构造"，而"其正确性最终必须交由人类判断"。当前的 AI 工具虽然强大，但随着抽象层级升高，会带来明显的"控制力丧失"。这一鸿沟让开发者与顾问难以保证精确性、追踪意图、放心地修改 AI 生成的方案。当 AI 产出的代码不完全正确时，打磨提示词的迭代过程就变成了一场猜谜游戏，缺乏结构化协作或版本化问责。这种无结构的 AI 辅助对个人任务有益，但在多人、多阶段的团队环境中则力有不逮，导致产出参差、共识缺失。
 
-## From Chaos to Clarity: The BMAD Method
+## 从混沌到清晰：BMAD 方法
 
-The BMAD Method provides the crucial framework to re-establish control. At its heart, BMAD leverages specialized AI agents, each embodying a specific role within the software development lifecycle: Analyst, Product Manager, Architect, Scrum Master, Product Owner, Developer, and QA.
+BMAD 方法提供了重建控制的关键框架。其核心是利用专门化的 AI 代理，每个代理承载软件开发生命周期中的特定角色：分析师、产品经理、架构师、Scrum 主管、产品负责人、开发者和 QA。
 
-Unlike traditional AI tools that merely assist an individual, BMAD agents collaboratively generate and refine critical project artifacts, ensuring an unprecedented level of precision from the project's inception.
+与传统只为个体提供辅助的 AI 工具不同，BMAD 代理协作生成并打磨关键项目工件，从项目诞生之初就确保了空前的精确性。
 
-The true transformation, however, lies in overlaying this agentic process with robust **Git-based versioning**. Every artifact, from the Product Requirements Document (PRD) to the architecture and granular stories, is treated as a versioned asset. This crucial step ensures:
+然而，真正的变革在于为这一代理式流程叠加健壮的**基于 Git 的版本控制**。从产品需求文档（PRD）到架构再到细粒度的故事（story），每个工件都被当作版本化的资产。这一关键步骤确保了：
 
-1. **Traceability and Accountability:** Every change, whether from a human or an AI agent, is thoroughly tracked. This eliminates the black-box effect, providing a clear audit trail that is crucial for regulated industries and internal governance standards.
+1. **可追溯性与可问责性：** 每一次变更——无论来自人类还是 AI 代理——都被完整追踪。这消除了黑箱效应，提供了清晰的审计轨迹，这对受监管行业和内部治理标准至关重要。
     
-2. **Collaborative Review and Refinement:** Stories undergo rigorous pull request (PR) reviews where humans and AI agents inspect and comment on AI-generated content. This structured feedback loop prevents the accumulation of technical debt and reduces post-release bugs, directly lowering maintenance costs.
+2. **协作评审与打磨：** 故事要经过严格的拉取请求（PR）评审，人类和 AI 代理共同检查 AI 生成的内容并提出意见。这种结构化的反馈回路防止了技术债的累积，减少了发布后的缺陷，直接降低维护成本。
     
-3. **A Single Source of Truth:** With all planning and implementation artifacts versioned and centralized, the entire team operates from a consistent blueprint. This prevents costly context loss between teams and reduces the rework common in projects with siloed information.
+3. **单一事实来源：** 所有规划与实现工件都版本化并集中管理，整个团队基于一致的蓝图运作。这防止了团队之间昂贵的上下文丢失，减少了信息孤岛项目中常见的返工。
     
-4. **Enhanced Productivity and Quality:** By automating the creation of high-fidelity project artifacts, BMAD significantly accelerates development cycles. This allows teams to deliver value to market faster, improving the overall return on investment (ROI) for software projects.
+4. **生产力与质量的提升：** 通过自动化创建高保真的项目工件，BMAD 显著加速了开发周期。这让团队能更快地把价值推向市场，提高软件项目的整体投资回报（ROI）。
 
-### Designed for the Enterprise: Governance, Security, and Scalability
+### 为企业而设计：治理、安全与可扩展性
 
-Unlike individual productivity tools, the BMAD Method is designed for enterprise scale.
+与个人生产力工具不同，BMAD 方法是为企业规模而设计的。
 
-- **Governance and Compliance:** BMAD inherently builds a governance layer into the development lifecycle. Every requirement, architectural decision, and code change is versioned and auditable, creating what is effectively a **"continuous compliance ledger."** This machine-readable history simplifies compliance with standards like SOC 2 or HIPAA by providing unparalleled transparency for stakeholders and transforming internal audits from a painful, manual process into an efficient, automated review.
+- **治理与合规：** BMAD 天生就在开发生命周期中构建了一层治理。每一条需求、每一个架构决策、每一处代码变更都被版本化并可审计，实质上形成了一本**"持续合规台账"**。这份机器可读的历史为利益相关者提供了无与伦比的透明度，把 SOC 2 或 HIPAA 等标准的合规工作化繁为简，把内部审计从痛苦的手工过程转变为高效的自动化评审。
     
-- **Security by Design:** By defining security requirements and architectural patterns early in the Al-driven planning phase, BMAD ensures security is not an afterthought. Al agents are tasked with incorporating security best practices directly into generated stories, and automated security scans in the PR pipeline validate these controls, with the evidence recorded in the compliance ledger.
+- **安全内建（Security by Design）：** 通过在 AI 驱动的规划阶段早期定义安全需求与架构模式，BMAD 确保安全不是事后补救。AI 代理受命把安全最佳实践直接纳入生成的故事，PR 流水线中的自动化安全扫描验证这些控制措施，证据记录在合规台账中。
     
-- **Scalability for Distributed Teams:** By creating a single, version-controlled source of truth, BMAD enables large, globally distributed teams, and their AI collaborators, to work in parallel on complex systems without sacrificing alignment or quality.
+- **分布式团队的可扩展性：** 通过创建单一、版本控制的事实来源，BMAD 让大型全球分布式团队及其 AI 协作者能够在复杂系统上并行工作，而不牺牲一致性或质量。
 
-## Case Study: Building with BMAD Method
+## 案例研究：用 BMAD 方法构建
 
-To prove the efficacy of this method, we applied it to a complex, high-stakes challenge: modernizing a mission-critical, yet poorly documented legacy software system. The target was a core transaction-processing module written in an archaic language, representing a significant operational risk and a multi-million dollar problem for the organization. The goal was to build our modernization platform strategy, an enterprise-grade solution designed to analyze, untangle, and modernize such complex codebases where unstructured AI development would introduce unacceptable risk.
+为了证明这一方法的效力，我们把它应用于一个复杂、高风险的挑战：现代化一套使命攸关却文档匮乏的遗留软件系统。目标是用一门古老语言编写的核心交易处理模块，它代表着巨大的运营风险，对公司而言是一个价值数百万美元的难题。我们的目标是构建现代化平台战略——一套企业级解决方案，用于分析、理清并现代化这类复杂的代码库；在这种场景下，无结构的 AI 开发会引入不可接受的风险。
 
-The platform's ability to ingest, visualize, and analyze diverse codebases is a direct consequence of a development process that prioritized precision from the outset. The true test was not simply handling multiple programming languages, but untangling the specific, high-risk legacy module. This challenge was defined by our Product Manager agent, which ingested ambiguous requirements from the obscure legacy code. This input was then translated by the Architect agent into a scalable, modern microservice architecture designed to replace the old module. This structured, Al-assisted planning phase was critical to managing the project's inherent complexity from day one. The victory was not just in creating new code, but in being able to _provably trace this new microservice all the way back to the specific, previously opaque business logic in the old system._
+平台摄取、可视化和分析多种代码库的能力，是一个从一开始就 prioritized 精确性的开发过程的直接成果。真正的考验不只是处理多种编程语言，而是理清那个具体的、高风险的遗留模块。这一挑战由我们的产品经理代理定义，它摄取了来自晦涩遗留代码的模糊需求。随后，架构师代理把这些输入转化为可扩展的现代化微服务架构，用以替换旧模块。这个结构化的、AI 辅助的规划阶段，对于从第一天起就掌控项目固有的复杂性至关重要。胜利不只是创造了新代码，更在于能够_可证明地把这个新微服务一路追溯回旧系统中那些具体的、原先不透明的业务逻辑。_
 
-![BMAD_Dev_Process_illustration_of_a_pathway]({{ site.baseurl }}images/bmad-reclaiming-control-in-ai-dev/BMAD_Dev_Process_illustration_of_a_pathway.png)
-_Figure. BMAD development process, a collaboration of human and AI in a consistent and trackable method._
+![BMAD 开发流程——一条可追溯的路径]({{ site.baseurl }}/images/bmad-reclaiming-control-in-ai-dev/BMAD_Dev_Process_illustration_of_a_pathway.png)
+_图：BMAD 开发流程，人类与 AI 以一致且可追踪的方式协作。_
 
-The following sections outline this disciplined, three-step process.
-### Step 1: Laying the Foundation: From Product Brief to Versioned Architecture
+以下各节概述这一有纪律的三步流程。
+### 第 1 步：奠定基础：从产品简报到版本化架构
 
-The process begins with a deligent, AI-assisted planning phase. AI agents, guided by human stakeholders, generate the initial **Product Brief**, a detailed **Product Requirements Document (PRD)**, and a comprehensive **Full-stack Architecture Document**. These artifacts, detailing everything from multi-tenancy and vector database integration to API specifications, are immediately committed to a Git repository, creating an auditable blueprint for all subsequent work.
+流程始于勤勉的、AI 辅助的规划阶段。AI 代理在人类利益相关者的引导下，生成初始的**产品简报**（Product Brief）、详细的**产品需求文档（PRD）**，以及一份全面的**全栈架构文档**。这些工件——从多租户、向量数据库集成到 API 规范——会被立即提交到 Git 仓库，为所有后续工作创建一份可审计的蓝图。
 
-### Step 2: Parallel Development: Empowering Teams with AI-Assisted Coding in Git
+### 第 2 步：并行开发：在 Git 中用 AI 辅助编码赋能团队
 
-With the foundation set, a Scrum Master agent breaks down the work into manageable **Epics and Stories**. Each story is developed on a dedicated Git branch, allowing multiple teams to work in parallel. Within their branches, human developers use AI coding assistants, but with a critical difference: the AI's output is informed by the highly contextualized, version-controlled story files. Crucially, this is augmented by a versioned "Control Manifest", a formal document created and committed to Git by the human developer before generation begins. This manifest allows the developer to set explicit, auditable guardrails, such as mandating specific libraries, defining performance constraints, or designating "code exclusion zones" the AI is forbidden to modify.
+基础就绪后，Scrum 主管代理把工作拆分为可管理的**史诗（Epic）与故事（Story）**。每个故事在专用的 Git 分支上开发，允许多个团队并行工作。在各自的分支里，人类开发者使用 AI 编码助手，但有一个关键区别：AI 的输出由高度情境化的、版本控制的故事文件提供上下文。关键在于，这还辅以一份版本化的"控制清单"（Control Manifest）——一份由人类开发者在生成开始之前创建并提交到 Git 的正式文档。这份清单让开发者可以设定明确的、可审计的护栏，例如强制使用特定的库、定义性能约束，或划定 AI 不得修改的"代码禁区"。
 
-![BMAD_Dev_Process_with_Version_Control]({{ site.baseurl }}images/bmad-reclaiming-control-in-ai-dev/BMAD_Dev_Process_with_Version_Control.png)
-_Figure. By adding version control, the development can share the artifacts in a organized manner, matching with our understanding of agile software development process. But this time, with AI._
+![带版本控制的 BMAD 开发流程]({{ site.baseurl }}/images/bmad-reclaiming-control-in-ai-dev/BMAD_Dev_Process_with_Version_Control.png)
+_图：加入版本控制后，开发可以以有序的方式共享工件，与我们对敏捷软件开发过程的理解相匹配。只不过这一次，有了 AI。_
 
-The human developer remains firmly in control, not by passively reviewing output, but by **actively steering the AI with versioned constraints.** This transforms the human's role into that of an active controller, ensuring every AI-generated line of code adheres to the versioned architecture and safety requirements. The AI acts as an intelligent co-pilot, executing within a clearly defined and auditable flight plan set by its human counterpart.
+人类开发者牢牢掌控着局面——不是被动地评审输出，而是**用版本化的约束主动引导 AI。**这把人类的角色转变为主动控制者，确保 AI 生成的每一行代码都遵循版本化的架构与安全要求。AI 扮演智能副驾驶，在人类伙伴设定的清晰、可审计的飞行计划内执行。
 
-### Step 3: Continuous Alignment: Iterative Refinement Through Agent-Led Reviews
+### 第 3 步：持续对齐：通过代理主导的评审进行迭代打磨
 
-When a developer completes a story, they create a Pull Request, which triggers an automated CI/CD pipeline for testing, quality scans, and security analysis. The PR is then reviewed by peers and specialized AI agents (e.g., a QA Agent, a Product Owner Agent) that check for adherence to the versioned PRD and architecture. This multi-layered review process enables rapid feedback and acts as a continuous quality gate, preventing technical debt and ensuring that only thoroughly vetted code is merged. This disciplined, AI-augmented process allowed us to deliver a sophisticated, multi-tenant SaaS platform with a level of precision and speed unattainable with unstructured AI development methods.
+开发者完成一个故事后，创建拉取请求，触发自动化的 CI/CD 流水线进行测试、质量扫描和安全分析。PR 随后由同行和专门化的 AI 代理（如 QA 代理、产品负责人代理）评审，检查其是否符合版本化的 PRD 与架构。这种多层评审过程实现了快速反馈，并充当持续的质量关口，防止技术债，确保只有经过彻底审查的代码才会被合并。这一有纪律的、AI 增强的流程，让我们交付了一个复杂的多租户 SaaS 平台，其精确性与速度是无结构 AI 开发方法无法企及的。
 
-![BMAD_Enhanced_PR_Check_in]({{ site.baseurl }}images/bmad-reclaiming-control-in-ai-dev/BMAD_Enhanced_PR_Check_in.png)
-_Figure. BMAD's multi-layered PR lifecycle integrates automated quality gates and agent-driven reviews, ensuring rigorous governance, compliance, and controlled delivery._
+![BMAD 增强的 PR 提交流程]({{ site.baseurl }}/images/bmad-reclaiming-control-in-ai-dev/BMAD_Enhanced_PR_Check_in.png)
+_图：BMAD 的多层 PR 生命周期集成了自动化质量关口和代理驱动的评审，确保严格的治理、合规与受控交付。_
 
-## The Future of Collaborative AI Development
+## 协作式 AI 开发的未来
 
-For software consultants and enterprise leaders, the path forward in the Al era is clear: the undisciplined use of Al tools is a liability, not a strategy. The integration of the BMAD Method with version control offers a blueprint for transforming Al from a volatile assistant into a reliable, enterprise-ready partner. This framework moves development beyond individual augmentation to a truly collaborative, auditable, and scalable workflow that serves as an "audit defense blueprint." When regulators or internal auditors ask for evidence of compliance, the versioned history provides an immediate, irrefutable answer, directly mitigating financial and operational risk.
+对于软件顾问和企业领导者而言，AI 时代的前进路径很明确：无纪律地使用 AI 工具是负债，不是战略。把 BMAD 方法与版本控制相结合，提供了一张蓝图，把 AI 从善变的助手变成可靠的、企业就绪的伙伴。这一框架让开发超越个体增强，走向真正协作的、可审计的、可扩展的工作流，充当一份"审计防御蓝图"。当监管者或内部审计师索要合规证据时，版本化的历史能提供即时、无可辩驳的答案，直接化解财务与运营风险。
 
-This approach is more than just a new process; it is a fundamental shift in how we build and manage software. By embracing this level of control and clarity, we are not just building software faster; we are building the future of software engineering itself, positioning us at the forefront of this transformation.
+这种方法不只是一套新流程；它是我们构建与管理软件方式的根本转变。拥抱这种程度的控制与清晰，我们不只是更快地构建软件；我们是在构建软件工程本身的未来，并把自己置于这场变革的最前沿。
 
-## References
+## 参考文献
 
-- [BMad Method](https://github.com/bmad-code-org/BMAD-METHOD/tree/main) - Foundations in Agentic Agile Driven Development, known as the Breakthrough Method of Agile AI-Driven Development
-  - [BMad Method User Guide](https://github.com/bmad-code-org/BMAD-METHOD/blob/main/docs/user-guide.md)
+- [BMad Method](https://github.com/bmad-code-org/BMAD-METHOD/tree/main) - Agentic Agile Driven Development 的基础，即 Breakthrough Method of Agile AI-Driven Development（敏捷 AI 驱动开发的突破性方法）
+  - [BMad Method 用户指南](https://github.com/bmad-code-org/BMAD-METHOD/blob/main/docs/user-guide.md)
 
 - BMad Code, [The Official BMad-Method Masterclass (The Complete IDE Workflow)](https://www.youtube.com/watch?v=LorEJPrALcg), video, 2 Aug 2025.
-  - As the creator of the BMad-Method, I'm finally presenting the official, definitive masterclass on the entire system. Many channels have given a high level quick run through of the basic concepts, but there is so much more and in this video I will cover every agent, all of their amazing powers, and why this is still the best system available - but now made even better as it can fully be run from the IDE with the amazing power of Claude Code.
+  - 作为 BMad-Method 的创造者，我终于推出了关于整个系统的官方权威大师课。许多频道对基本概念做过高层级的快速过览，但内容远不止于此。在这期视频里，我会讲透每个代理、它们各自的强大能力，以及为什么它仍然是现有最好的系统——如今借助 Claude Code 的强大能力，它可以完全在 IDE 中运行，变得更好。
 
 - Vishal Mysore, [What is BMAD-METHOD™? A Simple Guide to the Future of AI-Driven Development](https://medium.com/@visrow/what-is-bmad-method-a-simple-guide-to-the-future-of-ai-driven-development-412274f91419), Medium, 9 Sep 2025.
-  - BMAD framework offers a surprisingly simple, yet highly innovative solution to agentic development. This article provides a deep dive into my experiments with BMAD method, explaining how it gave me a structured, persona-based workflow for building intelligent AI agents. I will walk through the core concepts and show you how to set up your first BMAD project.
+  - BMAD 框架为代理式开发提供了一个出奇简单却极具创新性的解决方案。本文深入介绍了我的 BMAD 方法实验，讲解它如何为我提供了结构化的、基于 persona 的工作流来构建智能 AI 代理。我会走一遍核心概念，并演示如何搭建你的第一个 BMAD 项目。
 
 - Philomatics, [AI Won't Fix the Fundamental Flaw of Programming](https://www.youtube.com/watch?v=82JpGhctWpU), video, 25 Nov 2024.
 
 - Harrison Ainsworth, [Tractatus Computo-Philosophicus](https://www.hxa.name/articles/content/tractatus-computo-philosophicus_hxa7241_2010.html), HXA articles, 14 Feb 2011.
-    - This article offers a philosophical perspective on the nature of software development, intentionally mimicking the style of Wittgenstein's Tractatus. It begins by asserting that software is a logical construction that functions like a proposition, realizing an intention rather than describing the world. It suggests that software engineering primarily aims for the clarification of development, building tools that make the process of construction and intention clearer.
-
-
-
+    - 本文从哲学视角审视软件开发的本质，有意模仿维特根斯坦《逻辑哲学论》的风格。文章开篇断言：软件是一种逻辑构造，其功能如同一个命题，实现的是一种意图而非描述世界。它提出软件工程的首要目标是开发的澄清，即构建能让构造过程与意图更清晰的工具。

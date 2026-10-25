@@ -1,19 +1,19 @@
 <!-- Text-to-Speech Player using Web Speech API -->
 <div id="tts-container" class="tts-container">
-  <button id="tts-toggle" class="tts-toggle-btn" title="Listen to this article" aria-label="Listen to article">
+  <button id="tts-toggle" class="tts-toggle-btn" title="朗读本文" aria-label="朗读文章">
     <i class="fa fa-headphones"></i>
-    <span class="tts-label">Listen</span>
+    <span class="tts-label">朗读</span>
   </button>
 
   <div id="tts-player" class="tts-player" style="display: none;">
     <div class="tts-controls">
-      <button id="tts-play" class="tts-btn tts-play-btn" title="Play" aria-label="Play">
+      <button id="tts-play" class="tts-btn tts-play-btn" title="播放" aria-label="播放">
         <i class="fa fa-play"></i>
       </button>
-      <button id="tts-pause" class="tts-btn tts-pause-btn" title="Pause" aria-label="Pause" style="display: none;">
+      <button id="tts-pause" class="tts-btn tts-pause-btn" title="暂停" aria-label="暂停" style="display: none;">
         <i class="fa fa-pause"></i>
       </button>
-      <button id="tts-stop" class="tts-btn tts-stop-btn" title="Stop" aria-label="Stop">
+      <button id="tts-stop" class="tts-btn tts-stop-btn" title="停止" aria-label="停止">
         <i class="fa fa-stop"></i>
       </button>
 
@@ -25,8 +25,8 @@
       </div>
 
       <div class="tts-speed-container">
-        <label for="tts-speed" class="tts-speed-label">Speed:</label>
-        <select id="tts-speed" class="tts-speed-select" aria-label="Playback speed">
+        <label for="tts-speed" class="tts-speed-label">语速：</label>
+        <select id="tts-speed" class="tts-speed-select" aria-label="播放速度">
           <option value="0.5">0.5x</option>
           <option value="0.75">0.75x</option>
           <option value="1" selected>1x</option>
@@ -36,7 +36,7 @@
         </select>
       </div>
 
-      <button id="tts-close" class="tts-btn tts-close-btn" title="Close player" aria-label="Close player">
+      <button id="tts-close" class="tts-btn tts-close-btn" title="关闭播放器" aria-label="关闭播放器">
         <i class="fa fa-times"></i>
       </button>
     </div>
@@ -183,7 +183,7 @@
   function startSpeaking() {
     const text = getArticleText();
     if (!text) {
-      alert('No article content found to read.');
+      alert('未找到可朗读的文章内容。');
       return;
     }
 

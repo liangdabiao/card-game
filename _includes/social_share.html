@@ -1,27 +1,27 @@
 <!-- Social Sharing Buttons -->
 <div class="social-share">
-  <span class="share-label">Share this post:</span>
+  <span class="share-label">分享这篇文章：</span>
   <div class="share-buttons">
     <a href="#"
        class="share-btn twitter-btn"
        data-title="{{ page.title }}"
        onclick="shareTwitter(this); return false;"
-       title="Share on Twitter">
+       title="分享到 Twitter">
       <i class="fa fa-twitter"></i>
       <span>Twitter</span>
     </a>
     <a href="#"
        class="share-btn linkedin-btn"
        onclick="shareLinkedIn(); return false;"
-       title="Share on LinkedIn">
+       title="分享到 LinkedIn">
       <i class="fa fa-linkedin"></i>
       <span>LinkedIn</span>
     </a>
     <button class="share-btn copy-btn"
             onclick="copyLink(this)"
-            title="Copy link to clipboard">
+            title="复制链接到剪贴板">
       <i class="fa fa-link"></i>
-      <span>Copy Link</span>
+      <span>复制链接</span>
     </button>
   </div>
 </div>
@@ -64,16 +64,16 @@ function fallbackCopyLink(text, btn, spanEl) {
     document.execCommand('copy');
     showCopiedState(btn, spanEl);
   } catch (err) {
-    prompt('Copy this URL:', text);
+    prompt('复制此 URL：', text);
   }
   document.body.removeChild(textarea);
 }
 
 function showCopiedState(btn, spanEl) {
-  spanEl.textContent = 'Copied!';
+  spanEl.textContent = '已复制！';
   btn.classList.add('copied');
   setTimeout(function() {
-    spanEl.textContent = 'Copy Link';
+    spanEl.textContent = '复制链接';
     btn.classList.remove('copied');
   }, 2000);
 }

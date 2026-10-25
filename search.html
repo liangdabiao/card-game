@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Search
+title: 搜索
 permalink: /search/
 ---
 
@@ -11,10 +11,10 @@ permalink: /search/
 
 <div class="container" role="main">
   <div class="search-page">
-    <h1><i class="fa fa-search"></i> Search</h1>
+    <h1><i class="fa fa-search"></i> 搜索</h1>
 
     <div class="search-box">
-      <input type="text" id="page-search-input" class="search-input" placeholder="Search posts..." autofocus>
+      <input type="text" id="page-search-input" class="search-input" placeholder="搜索文章..." autofocus>
       <span class="search-icon"><i class="fa fa-search"></i></span>
     </div>
 
@@ -26,7 +26,7 @@ permalink: /search/
     <div id="page-search-results" class="search-results"></div>
 
     <div id="page-search-no-results" class="search-no-results" style="display: none;">
-      <p>No results found. Try different keywords or browse by <a href="/tags/">tags</a>.</p>
+      <p>未找到结果。请尝试其他关键词，或按<a href="{{ site.baseurl }}/tags/">标签</a>浏览。</p>
     </div>
   </div>
 </div>
@@ -42,7 +42,7 @@ permalink: /search/
   var searchNoResults = document.getElementById('page-search-no-results');
 
   // Fetch the search index (lunr.js already loaded by inline_search.html)
-  fetch('/search.json')
+  fetch('{{ site.baseurl }}/search.json')
     .then(function(response) {
       return response.json();
     })
@@ -144,8 +144,8 @@ permalink: /search/
       return;
     }
 
-    searchResultsCount.textContent = results.length + ' result' + (results.length === 1 ? '' : 's');
-    searchQuery.textContent = ' for "' + query + '"';
+    searchResultsCount.textContent = results.length + ' 条结果';
+    searchQuery.textContent = '，关键词为 "' + query + '"';
 
     results.forEach(function(result) {
       var post = searchData.find(function(p) {

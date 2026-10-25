@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Raspberry Pi 3 for Computer Vision
+title: 用树莓派 3 做计算机视觉
 date: 2016-04-23 12:00:00.000000000 -05:00
 permalink: raspberry-pi-3-for-computer-vision
 author: Benny Cheung
@@ -24,54 +24,50 @@ published: true
 ---
 
 <!--excerpt.start-->
-With Raspberry Pi 3, developing a computer vision project is no longer difficult nor expensive. Computer vision is a method of image processing and recognition that is especially useful when applied to Raspberry Pi. You could produce your IoT with computer vision components, to secure your home, to monitor beer in your fridge, to watch your kids. Once you have an initial setup, the possibilities are endless!
+有了树莓派 3，开发计算机视觉项目不再困难，也不再昂贵。计算机视觉是一种图像处理与识别方法，特别适合应用到树莓派上。你可以为物联网设备装上计算机视觉组件：看家护院、监测冰箱里的啤酒、照看孩子。一旦完成初始搭建，可能性就是无穷的！
 
-This article summarizes how to setup your Raspberry Pi 3, how to install the useful computer vision libraries from OpenCV and SimpleCV, how to install the machine learning framework Orange. Equipping with this software tool suites, plus
-Raspberry Pi 3 has Wifi, Bluetooth and optional OpenGL built-in,
-your vision project will be on it's way to reality.
+本文总结如何设置树莓派 3、如何安装实用的计算机视觉库 OpenCV 和 SimpleCV、如何安装机器学习框架 Orange。有了这套软件工具，再加上树莓派 3 自带的 Wifi、蓝牙和可选的 OpenGL，你的视觉项目就可以动工了。
 <!--excerpt.end-->
 
 ![Raspberry Pi 3 Computer Vision]({{ site.baseurl }}/images/raspberry-pi-3-for-computer-vision/Pi3_Vision_Setup.jpg)
 
-## Install Raspberry Pi 3
-You need to [Download Raspbain Jessie](https://www.raspberrypi.org/downloads/) disk image.
+## 安装树莓派 3
+你需要[下载 Raspbian Jessie](https://www.raspberrypi.org/downloads/) 磁盘镜像。
 
-After downloaded the Raspbain disk image, on Mac, we can use [Pi Filler](http://ivanx.com/raspberrypi/) to build the SD-card image.
+下载 Raspbian 磁盘镜像后，在 Mac 上可以使用 [Pi Filler](http://ivanx.com/raspberrypi/) 来制作 SD 卡镜像。
 
-After first boot, run `sudo raspi-config` do the following:
+首次启动后，运行 `sudo raspi-config` 执行以下操作：
 
-- Expand the root file system to use the full SD-card (first option)
-- Enable SSH (advance option)
-- edit `/etc/hostname` to give a useful host name, e.g. `my-pi`
-- edit `/etc/hosts` to point 127.0.0.1 to the hostname, e.g. `my-pi`
-- reboot `sudo shutdown -r now`
+- 扩展根文件系统以使用整个 SD 卡（第一个选项）
+- 启用 SSH（高级选项）
+- 编辑 `/etc/hostname`，设置一个实用的主机名，例如 `my-pi`
+- 编辑 `/etc/hosts`，把 127.0.0.1 指向该主机名，例如 `my-pi`
+- 重启：`sudo shutdown -r now`
 
-we need to run the installation script with root privileges as we will be writing to an SD card.
-In some distributions you can do this by prefixing the command with `sudo` whereas in some
-you will need to su root. You should consult your OS documentation for more help on this matter.
+由于要写入 SD 卡，我们需要以 root 权限运行安装脚本。
+在某些发行版中，可以在命令前加 `sudo`；而在另一些发行版中，则需要 su 到 root。
+具体做法请查阅你的操作系统文档。
 
-But in the case of a standard Debian install, one would run:
+但对于标准 Debian 安装而言，运行：
 
 ```
 sudo apt-get update
 sudo apt-get upgrade
 ```
 
-### Networking Setup
-If you want to setup Wifi, Bluetooth, this MakeUseOf guide on [How to Upgrade to a Raspberry Pi 3](http://www.makeuseof.com/tag/upgrade-raspberry-pi-3/)
-will be invaluable resource.
+### 网络设置
+如果你想配置 Wifi 和蓝牙，MakeUseOf 的这篇[《如何升级到树莓派 3》](http://www.makeuseof.com/tag/upgrade-raspberry-pi-3/)指南是非常宝贵的资源。
 
-### VNC Server
-If you want to setup remote desktop access to the Raspberry Pi, the following is an excellent guide:
-[How to control your raspberry using mac on-board tools (VNC-Connection)](http://quaintproject.wordpress.com/2013/03/03/how-to-control-your-raspberry-using-mac-on-board-tools/)
+### VNC 服务器
+如果你想设置对树莓派的远程桌面访问，下面是一份出色的指南：
+[如何用 Mac 自带工具控制树莓派（VNC 连接）](http://quaintproject.wordpress.com/2013/03/03/how-to-control-your-raspberry-using-mac-on-board-tools/)
 
-## Install OpenCV and SimpleCV
-OpenCV is a C++ library of programming functions mainly aimed at real-time computer vision. SimpleCV provides a wrapper with many "batteries included” features, such as integration with the OCR Tesseract or the well known `Orange` machine learning framework.
+## 安装 OpenCV 和 SimpleCV
+OpenCV 是一个 C++ 编程函数库，主要面向实时计算机视觉。SimpleCV 在其之上提供了一个" batteries included（自带全套电池）"式的封装，例如与 OCR 引擎 Tesseract 或著名的 `Orange` 机器学习框架的集成。
 
-Learning from this [Install Notes](http://simplecv.readthedocs.org/en/latest/HOWTO-Install%20on%20RaspberryPi.html),
-it describes a super easy and fast way to setup your Raspberry Pi with OpenCV with SimpleCV module, avoiding many painful steps described by others blogs.
+参考这篇[安装笔记](http://simplecv.readthedocs.org/en/latest/HOWTO-Install%20on%20RaspberryPi.html)，它描述了一种超简单、超快速的方法，让树莓派装上带 SimpleCV 模块的 OpenCV，避免了其他博客中描述的许多痛苦步骤。
 
-Simply run the following commands to install the OpenCV necessary dependencies:
+只需运行以下命令即可安装 OpenCV 的必要依赖：
 
 ```
 sudo apt-get install python-setuptools
@@ -79,18 +75,15 @@ sudo apt-get install python-pip
 sudo apt-get install ipython python-opencv python-scipy python-numpy python-pygame
 ```
 
-After all OpenCV dependencies are installed,
-we could proceed to install SimpleCV, a wrapper API that built on top of OpenCV and
-make computer vision really easy.
-Download SimpleCV from github and install from the source.
+所有 OpenCV 依赖安装完成后，我们可以继续安装 SimpleCV——一个构建在 OpenCV 之上的封装 API，它让计算机视觉变得真正简单。
+从 github 下载 SimpleCV 并从源码安装。
 
 ```
 sudo pip install https://github.com/sightmachine/SimpleCV/zipball/master
 sudo pip install svgwrite
 ```
 
-After allowing those commands to run for a while (it is going to take a while, go grab a drink),
-SimpleCV should be all set up. Connect a compatible camera to the board’s usb input and open up the `simplecv` shell.
+等待这些命令运行一段时间（会花一些时间，去喝杯饮料吧），SimpleCV 就应该全部就绪了。把兼容的摄像头连接到板子的 USB 口，然后打开 `simplecv` shell。
 
 ```
 raspberry@pi:~$ simplecv
@@ -105,60 +98,60 @@ SimpleCV:3: 1
 SimpleCV:4> exit
 ```
 
-Checkout the result image `test.jpg` to see it captures correctly.
-You have confirmed that Raspberry Pi is now running SimpleCV and working with your USB camera.
+查看结果图像 `test.jpg`，确认捕获正常。
+至此你已确认树莓派正在运行 SimpleCV，并能与你的 USB 摄像头协同工作。
 
-## Install Orange - Machine Learning Tools
-Orange <http://orange.biolab.si> is a component-based data mining software. It includes a range of data visualization, exploration, preprocessing and modelling techniques. We shall discuss more about Orange in the future articles.
+## 安装 Orange——机器学习工具
+Orange <http://orange.biolab.si> 是一款基于组件的数据挖掘软件，包含一系列数据可视化、探索、预处理和建模技术。我们将在后续文章中进一步讨论 Orange。
 
-*Due to the limitation of Raspberry Pi, we're having a hard time to get Orange framework compiled on Pi. You may want to run the machine learning component of your project on a Linux PC (Ubuntu 12.04) in this moment.*
+*受限于树莓派的性能，我们在 Pi 上编译 Orange 框架时遇到了很大困难。目前你可能需要在 Linux PC（Ubuntu 12.04）上运行项目的机器学习组件。*
 
-You can clone from the [Orange Github Source](https://github.com/biolab/orange)
+你可以从 [Orange Github 源码仓库](https://github.com/biolab/orange)克隆
 
 ```
 git clone https://github.com/biolab/orange.git
 ```
 
-To build and install Orange you can use the setup.py in the root orange directory
-(requires GCC, Python and numpy development headers). If you follow the previous steps to install
-OpenCV and SimpleCV, you already have all the required software packages on your Raspberry Pi.
+要构建并安装 Orange，可以使用 orange 根目录下的 setup.py
+（需要 GCC、Python 和 numpy 开发头文件）。如果你按照前面的步骤安装了
+OpenCV 和 SimpleCV，那么你的树莓派上已经具备所需的全部软件包。
 
-To use it unpack the nightly sources and run:
-(warning: the compilation will take hours to complete!)
+使用方法：解压每夜构建的源码并运行：
+（警告：编译将耗时数小时！）
 
 ```
 python setup.py build
 sudo python setup.py install
 ```
 
-This will also install orange-canvas script so you can start Orange Canvas from the command line.
+这还会安装 orange-canvas 脚本，让你可以从命令行启动 Orange Canvas。
 
-To install orange locally run:
+若要在本地安装 orange，运行：
 
 ```
 python setup.py install --user
 ```
 
-This will install orange in /home/<username>/.local/lib/pythonX.Y/site-packages/orange/.
+这会把 orange 安装到 /home/<username>/.local/lib/pythonX.Y/site-packages/orange/。
 
-## Computer Vision Projects for Inspirations
+## 启发灵感的计算机视觉项目
 
-### A Fruit Classifier
-An inspiring image recognition project that classifies fruits.
+### 水果分类器
+一个启发人心的图像识别项目，用于对水果分类。
 
 <http://jmgomez.me/a-fruit-image-classifier-with-python-and-simplecv/>
 
-### A LEGO classifier
-It uses the SimpleCV library and SVM machine learning to classify Lego pieces.
+### 乐高分类器
+它使用 SimpleCV 库和 SVM 机器学习来分类乐高积木零件。
 
 <https://www.youtube.com/watch?v=yupShUY5WS4>
 
-### Facial Camera Tracking
-Using OpenCV Harr-like facial detection, we could connect a 2-axises camera to track the facial movement.
+### 人脸相机追踪
+使用 OpenCV 的 Haar 类人脸检测，我们可以连接一台两轴相机来追踪人脸运动。
 
 <https://www.youtube.com/watch?v=GD8ArIM-5BQ>
 
-### Computer Vision and the Squirrel Hordes
-This excellent PyCon presentation shows us how to use Python and OpenCV to militarizing your backyard, to use a water gun to scare away those squirrels stealing your bird foods.
+### 计算机视觉与松鼠大军
+这场出色的 PyCon 演讲向我们展示了如何用 Python 和 OpenCV 把自家后院"军事化"：用水枪吓走那些偷吃鸟食的松鼠。
 
 <https://www.youtube.com/watch?v=QPgqfnKG_T4>

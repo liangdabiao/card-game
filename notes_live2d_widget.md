@@ -3,7 +3,7 @@
 * Archer Reilly, Markdown Symbols, Example of using Live2D Widget, <https://csrgxtu.github.io/2015/03/20/Writing-Mathematic-Fomulars-in-Markdown/>
 * Shuming Xu, Live2D in Electron – live2d-widget.js, Jan 2019, <https://shumingxu.com/posts/live2d-electron/>
 
-Just add this to the page script,
+只需将以下代码添加到页面脚本中，
 
 ```js
 <script src="/live2dw/lib/L2Dwidget.min.js"></script>

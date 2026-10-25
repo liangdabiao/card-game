@@ -19,28 +19,28 @@
 
 {% if related_posts.size > 0 %}
 <div class="related-posts">
-  <h3><i class="fa fa-bookmark"></i> Related Posts</h3>
+  <h3><i class="fa fa-bookmark"></i> 相关文章</h3>
   <div class="related-posts-grid">
     {% for post in related_posts limit: max_related %}
     <a href="{{ post.url }}" class="related-post-card">
       <div class="related-post-image">
         {% if post.featured and post.images.cover %}
-          <img src="/{{ post.images.cover }}" alt="{{ post.title }}" loading="lazy">
+          <img src="{{ site.baseurl }}/{{ post.images.cover }}" alt="{{ post.title }}" loading="lazy">
         {% elsif post.image %}
-          <img src="/{{ post.image }}" alt="{{ post.title }}" loading="lazy">
+          <img src="{{ site.baseurl }}/{{ post.image }}" alt="{{ post.title }}" loading="lazy">
         {% else %}
-          <img src="{{ site.avatar }}" alt="{{ post.title }}" loading="lazy">
+          <img src="{{ site.baseurl }}{{ site.avatar }}" alt="{{ post.title }}" loading="lazy">
         {% endif %}
       </div>
       <div class="related-post-info">
-        {% if post.featured %}<span class="label label-primary">Featured</span>{% endif %}
+        {% if post.featured %}<span class="label label-primary">精选</span>{% endif %}
         <h4>{{ post.title }}</h4>
         <p class="related-post-meta">
-          {{ post.date | date: "%b %-d, %Y" }}
+          {{ post.date | date: "%Y-%m-%d" }}
           {% assign words = post.content | number_of_words %}
           {% assign reading_time = words | divided_by: 200 %}
           {% if reading_time < 1 %}{% assign reading_time = 1 %}{% endif %}
-          &bull; {{ reading_time }} min read
+          &bull; {{ reading_time }} 分钟阅读
         </p>
       </div>
     </a>

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Recognizing Snacks using SimpleCV
+title: 用 SimpleCV 识别零食
 date: 2016-05-05 12:00:00.000000000 -05:00
 permalink: recognizing-snacks-using-simplecv
 author: Benny Cheung
@@ -23,67 +23,60 @@ series_order: 2
 ---
 
 <!--excerpt.start-->
-This article aims to provide the basic knowledge of how to recognize snacks by
-using Python and SimpleCV. Readers will gain practical programming knowledge via
-experimentation with the Python scripts included in
-the [Snack Classifier](https://github.com/jonahgroup/SnackClassifier) open source project.
+本文旨在提供如何用 Python 和 SimpleCV 识别零食的基础知识。读者将通过
+[Snack Classifier](https://github.com/jonahgroup/SnackClassifier) 开源项目所附
+Python 脚本的动手实验，获得实用的编程知识。
 
-To illustrate with a snacks recognition app, the [Snack Watcher](https://github.com/jonahgroup/SnackWatcher)
-watches any snacks present on the snack table.
-For Snack Watcher to determine if there was an interesting event,
-it needs to process the image into a set of image "Blobs". For each "Blob", Snack Watcher
-compares the "Blob" with it's previous state to determine if the "Blob" was added, removed or stationary.
+以一个零食识别应用为例，[Snack Watcher](https://github.com/jonahgroup/SnackWatcher)
+监视零食桌上出现的任何零食。
+为了判断是否发生了有趣的事件，Snack Watcher 需要把图像处理为一组图像"斑点"（Blob）。对每个"Blob"，Snack Watcher
+把"Blob"与其先前状态进行比较，以判定该"Blob"是新增、移除还是静止。
 <!--excerpt.end-->
 
-More interestingly, the Snack Watcher can be configured to recognize
-if that "Blob" looks like a particular kind of snack (e.g. cookie or candy).
-In the following Snack Watcher captured image, we can see the snacks have been classified
-and the results are labelled with their kind, reporting the "NEW SNACKS DETECTED!" event
-onto a message channel.
+更有趣的是，Snack Watcher 可以配置为识别某个"Blob"看起来是否像某种特定的零食（例如饼干或糖果）。
+在下图 Snack Watcher 捕获的图像中，可以看到零食已被分类，
+结果都标注了各自的类别，并向消息频道报告"NEW SNACKS DETECTED!"（检测到新零食！）事件。
 
-![Snack Watcher sample of snacks are being classified and labelled](images/recognizing-snacks-using-simplecv/Snack_Watcher_marvin_slack_bot.png)
+![Snack Watcher 零食分类与标注示例](images/recognizing-snacks-using-simplecv/Snack_Watcher_marvin_slack_bot.png)
 
-## The Magics of Vision and Classification
-The Python computer vision's framework, [SimpleCV](http://simplecv.org/) is an OpenCV wrapper,
-that makes processing, detecting, and displaying image simple, so that
-we don't need to invest great effort to achieve interesting results.
-For machine learning and data classification, SimpleCV is built on top of the [Orange](http://orange.biolab.si/) framework.
-Orange implements a rich set of image extraction operators and
-machine learning algorithms to support our goal - the snack classification.
-For setting up OpenCV, SimpleCV and Orange for a Raspberry Pi project, please refer to this blog post
-[Raspberry Pi 3 for Computer Vision](http://bennycheung.github.io/raspberry-pi-3-for-computer-vision)
-for instructions.
+## 视觉与分类的魔法
+Python 计算机视觉框架 [SimpleCV](http://simplecv.org/) 是 OpenCV 的封装，
+它让图像处理、检测和展示变得简单，我们无需投入巨大精力就能获得有趣的结果。
+在机器学习和数据分类方面，SimpleCV 构建在 [Orange](http://orange.biolab.si/) 框架之上。
+Orange 实现了丰富的图像特征提取算子和
+机器学习算法，以支持我们的目标——零食分类。
+关于为树莓派项目安装 OpenCV、SimpleCV 和 Orange，请参考这篇博文
+[用树莓派 3 做计算机视觉]({{ site.baseurl }}/raspberry-pi-3-for-computer-vision)
+获取说明。
 
-The best way to learn about snack classification is trying it out.
+学习零食分类的最好方式就是亲手一试。
 
-The [Snack Classifier](https://github.com/jonahgroup/SnackClassifier) is an open source project
-for snack classification. It comes with two Python scripts to help experiment with
-the system. Once the concepts are affirmed after experimenting with the scripts,
-the Snack Classifier can be used as a *Microservice* to support your snack classification tasks;
-extending the overall goal of effective snack watching!
+[Snack Classifier](https://github.com/jonahgroup/SnackClassifier) 是一个
+零食分类的开源项目。它附带两个 Python 脚本，帮助你实验这套系统。通过脚本实验确认概念之后，
+Snack Classifier 可以作为一个*微服务*（Microservice）来支持你的零食分类任务；
+从而扩展"有效监视零食"这一总体目标！
 
-### Python Scripts for Supervised Machine Learning
-The Python scripts described in here can be used as a *Supervised Machine Learning* tools.
-The typical supervised machine learning will go through two stages (see picture below).
-During the first stage `(a) Training`,
-the computer is presented with example inputs and their desired outputs `label` (aka. class, such as cookies),
-running through a set of feature extractors to summarize the input as a vector of features.
-With the support of the SimpleCV machine learning algorithms,
-the system generates a classifier model which can
-effectively classify the training inputs.
+### 用于监督式机器学习的 Python 脚本
+本文描述的 Python 脚本可以用作*监督式机器学习*工具。
+典型的监督式机器学习要经历两个阶段（见下图）。
+第一阶段 `(a) 训练`（Training）中，
+向计算机呈现示例输入及其期望输出 `label`（又称类别，如 cookies），
+经过一组特征提取器把输入概括为特征向量。
+在 SimpleCV 机器学习算法的支持下，
+系统生成一个能够有效分类训练输入的分类器模型。
 
-The second stage `(b) Prediction`, can take a unknown input sample,
-running through the same set of feature extractors to summarize the unknown as a
-vector of features. With the classifier model obtained from training, the unknown
-input can be classified as the result `label` (e.g. cookies).
+第二阶段 `(b) 预测`（Prediction），可以接收未知的输入样本，
+经过同一组特征提取器把未知样本概括为
+特征向量。借助训练得到的分类器模型，未知
+输入可以被分类为结果 `label`（例如 cookies）。
 
-![Supervised Machine Learning]({{ site.baseurl }}images/recognizing-snacks-using-simplecv/supervised_classification.png)
+![监督式机器学习]({{ site.baseurl }}/images/recognizing-snacks-using-simplecv/supervised_classification.png)
 
-#### (a) Snack Training (Python Script)
-This script has been inspired by this article,
-[A fruit image classifier with Python and SimpleCV](http://jmgomez.me/a-fruit-image-classifier-with-python-and-simplecv/).
-We have enhanced the article's code snippet to make an easy to use
-Snack Training and Classifier scripts.
+#### (a) 零食训练（Python 脚本）
+该脚本的灵感来自这篇文章，
+[A fruit image classifier with Python and SimpleCV](http://jmgomez.me/a-fruit-image-classifier-with-python-and-simplecv/)。
+我们增强了文章的代码片段，做成易于使用的
+零食训练与分类脚本。
 
 [snack-trainer.py](https://github.com/jonahgroup/SnackClassifier/blob/master/scripts/snack-trainer.py)
 
@@ -109,14 +102,14 @@ Options:
                         save classifier into file
 ```
 
-The default path containing all the training images is `train`,
-the default path containing all the testing images is `test` and
-the default path where the results are written is `result`. Of course, you
-can change the directories with the corresponding commandline options.
+包含全部训练图像的默认路径是 `train`，
+包含全部测试图像的默认路径是 `test`，
+结果写入的默认路径是 `result`。当然，你可以
+用相应的命令行选项更改这些目录。
 
-All image classes must be layout into the separate directories.
-The class labels must be aligned to the directories.
-For example, if we have 2 classes `cookie` and `other`, the directory layout should be like,
+所有图像类别必须分门别类地放入各自的目录。
+类别标签必须与目录一一对应。
+例如，如果我们有 2 个类别 `cookie` 和 `other`，目录布局应该像这样，
 
 ```
   train
@@ -140,21 +133,21 @@ For example, if we have 2 classes `cookie` and `other`, the directory layout sho
   | |____ ...
 ```
 
-After we setup all the image directories, we can execute the `snack-trainer.py` by,
+设置好全部图像目录之后，我们可以这样执行 `snack-trainer.py`，
 
 ```bash
 python snack-trainer.py -g -c "cookie,other" -s tree
 ```
 
-In this example, we are classifying `cookie` and `other`. We specify to use `tree` classifier to classify the `test` images. The result annotated images will be saved into `result`.
+在这个例子里，我们分类 `cookie` 和 `other`。我们指定使用 `tree` 分类器来分类 `test` 图像。带标注的结果图像会保存到 `result`。
 
-In addition, the trained classifier parameters are saved into, default by the classifier name, e.g. `tree.dat`.
-We can use this classifier file for further image classification by executing
-`snack-classify.py` after training.
+此外，训练好的分类器参数会被保存，默认以分类器名命名，例如 `tree.dat`。
+训练完成后，我们可以用这个分类器文件执行
+`snack-classify.py` 做进一步的图像分类。
 
-#### (b) Snack Prediction (Python Script)
-If we are using `tree` classifier for training, the default trained classifier will be saved as `tree.dat` (Note: the `snack-trainer.py` has an option to control the classifier saved filename if needed).
-Subsequently, we can use `tree.dat` to reconstruct the classifier for classifying other images. `snack-classfy.py` is the utility program to perform further image classifications.
+#### (b) 零食预测（Python 脚本）
+如果我们使用 `tree` 分类器做训练，训练好的分类器默认保存为 `tree.dat`（注意：如有需要，`snack-trainer.py` 提供了控制分类器保存文件名的选项）。
+随后，我们可以用 `tree.dat` 重建分类器，对其他图像分类。`snack-classfy.py` 就是执行进一步图像分类的工具程序。
 
 [snack-classify.py](https://github.com/jonahgroup/SnackClassifier/blob/master/scripts/snack-classify.py)
 
@@ -170,40 +163,40 @@ Options:
                         classify this image file
 ```
 
-If we want to classify `something.png` image, we can execute,
+如果我们想对 `something.png` 图像分类，可以执行，
 
 ```bash
 python snack-classify.py -c tree.dat -i something.png
 ```
 
-It would reply the classified name for the given image.
+它会返回给定图像的分类名称。
 
-## SimpleCV Packages
-To deepen our practical knowledge of image training and classification,
-this section is aimed to show a series of Python code snippets.
-It is not meant to give an exhaustive tutorial of the SimpleCV machine learning packages here,
-instead you can obtain the full detail in [SimpleCV Documentation](http://simplecv.sourceforge.net/doc/).
+## SimpleCV 软件包
+为了深化图像训练与分类的实践知识，
+本节旨在展示一系列 Python 代码片段。
+这里并不打算给出 SimpleCV 机器学习软件包的详尽教程，
+完整细节请参阅 [SimpleCV Documentation](http://simplecv.sourceforge.net/doc/)。
 
-This illustrates how to use SimpleCV machine learning packages within the context of training and classifying snacks. It demonstrates the practical usage of the SimpleCV methods;
-we can learn how the Snack Classifier's *Microservice* was built.
+本节展示如何在训练与分类零食的语境中使用 SimpleCV 机器学习软件包。它演示了 SimpleCV 方法的实际用法；
+我们可以了解 Snack Classifier 的*微服务*是如何构建的。
 
 
-For the code snippets, we are referring to this sample
-[Cookie Image]({{ site.baseurl }}/images/recognizing-snacks-using-simplecv/cookie_001.png),
-download it and work along with the following code snippets.
+对于代码片段，我们使用这张样例
+[Cookie 图像]({{ site.baseurl }}/images/recognizing-snacks-using-simplecv/cookie_001.png)，
+下载它并跟着下面的代码片段操作。
 
-![Cookie Image]({{ site.baseurl }}/images/recognizing-snacks-using-simplecv/cookie_001.png),
+![Cookie 图像]({{ site.baseurl }}/images/recognizing-snacks-using-simplecv/cookie_001.png),
 
-### SimpleCV Feature Extraction
-In this section, we are playing with [SimpleCV Feature Package](http://simplecv.sourceforge.net/doc/SimpleCV.Features.html).
+### SimpleCV 特征提取
+本节我们试用 [SimpleCV Feature Package](http://simplecv.sourceforge.net/doc/SimpleCV.Features.html)。
 
-#### Edge Feature Extractor
-This extractor method takes in an image, applies an edge detector, and calculates the length and direction of lines in the image.
-The value of the lines are accumulated into bins and formed a 1D edge length histogram and 1D edge angle histogram.
+#### 边缘特征提取器
+这个提取器方法接收一张图像，施加边缘检测器，并计算图像中线条的长度和方向。
+线条的值累积到 bin 中，形成 1D 边缘长度直方图和 1D 边缘角度直方图。
 
-![Edge Extractor on Test Cookie Image]({{ site.baseurl }}/images/recognizing-snacks-using-simplecv/cookie_001_edge.png)
+![对测试 cookie 图像施加边缘提取器]({{ site.baseurl }}/images/recognizing-snacks-using-simplecv/cookie_001_edge.png)
 
-For example, we would like to do the edge histogram feature extraction from `cookie_001.png` image. The features are slotted into e.g. 5 bins. Then, we print out the feature field names and their values.
+例如，我们想从 `cookie_001.png` 图像提取边缘直方图特征。特征被分入例如 5 个 bin。然后，我们打印特征字段名及其值。
 
 ```python
 edge = EdgeHistogramFeatureExtractor(5)
@@ -215,7 +208,7 @@ for i in range(0, edge.getNumFields()):
     print edge_fields[i], '=', edge_vecs[i]
 ```
 
-The result would be like,
+结果类似，
 
 ```
 Length0 = 1.80579216354
@@ -230,16 +223,15 @@ Angle3 = 0.00369012043829
 Angle4 = 0.0
 ```
 
-When you inspect the statistical results of the edge extraction, the results make intuitive sense
-that the small segments are dominating over the long segments. The edge's angles produce a normal distribution of the angular values.
+审视边缘提取的统计结果，可以发现结果很符合直觉：小线段数量远超长线段。边缘的角度值呈正态分布。
 
-#### Hue Feature Extractor
-This feature extractor takes in an image, gets the hue channel, bins the number of pixels with a particular hue values.
-The hue values are accumulated into bins and formed a 1D hue histogram.
+#### 色调（Hue）特征提取器
+这个特征提取器接收一张图像，获取色调通道，按特定色调值统计像素数量并分入 bin。
+色调值累积到 bin 中，形成 1D 色调直方图。
 
-![Hue Extractor on Test Cookie Image]({{ site.baseurl }}/images/recognizing-snacks-using-simplecv/cookie_001_hue.png)
+![对测试 cookie 图像施加色调提取器]({{ site.baseurl }}/images/recognizing-snacks-using-simplecv/cookie_001_hue.png)
 
-For example, we would like to do the hue histogram feature extraction from `cookie_001.png` image. The features are slotted into e.g. 5 bins. Then, we print out the feature field names and their values.
+例如，我们想从 `cookie_001.png` 图像提取色调直方图特征。特征被分入例如 5 个 bin。然后，我们打印特征字段名及其值。
 
 ```python
 hue = HueHistogramFeatureExtractor(5)
@@ -251,7 +243,7 @@ for i in range(0, hue.getNumFields()):
     print hue_fields[i], '=', hue_vecs[i]
 ```
 
-The result would be like,
+结果类似，
 
 ```
 Hue0 = 0.0183470315515
@@ -261,12 +253,12 @@ Hue3 = 0.000168505712084
 Hue4 = 0.0
 ```
 
-The result says the "reddish" colour dominating this sample cookie image.
+结果表明"偏红"的色调主导了这张样例 cookie 图像。
 
-#### Haar Feature Extractor
-This extractor generates Haar-like features from an image. These Haar-like features are used by a the classifiers of machine learning to help identify objects or things in the picture by their segmentation contrast, or in this case - Haar-like features. Interested reader can get a more in-depth review of [Haar-Like Features](http://en.wikipedia.org/wiki/Haar-like_features)
+#### Haar 特征提取器
+该提取器从图像生成类 Haar 特征。这些类 Haar 特征被机器学习的分类器用来根据分割对比度帮助识别图像中的对象或物体——在本例中就是类 Haar 特征。有兴趣的读者可以深入了解[类 Haar 特征](http://en.wikipedia.org/wiki/Haar-like_features)
 
-For example, we will use SimpleCV's [haar.txt](https://github.com/jonahgroup/SnackClassifier/blob/master/static/trainer/haar.txt) file for defining the set of `Haar-like features` extraction parameters. Then, we print out the feature field names and their values. Since extractor produces a lot of features, the result has been clipped for displaying in here.
+例如，我们将使用 SimpleCV 的 [haar.txt](https://github.com/jonahgroup/SnackClassifier/blob/master/static/trainer/haar.txt) 文件定义`类 Haar 特征`提取参数集。然后，我们打印特征字段名及其值。由于该提取器产出大量特征，结果在这里做了截断显示。
 
 ```python
 haar = HaarLikeFeatureExtractor(fname='haar.txt')
@@ -278,7 +270,7 @@ for i in range(0, len(haar_fields)):
     print haar_fields[i], '=', haar_vecs[i]
 ```
 
-The result would be like,
+结果类似，
 
 ```
 feature2x1_1 = 2242356.0
@@ -293,53 +285,30 @@ Angle_feature3x1_1 = 22915652.0
 ...
 ```
 
-### SimpleCV Classification (aka Machine Learning)
-In this section, we will explore the [SimpleCV Machine Learning Package](http://simplecv.sourceforge.net/doc/SimpleCV.MachineLearning.html).
-We are describing four classifiers, SVM, Tree, Navie Bayes and KNN in this section.
+### SimpleCV 分类（即机器学习）
+本节我们将探索 [SimpleCV Machine Learning Package](http://simplecv.sourceforge.net/doc/SimpleCV.MachineLearning.html)。
+本节介绍四种分类器：SVM、Tree、朴素贝叶斯和 KNN。
 
-#### SVM (Support Vector Machine) Classifier
-Given a set of training examples, each marked for belonging to one of two
-categories, an SVM training algorithm builds a model that assigns new examples
-into one category or the other, making it a non-probabilistic binary linear
-classifier. An SVM model is a representation of the examples as points in space,
-mapped so that the examples of the separate categories are divided by a clear
-gap that is as wide as possible.
-Read more: <http://en.wikipedia.org/wiki/Support_vector_machine>
+#### SVM（支持向量机）分类器
+给定一组训练样本，每个样本都标记为属于两个类别之一，SVM 训练算法构建一个把新样本归入其中一个类别的模型，使之成为一个非概率的二元线性分类器。SVM 模型把样本表示为空间中的点，映射方式是让不同类别的样本被一条尽可能宽的清晰间隔分开。
+延伸阅读：<http://en.wikipedia.org/wiki/Support_vector_machine>
 
-#### Tree Classifier
-A decision tree is a flowchart-like structure in which each internal node
-represents a "test" on an attribute (e.g. whether a coin flip comes up heads or
-tails), each branch represents the outcome of the test and each leaf node
-represents a class label (decision taken after computing all attributes). The
-paths from root to leaf represents classification rules.
-Read more: <http://en.wikipedia.org/wiki/Decision_trees>
+#### Tree 分类器
+决策树是一种类似流程图的结构：每个内部节点表示对某个属性的"测试"（例如抛硬币是正面还是反面），每条分支表示测试的结果，每个叶节点表示一个类别标签（在计算全部属性之后做出的决策）。从根到叶的路径表示分类规则。
+延伸阅读：<http://en.wikipedia.org/wiki/Decision_trees>
 
-#### Naive Bayes Classifier
-Naive Bayes is a simple technique for constructing classifiers: models that
-assign class labels to problem instances, represented as vectors of feature
-values, where the class labels are drawn from some finite set. It is not a
-single algorithm for training such classifiers, but a family of algorithms based
-on a common principle: all naive Bayes classifiers assume that the value of a
-particular feature is independent of the value of any other feature, given the
-class variable. For example, a fruit may be considered to be an apple if it is
-red, round, and about 10 cm in diameter. A naive Bayes classifier considers each
-of these features to contribute independently to the probability that this fruit
-is an apple, regardless of any possible correlations between the color,
-roundness and diameter features.
-Read more: <http://en.wikipedia.org/wiki/Naive_bayes>
+#### 朴素贝叶斯分类器
+朴素贝叶斯是一种构建分类器的简单技术：这类模型为以特征值向量表示的问题实例指派类别标签，类别标签取自某个有限集合。训练这类分类器并非只有单一算法，而是基于共同原理的一族算法：所有朴素贝叶斯分类器都假设，在给定类别变量的前提下，某个特定特征的值独立于任何其他特征的值。例如，如果一种水果是红色、圆形、直径约 10 厘米，就可以认为它是苹果。朴素贝叶斯分类器认为这些特征中的每一个都独立地贡献于"该水果是苹果"的概率，而不考虑颜色、圆度和直径特征之间任何可能的相关性。
+延伸阅读：<http://en.wikipedia.org/wiki/Naive_bayes>
 
-#### KNN (K Nearest Neighbor) Classifier
-In k-NN classification, the output is a class membership. An object is
-classified by a majority vote of its neighbors, with the object being assigned
-to the class most common among its k nearest neighbors (k is a positive integer,
-typically small). If k = 1, then the object is simply assigned to the class of
-that single nearest neighbor.
-Read more: <http://en.wikipedia.org/wiki/K-nearest_neighbor_algorithm>
+#### KNN（K 近邻）分类器
+在 k-NN 分类中，输出是类别归属。一个对象由其邻居的多数投票来分类，对象被指派到其 k 个最近邻居中最常见的类别（k 是正整数，通常很小）。如果 k = 1，对象就被简单地指派为那唯一最近邻居的类别。
+延伸阅读：<http://en.wikipedia.org/wiki/K-nearest_neighbor_algorithm>
 
-### Image Feature Extraction & Classification
-With the extractors and classifiers accumulated up to this point,
-we are ready to incorporate this knowledge into a full
-image extraction and classification example.
+### 图像特征提取与分类
+有了累积至今的提取器与分类器，
+我们已准备好把这些知识整合进一个完整的
+图像提取与分类示例。
 
 ```python
 def getExtractors():
@@ -364,16 +333,16 @@ extractors = getExtractors()
 classifiers = getClassifiers(extractors)
 ```
 
-We obtained the classifiers by constructing them with a set of extractors. To break the code snippet down a little more,
-we have created a set of extractors, namely `hue`, `edge` and `haar` extractors. These extractors are capable of
-taking an image and extracting the essential features from it.
-The `hue` extractor will notice the pixels' hue and slot the values into bins.
-Similar, `edge` and `haar` extractors will perform their special calculation for an image.
+我们用一组提取器构造出分类器。把代码片段拆解得更细一些：
+我们创建了一组提取器，即 `hue`、`edge` 和 `haar` 提取器。这些提取器能够
+接收一张图像并从中提取本质特征。
+`hue` 提取器会关注像素的色调并把值分入 bin。
+类似地，`edge` 和 `haar` 提取器会对图像执行它们各自的特殊计算。
 
-Mathematically, these extractors have **vectorized** image characteristics into a set of feature values.
-A feature, such as hue of red, could be characterized by value of 0.018 in field name of `Hue0` for example.
-We can think of **feature vector** as a kind of formal description for an image.
-Every image from our training set will be characterized as a feature vector.
+从数学上说，这些提取器把图像特征**向量化**为一组特征值。
+例如，"红色色调"这样的特征，可以由字段名 `Hue0` 中的值 0.018 来刻画。
+我们可以把**特征向量**视为一种图像的形式化描述。
+训练集中的每张图像都将被刻画为一个特征向量。
 
 ```python
 img = Image('cookie_001.png')
@@ -381,7 +350,7 @@ hue_feature_vec = extractors[0].extract(img)
 print hue_feature_vec
 ```
 
-The printout of `hue_feature_vect` will be like,
+`hue_feature_vect` 的输出类似，
 
 ```
   [0.03549028421988077,
@@ -396,8 +365,8 @@ The printout of `hue_feature_vect` will be like,
    0.0]
 ```
 
-We have read the image `cookie_001.png`, and use hue extractor (in the example code, `extractors[0]`,
-to extract the hue feature vector with their binned values.
+我们读取了图像 `cookie_001.png`，并用色调提取器（示例代码中的 `extractors[0]`）
+提取了带有分箱值的色调特征向量。
 
 ```python
   img = Image('cookie_001.png')
@@ -420,7 +389,7 @@ to extract the hue feature vector with their binned values.
       print feature_name[i], '=', feature_vec[i]
 ```
 
-The code is written to list 8 random features fields and values for illustration.
+这段代码列出 8 个随机特征字段及其值作为演示。
 
 ```
 Total number of features: 260
@@ -436,16 +405,16 @@ Angle_feature5x1_12 = -181856.0
 Angle_feature4x1_1 = 43748.0
 ```
 
-The classifier will use the extractors, obtaining the feature vector,
-to train itself to produce a classifier model.
+分类器将使用这些提取器获得特征向量，
+训练自身以产出分类器模型。
 
-### Classifying Snacks with the Classifier Model
-Now that we have done the classifier training, we can save the classifier model into a file.
-For example, we have saved the `tree` classifier into `tree.dat`. Our example `tree` classifier
-has been trained with the labels of `[brownie, candy, cookie, other]`. After importing,
-we can use the classifier model to classify our unknown images.
+### 用分类器模型分类零食
+分类器训练完成后，我们可以把分类器模型保存到文件。
+例如，我们已把 `tree` 分类器保存为 `tree.dat`。我们的示例 `tree` 分类器
+已用标签 `[brownie, candy, cookie, other]` 训练。导入之后，
+我们就可以用分类器模型对未知图像分类。
 
-Test images:
+测试图像：
 
 - [test_001.png]({{ site.baseurl }}/images/recognizing-snacks-using-simplecv/test_001.png)
 - [test_002.png]({{ site.baseurl }}/images/recognizing-snacks-using-simplecv/test_002.png)
@@ -464,7 +433,7 @@ print "test_002.png is", classifier.classify(test_img2)
 print "test_003.png is", classifier.classify(test_img3)
 ```
 
-The result will tell us what they are.
+结果会告诉我们它们是什么。
 
 ```
 test_001.png is brownie
@@ -472,4 +441,4 @@ test_002.png is candy
 test_003.png is cookie
 ```
 
-Go ahead, you're ready to configure the Snack Watcher to learn and classify some snacks!
+动手吧，你已经可以配置 Snack Watcher 去学习和分类一些零食了！

@@ -33,7 +33,7 @@
 
 /* Copied tooltip */
 .heading-anchor.copied::after {
-  content: 'Copied!';
+  content: '已复制！';
   position: absolute;
   left: 100%;
   top: 50%;
@@ -92,7 +92,7 @@ html.dark-mode .heading-anchor.copied::after {
         // Generate ID from heading text
         id = heading.textContent
           .toLowerCase()
-          .replace(/[^\w\s-]/g, '')  // Remove special chars
+          .replace(/[^\w\s\u4e00-\u9fff-]/g, '')  // Remove special chars, keep CJK
           .replace(/\s+/g, '-')       // Replace spaces with hyphens
           .replace(/-+/g, '-')        // Remove multiple hyphens
           .trim();
@@ -104,8 +104,8 @@ html.dark-mode .heading-anchor.copied::after {
       anchor.className = 'heading-anchor';
       anchor.href = '#' + id;
       anchor.innerHTML = '<i class="fa fa-link"></i>';
-      anchor.title = 'Copy link to this section';
-      anchor.setAttribute('aria-label', 'Copy link to section: ' + heading.textContent);
+      anchor.title = '复制本节链接';
+      anchor.setAttribute('aria-label', '复制本节链接：' + heading.textContent);
 
       // Click handler to copy link
       anchor.addEventListener('click', function(e) {

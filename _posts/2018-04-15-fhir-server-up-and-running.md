@@ -1,6 +1,6 @@
 ---
 layout: post
-title: FHIR Server Up and Running
+title: FHIR 服务器搭建与运行
 date: 2018-04-15 01:00:00.000000000 -05:00
 permalink: fhir-server-up-and-running
 author: Benny Cheung
@@ -24,56 +24,56 @@ series_order: 1
 ---
 
 <!--excerpt.start-->
-Blockchain is a hot topic for making patient's Electronic Health Record both accessible and safe, talking about the dream of patients finally own their complete medical history, drugs list, lab test results, doctor notes etc. But there is a fundamental problem - *Where is the data coming from?* Even the medical providers are digitizing the patient's data deligently, the data remains inaccessible beyond their database boundary.
+区块链是一个让患者电子健康档案（Electronic Health Record）既可访问又安全的热门话题，人们畅谈着患者的终极梦想：完整掌握自己的病史、用药清单、化验结果、医生记录等。但这里有一个根本问题——*数据从哪里来？* 即使医疗机构正在勤勤恳恳地把患者数据数字化，这些数据在其数据库边界之外依然不可访问。
 <!--excerpt.end-->
 
-There are many attempts to bridge this big data chasm. The interest reader should take the Coursera's *Health Informatics on FHIR* <https://www.coursera.org/learn/fhir> to understand the history, the problem and how FHIR could keep the Blockchain dream alive in sharing the medical records. This article takes the Blockchain believers, as [Kierkegaard](https://en.wikipedia.org/wiki/S%C3%B8ren_Kierkegaard) famously termed "A leap of faith", to setup a functional FHIR server for research and development.
+有许多尝试在弥合这道大数据鸿沟。有兴趣的读者可以学习 Coursera 的 *Health Informatics on FHIR* 课程 <https://www.coursera.org/learn/fhir>，了解这段历史、这个问题，以及 FHIR 如何让区块链共享医疗记录的梦想保持生机。本文面向区块链的信仰者——正如[克尔凯郭尔](https://en.wikipedia.org/wiki/S%C3%B8ren_Kierkegaard)的名言"信仰之跃"（A leap of faith）——搭建一台可用于研究与开发的、功能完备的 FHIR 服务器。
 
-## FHIR Me Up!
-**FHIR** is a platform specification that defines a set of capabilities use across the healthcare process, in all jurisdictions, and in lots of different context. This document will guide you through the *installation, setup and testing* of the **FHIR Server**. With the FHIR Server, the provider's healthcare data can be made easily accessible with the standardized RESTful API and JSON formatted resources.
+## FHIR 加持！
+**FHIR** 是一个平台规范，它定义了一组可在整个医疗流程、所有司法辖区和众多不同场景中通用的能力。本文将引导你完成 **FHIR 服务器**的*安装、配置与测试*。有了 FHIR 服务器，医疗机构的数据就可以通过标准化 RESTful API 和 JSON 格式资源轻松访问。
 
-In addition, to limit the scope of this setup, the topics of security are not discussed.
+此外，为限定本文的讨论范围，这里不讨论安全性话题。
 
-### Quick Links
-The reference technology stack links:
-* Official FHIR Website: <http://hl7.org/fhir>
-* Hapi FHIR - The Open Source FHIR API for Java: <http://hapifhir.io/>
-* SMART on FHIR - The Open App Connection Standard to FHIR Server: <http://docs.smarthealthit.org/>
+### 快速链接
+参考技术栈链接：
+* FHIR 官方网站：<http://hl7.org/fhir>
+* Hapi FHIR——Java 开源 FHIR API：<http://hapifhir.io/>
+* SMART on FHIR——连接 FHIR 服务器的开放应用标准：<http://docs.smarthealthit.org/>
 
-The suite of tools are used and their links:
-* STU3 Sandbox Data: <http://docs.smarthealthit.org/data/stu3-sandbox-data.html>
-* Sample Patient Generator for STU3: <https://github.com/smart-on-fhir/sample-patients-stu3>
-* Add Tags to FHIR Bundle and Resources Uploader: <https://github.com/smart-on-fhir/tag-uploader>
-* SMART on FHIR Patient Browser: <https://github.com/smart-on-fhir/patient-browser>
+本文使用的工具套件及其链接：
+* STU3 沙箱数据：<http://docs.smarthealthit.org/data/stu3-sandbox-data.html>
+* STU3 示例患者生成器：<https://github.com/smart-on-fhir/sample-patients-stu3>
+* 为 FHIR Bundle 添加标签及资源上传器：<https://github.com/smart-on-fhir/tag-uploader>
+* SMART on FHIR 患者浏览器：<https://github.com/smart-on-fhir/patient-browser>
 
-### Steps Overview
-The following steps will guide you through the server installation, data generation and UI testing. The instructions are proven to work on a Mac (OS X El Capitan).
+### 步骤概览
+以下步骤将引导你完成服务器安装、数据生成和 UI 测试。这些步骤已在 Mac（OS X El Capitan）上验证可行。
 
-## Compile Hapi FHIR Packages
-Go download Hapi FHIR Server <http://hapifhir.io/download.html>. At the time of this writing, the latest **DSTU3** (Draft Standard for Trial Use 3) is stable.
-We shall build our server and data upon this latest released standard.
+## 编译 Hapi FHIR 软件包
+去下载 Hapi FHIR Server <http://hapifhir.io/download.html>。撰写本文时，最新的 **DSTU3**（Draft Standard for Trial Use 3，试验用标准草案第 3 版）已经稳定。
+我们将基于这个最新发布标准来构建服务器和数据。
 
-HAPI is built primary using Apache Maven. Even if you are using an IDE, you should start by performing a command line build before trying to get everything working in an IDE.
+HAPI 主要使用 Apache Maven 构建。即使你使用 IDE，也应该先执行一次命令行构建，再尝试在 IDE 中让一切正常工作。
 
-Execute the build with the following command:
+执行以下命令进行构建：
 
 ```shell
 mvn install
 ```
 
-Note that this complete build takes a long time because of all of the unit tests being executed. At the end you should expect to see a screen resembling:
-![Hapi FHIR Build Completed]({{ site.baseurl }}images/fhir-server-up-and-running/Hapi_FHIR_mvn_build_completed.jpg)
+注意，完整构建耗时较长，因为要执行所有单元测试。最后你应该会看到类似下面的画面：
+![Hapi FHIR 构建完成]({{ site.baseurl }}/images/fhir-server-up-and-running/Hapi_FHIR_mvn_build_completed.jpg)
 
-## Setup Hapi FHIR JPA Server
-After the Hapi FHIR Server has been compiled, we can setup the JPA Server example located in `hapi-fhir-jpasserver-example`.
+## 配置 Hapi FHIR JPA 服务器
+Hapi FHIR Server 编译完成后，我们就可以配置位于 `hapi-fhir-jpasserver-example` 的 JPA 服务器示例。
 
-We shall edit the root URL context to a shorter name `hapi-fhir` (i.e. make the URL shorter).
+我们将把根 URL 上下文改成一个更短的名字 `hapi-fhir`（即让 URL 更短）。
 
 ```shell
 vi pom.xml
 ```
 
-In the section of Jetty server plug-in config, we shall change the `contextPath` XML value to `/hapi-fhir`.
+在 Jetty 服务器插件配置一节中，把 `contextPath` XML 值改为 `/hapi-fhir`。
 
 ```xml
 <!-- The following is not required for the application to build, but allows you to test it by issuing "mvn jetty:run" from the command line. -->
@@ -93,94 +93,94 @@ In the section of Jetty server plug-in config, we shall change the `contextPath`
 </pluginManagement>
 ```
 
-## Start Hapi FHIR JPA Server
-After editing the `pom.xml`, we are ready to start the Hapi FHIR Server by the embedded Jetty webserver,
+## 启动 Hapi FHIR JPA 服务器
+编辑完 `pom.xml` 后，就可以用内嵌的 Jetty 网页服务器启动 Hapi FHIR Server 了，
 
 ```shell
 mvn jetty:run
 ```
 
-The Hapi FHIR Server example UI can be found at:
+Hapi FHIR Server 示例 UI 位于：
 
 ```
 http://localhost:8080/hapi-fhir
 ```
 
-![HAPI FHIR Server UI]({{ site.baseurl }}images/fhir-server-up-and-running/HAPI_FHIR_Server.jpg)
+![HAPI FHIR 服务器 UI]({{ site.baseurl }}/images/fhir-server-up-and-running/HAPI_FHIR_Server.jpg)
 
-The Hapi FHIR's RESTful API can be access through this root URL:
+Hapi FHIR 的 RESTful API 可通过这个根 URL 访问：
 
 ```
 http://localhost:8080/hapi-fhir/baseDstu3
 ```
 
-We can use the Hapi FHIR Server UI for testing, for example, to retrieve a specific patient ID `smart-1032702` as illustrated,
+我们可以用 Hapi FHIR Server 的 UI 进行测试，例如检索特定患者 ID `smart-1032702`，如图所示，
 
-![HAPI FHIR Server UI Read]({{ site.baseurl }}images/fhir-server-up-and-running/HAPI_FHIR_Server_API.jpg)
+![HAPI FHIR 服务器 UI 读取]({{ site.baseurl }}/images/fhir-server-up-and-running/HAPI_FHIR_Server_API.jpg)
 
-But wait, we need to populate with some sample data first. The following section will generate some fake (but realistic) data set.
+不过等一下，我们需要先填充一些示例数据。下一节将生成一些虚构（但贴近真实）的数据集。
 
-## Generate Sample Data Set
-Running a server without health records is useless. In order to fiil the server with some realistically fake data, we shall use the Sample Patient Generator for STU3 <https://github.com/smart-on-fhir/sample-patients-stu3>
+## 生成示例数据集
+跑一台没有健康记录的服务器毫无意义。为了给服务器填充一些逼真的虚构数据，我们将使用 STU3 示例患者生成器 <https://github.com/smart-on-fhir/sample-patients-stu3>
 
-The primary purpose of this tool is to generate FHIR STU3 transaction bundles as JSON files. Once generated these bundles can be inserted into any compatible FHIR server using it's API.
+这个工具的主要用途是生成 JSON 文件形式的 FHIR STU3 transaction bundle。生成之后，这些 bundle 可以通过 FHIR 服务器的 API 插入任何兼容的 FHIR 服务器。
 
-This generator requires `Python 2.7` to run.
+该生成器需要 `Python 2.7` 才能运行。
 
-From the 'bin' directory, run to get a general help message,
+从 'bin' 目录运行以下命令可获得一般性帮助信息，
 
 ```shell
 cd sample-patients-stud3/
 python generate.py --help
 ```
 
-To generate the test data files in the `../out` directory:
+在 `../out` 目录中生成测试数据文件：
 
 ```shell
 python generate.py --write-fhir ../out --id-prefix "smart"
 ```
 
-All sample data ID will be prefixed with `smart` for the set.
+该数据集中所有示例数据的 ID 都会带上 `smart` 前缀。
 
-## Upload Sample Data Set to Server
-We shall use the Tag Uploader <https://github.com/smart-on-fhir/tag-uploader>
+## 上传示例数据集到服务器
+我们将使用 Tag Uploader <https://github.com/smart-on-fhir/tag-uploader>
 
 ```shell
 cd tag-updloader/
 npm install
 ```
 
-From the previous step, we have the sample data located in `out` directory. We can move the directory under `tag-uploader`. Since the Javascript file `index.js` is the main entry point, we can rename it to `tag-uploader.js` for later executions.
+上一步生成的示例数据位于 `out` 目录。我们可以把这个目录移到 `tag-uploader` 之下。由于 Javascript 文件 `index.js` 是主入口，我们可以把它重命名为 `tag-uploader.js` 以便后续执行。
 
-To add a tag to every JSON bundle found (deep) within the specified directory.
+为指定目录下（深度遍历）找到的每个 JSON bundle 添加标签。
 
 ```shell
 node tag-uploader -d {SOURCE_DIR} -t "Some tag" -w
 ```
 
-To upload JSON bundle found (deep) within the specified directory:
+上传指定目录下（深度遍历）找到的 JSON bundle：
 
 ```shell
 node tag-uploader -d {SOURCE_DIR} -t "Some tag" -S {SOME_FHIR_SERVER}
 ```
 
-In our case, the `{SOURCE_DIR}` is `out` directory and our `{SOME_FHIR_SERVER}` is `http://localhost:8080/hapi-fhir/baseDstu3`
+在我们的例子中，`{SOURCE_DIR}` 是 `out` 目录，`{SOME_FHIR_SERVER}` 是 `http://localhost:8080/hapi-fhir/baseDstu3`
 
 ```shell
 node tag-uploader -d out -t "smart" -w
 node tag-uploader -d out -t "smart" -S http://localhost:8080/hapi-fhir/baseDstu3 
 ```
 
-It will take a few minutes to upload all the sample data. The tag `smart` can be used to delinearate different data set.
+上传全部示例数据需要几分钟。标签 `smart` 可以用来区分不同的数据集。
 
-## Use Patient-Browser to Visualize the Sample Data
-We shall use the `SMART on FHIR`'s Patient Browser <https://github.com/smart-on-fhir/patient-browser>
+## 用 Patient-Browser 可视化示例数据
+我们将使用 `SMART on FHIR` 的患者浏览器 <https://github.com/smart-on-fhir/patient-browser>
 
 ```shell
 cd patient-browser/
 ```
 
-The configuration is located in `build` directory. The default configuration file `stu3-open-sandbox.json5` will be used. We can edit the `url` to point to our Hapi FHIR Server.
+配置位于 `build` 目录，将使用默认配置文件 `stu3-open-sandbox.json5`。我们可以编辑 `url`，让它指向我们的 Hapi FHIR Server。
 
 ```
 ...
@@ -193,28 +193,28 @@ server: {
 ...
 ```
 
-The reason that `patient-browser` will use `stu3-open-sandbox` as the default config because under `src/App/index.js` has the `DEFAULT_CONFIG` constant defined.
+`patient-browser` 之所以默认使用 `stu3-open-sandbox` 配置，是因为 `src/App/index.js` 中定义了 `DEFAULT_CONFIG` 常量。
 
 ```javascript
 const DEFAULT_CONFIG = "stu3-open-sandbox";
 ```
 
-After the configuration changed, we can start the server by
+配置修改完成后，运行以下命令启动服务器
 
 ```shell
 npm install
 ```
 
-After all the compiling and webpacking, the project is running at
+经过全部编译和 webpack 打包后，项目运行于
 
 ```
 http://localhost:9001
 ```
 
-You can see the list of loaded sample patients.
-![Patient Browser - Patient List]({{ site.baseurl }}images/fhir-server-up-and-running/SMART_FHIR_Patient_Browser.jpg)
+你可以看到已加载的示例患者列表。
+![患者浏览器——患者列表]({{ site.baseurl }}/images/fhir-server-up-and-running/SMART_FHIR_Patient_Browser.jpg)
 
-By clicking on a patient, we can navigate the patient's detail info.
-![Patient Browser - Patient Details]({{ site.baseurl }}images/fhir-server-up-and-running/SMART_FHIR_Patient_Browser_Patient_Details.jpg)
+点击某个患者，即可浏览该患者的详细信息。
+![患者浏览器——患者详情]({{ site.baseurl }}/images/fhir-server-up-and-running/SMART_FHIR_Patient_Browser_Patient_Details.jpg)
 
-That's all, Hapi FHIRing!
+就写到这里，Happy Hapi FHIRing！

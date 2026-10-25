@@ -1,6 +1,6 @@
 ---
 layout: post
-title: SingularityNET AI Service Integration
+title: SingularityNET AI 服务集成
 date: 2018-02-18 01:00:00.000000000 -05:00
 permalink: singularitynet-ai-service-integration
 author: Benny Cheung
@@ -21,59 +21,59 @@ published: true
 ---
 
 <!--excerpt.start-->
-With the advent of **AI** and **Blockchain** technology and its exponential impact on business, a recently released open-source project **SingularityNET** <https://singularitynet.io/> is truly revolutionary by combining both technologies into a decentralized market of coordinated AI services being backed by Blockchain's smart contracts. Within the SingularityNET platform, the benefits of AI become a global commons infrastructure for the benefit of all; anyone can access AI tech or become a stakeholder in its development. Anyone can add an AI/machine learning service to SingularityNET for use by the network, and receive network payment tokens in exchange.
+随着 **AI** 与 **Blockchain** 技术的出现及其对业务的指数级影响，新近发布的开源项目 **SingularityNET** <https://singularitynet.io/> 确实具有革命性：它把两种技术结合成一个去中心化的 AI 服务协作市场，并由区块链智能合约背书。在 SingularityNET 平台中，AI 的红利成为造福所有人的全球公共基础设施；任何人都可以访问 AI 技术，或成为其发展的利益相关者。任何人都可以向 SingularityNET 添加 AI/机器学习服务供网络使用，并换取网络支付代币。
 <!--excerpt.end-->
 
-Today, the only technical information is available through their white paper (Dec 19, 2017) at <https://public.singularitynet.io/whitepaper.pdf> that gives a glimpse into their technical details. After struggling for a few days, I discovered an approach to consume their technical information by hacking with the SingularityNET source code. This article summarizes how to implement an AI service provider integration with SingularityNET's service wrapper API. The example AI service is using MNIST image classification implemented in Tensorflow.
+目前，唯一的技术信息来自他们的白皮书（2017 年 12 月 19 日）<https://public.singularitynet.io/whitepaper.pdf>，它让我们得以窥见技术细节。在挣扎了几天之后，我发现了一条通过 hack SingularityNET 源代码来消化其技术信息的路径。本文总结如何实现一个 AI 服务提供方与 SingularityNET 服务封装 API 的集成。示例 AI 服务使用 Tensorflow 实现的 MNIST 图像分类。
 
-![SingularityNET Decentralized AI+Blockchain Architecture]({{ site.baseurl }}images/singularitynet-ai-service-integration/SingularityNET_decentralized_AI.jpg)
+![SingularityNET 去中心化 AI+区块链架构]({{ site.baseurl }}/images/singularitynet-ai-service-integration/SingularityNET_decentralized_AI.jpg)
 
-*Figure. SingularityNET high-level system architecture, which illustrates how the platform supports AI agent to agent interactions and uses Blockchain smart contract to record the transactions.*
+*图：SingularityNET 高层系统架构，说明平台如何支持 AI 代理之间的交互，并使用区块链智能合约记录交易。*
 
-This article will go through the steps to experiment with SingularityNET's AI agent integration: creating a virtual environment, checking out the source code, running the MNIST Tensorflow agent example, explaining service adapter development, and showing service integration by configuration.
+本文将走完实验 SingularityNET AI 代理集成的各个步骤：创建虚拟环境、检出源码、运行 MNIST Tensorflow 代理示例、讲解服务适配器开发，以及展示通过配置完成的服务集成。
 
-Obviously, there are many more SingularityNET topics, which must be explored by other articles.
+显然，还有更多 SingularityNET 主题，必须留待其他文章探讨。
 
-> <div style="color:red">SingularityNET is moving forward with another alpha release. This article is out-dated as of 2018-05-03; however the information can still be useful to understand the functional and implementational views of cooperating AI agents. For the latest SingularityNET development, reader can refer to Wiki at <https://github.com/singnet/wiki/wiki>.</div>
+> <div style="color:red">SingularityNET 正在推进另一个 alpha 版本。本文自 2018-05-03 起已过时；不过其中的信息对于理解协作式 AI 代理的功能视图与实现视图仍然有用。关于最新的 SingularityNET 开发，读者可参考 Wiki：<https://github.com/singnet/wiki/wiki>。</div>
 
-### Create a virtual environment
-Virtual environments make it easy to separate different projects and avoid problems with different dependencies and version requirements across components. In the terminal client enter the following where `envname` is the name you want to call your environment, and replace `x.x` with the Python version you wish to use.
+### 创建虚拟环境
+虚拟环境让分离不同项目变得容易，避免各组件之间因依赖与版本要求不同而产生的问题。在终端客户端输入以下命令，其中 `envname` 是你想给环境起的名字，把 `x.x` 替换为你想使用的 Python 版本。
 
 ```
 conda create -n envname python=x.x anaconda
 ```
 
-From this point forward, we shall use the `singnet` as our environment name.
+从现在起，我们使用 `singnet` 作为环境名。
 
 ```
 conda create -n singnet python=3.6 anaconda
 ```
 
-To activate or switch into your virtual environment, simply type `singnet` is the name you gave to your environment at creation.
+要激活或切换到你的虚拟环境，只需输入 `singnet`——即你创建环境时起的名字。
 
 ```
 source activate singnet
 ```
 
-### SingularityNET Source Code
-The breeding edge SingularityNET code can be found at <https://github.com/singnet/singnet>
+### SingularityNET 源代码
+最前沿的 SingularityNET 代码位于 <https://github.com/singnet/singnet>
 
-Checking out the code into your local file system,
+把代码检出（checkout）到本地文件系统，
 
 ```
 git clone https://github.com/singnet/singnet.git
 ```
 
-After checking out, the article assumes the code is located in `singnet` directory.
+检出之后，本文假设代码位于 `singnet` 目录。
 
-### Install SingularityNET Agent Requirements
+### 安装 SingularityNET 代理依赖
 
 ```
 cd singnet/agent
 pip install -r requirements.txt
 ```
 
-There is a long list of installations.
+安装列表很长。
 
 ```
 (singnet) [bcheung@Benny-Cheung:agent] pip install -r requirements.txt
@@ -84,24 +84,24 @@ Collecting aiohttp (from -r requirements.txt (line 1))
 Successfully installed Jinja2-2.10 MarkupSafe-1.0 PyYAML-3.12 Pygments-2.2.0 aiohttp-3.0.1 aiohttp-cors-0.6.0 aiohttp-jinja2-0.16.0 alabaster-0.7.10 argh-0.26.2 async-timeout-2.0.0 attrs-17.4.0 babel-2.5.3 bleach-1.5.0 bson-0.5.2 cchardet-2.1.1 chardet-3.0.4 commonmark-0.5.4 coverage-4.5.1 coveralls-1.2.0 cytoolz-0.9.0 docopt-0.6.2 docutils-0.14 eth-abi-0.5.0 eth-keys-0.1.0b4 eth-tester-0.1.0b11 eth-utils-0.8.0 feedparser-5.2.1 fire-0.1.2 funcsigs-1.0.2 future-0.16.0 html5lib-0.9999999 hvac-0.4.0 idna-2.6 idna-ssl-1.0.0 imagesize-1.0.0 isodate-0.6.0 jsonrpcclient-2.5.2 jsonrpcserver-3.5.3 jsonschema-2.6.0 livereload-2.5.1 lru-dict-1.1.6 markdown-2.6.11 mock-2.0.0 multidict-4.1.0 numpy-1.14.0 packaging-16.8 pathtools-0.1.2 pbr-3.1.1 pluggy-0.6.0 port-for-0.3.1 protobuf-3.5.1 py-1.5.2 pyaml-17.12.1 pyparsing-2.2.0 pysha3-1.0.2 pytest-3.4.0 pytest-cov-2.5.1 pytz-2018.3 rdflib-4.2.2 recommonmark-0.4.0 requests-2.18.4 rlp-0.6.0 semantic-version-2.6.0 six-1.11.0 snowballstemmer-1.2.1 sphinx-1.7.0 sphinx-autobuild-0.7.1 sphinx-rtd-theme-0.2.4 sphinxcontrib-websupport-1.0.1 tensorflow-1.3.0 tensorflow-tensorboard-0.1.8 toolz-0.9.0 tornado-4.5.3 urllib3-1.22 uvloop-0.9.1 watchdog-0.8.3 web3-3.16.5 werkzeug-0.14.1 yarl-1.1.1
 ```
 
-Life seems good that every requirements are installed without hipcup, which is a rare event in a hacking experience.
+一切依赖都顺利装好、没有磕绊，生活看起来很美好——这在折腾（hacking）经历中可是件稀罕事。
 
-### Docker Prerequisites
-According to the SingularityNET official website, SingularityNET runs on Mac OS X, or any Linux which has Python 3 installed and
-Docker or Docker for Mac installed. Their core devs regularly develop on Mac OS X Sierra, Linux Mint Mate 18.2, and Linux Ubuntu 16.04 LTS among others.
+### Docker 前置要求
+根据 SingularityNET 官方网站，SingularityNET 可运行于 Mac OS X，或任何装有 Python 3 以及
+Docker（或 Docker for Mac）的 Linux。他们的核心开发者日常在 Mac OS X Sierra、Linux Mint Mate 18.2 和 Linux Ubuntu 16.04 LTS 等系统上开发。
 
-Docker and Docker Compose are used heavily, so you must have a recent version of Docker installed to take advantage of most of the automation and to isolate yourself from the dependency hell which often results from installing software with complex dependencies directly onto your host development OS.
+Docker 和 Docker Compose 被大量使用，因此你必须安装较新版本的 Docker，才能利用大部分自动化能力，并把自己与"依赖地狱"隔离开——直接把复杂依赖的软件装进宿主开发操作系统时常常会遭遇这种地狱。
 
-The current development demo runs from a `dev` docker container which can be launched from your favorite bash terminal using the helper tool shell script: `singnet/tools.sh`.
+当前的开发演示从一个 `dev` docker 容器运行，可以使用辅助工具 shell 脚本从你喜欢的 bash 终端启动：`singnet/tools.sh`。
 
-### MNIST Agent Running Example
-Brings up the Dev server to demonstrate many agents interaction.
+### MNIST 代理运行示例
+启动 Dev 服务器，演示多个代理的交互。
 
 ```
 tools.sh dev
 ```
 
-The execution will show the following:
+执行会显示如下内容：
 
 ```
 (singnet) [bcheung@Benny-Cheung:singnet] ./tools.sh dev
@@ -112,41 +112,41 @@ The execution will show the following:
 (Press CTRL+C to quit)
 ```
 
-You can view the SingularityNET docker containers, are running as illustrated from Docker's Kitematic UI.
+你可以查看 SingularityNET 的 docker 容器正在运行，如 Docker 的 Kitematic UI 所示。
 
-![SingularityNET Docker Running]({{ site.baseurl }}images/singularitynet-ai-service-integration/SingularityNET_Dev_Docker_Running.jpg)
+![SingularityNET Docker 运行中]({{ site.baseurl }}/images/singularitynet-ai-service-integration/SingularityNET_Dev_Docker_Running.jpg)
 
-*Figure. Showing the dev configuration start up multiple docker's running containers. Their starting up is coordinated by docker compose*
+*图：展示 dev 配置启动了多个 docker 运行容器。它们的启动由 docker compose 协调*
 
-You can open browser at `http://localhost:8000` for interactions.
+你可以在浏览器打开 `http://localhost:8000` 进行交互。
 
-#### Chrome Developer Inspection
-To gain deeper insights, we can inspect the network traffic using Chrome Developer Tools.
+#### Chrome 开发者工具检查
+要获得更深入的洞见，我们可以用 Chrome 开发者工具检查网络流量。
 
-You need to reload the page with the network tab open and filter by type 'All'. This will show you a connection being made with a network calls. You can then click on the connection to show the traffic being sent back and forth to the server.
+你需要开着 Network 标签页并按类型 'All' 过滤，然后重新加载页面。这会展示一个正在建立的网络调用连接。你可以点击该连接，查看与服务器之间来回发送的流量。
 
-![SingularityNET Chrome Developer Inspection Tool]({{ site.baseurl }}images/singularitynet-ai-service-integration/Singularity_Chrome_Dev_Network_View.jpg)
+![SingularityNET Chrome 开发者检查工具]({{ site.baseurl }}/images/singularitynet-ai-service-integration/Singularity_Chrome_Dev_Network_View.jpg)
 
-*Figure. The Chrome developer tool showing the request data.*  
+*图：Chrome 开发者工具展示请求数据。*  
 
-After clicking on the `[Preform]` button on the UI, the MNIST request is sent with the image data. The MNIST image data is a 784 (28x28) vector of pixels. The prediction response can be viewed on the UI and from the Chrome network inspection tool.
+在 UI 上点击 `[Preform]` 按钮后，MNIST 请求连同图像数据一起发出。MNIST 图像数据是一个 784（28x28）维的像素向量。预测响应既可以在 UI 上查看，也可以在 Chrome 网络检查工具中查看。
 
-![SingularityNET Chrome Developer Prediction Response]({{ site.baseurl }}images/singularitynet-ai-service-integration/Singularity_Chrome_Dev_Network_View_Prediction.jpg)
+![SingularityNET Chrome 开发者预测响应]({{ site.baseurl }}/images/singularitynet-ai-service-integration/Singularity_Chrome_Dev_Network_View_Prediction.jpg)
 
-*Figure. The Chrome developer tool showing the response result.*  
+*图：Chrome 开发者工具展示响应结果。*  
 
-The prediction result is a `7` with the perfect confidence of `1` that it believed that a number seven has been seen.
+预测结果是 `7`，置信度为完美的 `1`，即它确信看到了数字七。
 
-### Service Adapter Development
+### 服务适配器开发
 
 #### ServiceAdapterABC
-There are three fairly common methods on the service adapter abstract base class, where you might want `__init__` to initialize member variables, `post_load_initialize` to ensure all of the dependence services have been loaded and finally `perform` to execute the AI business logics to provide result from a request.
+服务适配器抽象基类上有三个相当常用的方法：`__init__` 用于初始化成员变量，`post_load_initialize` 用于确保所有依赖服务都已加载，最后的 `perform` 用于执行 AI 业务逻辑、根据请求返回结果。
 
-![SingularityNET Chrome Developer Prediction Response]({{ site.baseurl }}images/singularitynet-ai-service-integration/Singularity_Dev_ServiceAdapterABC.jpg)
+![SingularityNET Chrome 开发者预测响应]({{ site.baseurl }}/images/singularitynet-ai-service-integration/Singularity_Dev_ServiceAdapterABC.jpg)
 
-Let's take a look at the service adapter member variables. This is important to remember listing all the dependent services here. If the requirements are met, then the variable `requirements_met` will set to be `True`. The unavailable flag defines whether the particular service is currently up or not. This `available` flag is used by the rest of the system to manage things automatically.
+我们来看服务适配器的成员变量。在这里列出所有依赖服务很重要，务必记住。如果需求得到满足，变量 `requirements_met` 将被设为 `True`。unavailable 标志定义特定服务当前是否在线。系统其余部分利用这个 `available` 标志来自动管理事务。
 
-From the source code, `singnet/agent/sn_agent/service_adapter.py`
+源代码位置：`singnet/agent/sn_agent/service_adapter.py`
 
 ```python
 class ServiceAdapterABC(ABC):
@@ -165,7 +165,7 @@ class ServiceAdapterABC(ABC):
         self.available = False
 ```
 
-The `post_load_initialize` is recursively calls all of the required service post node to initialize. If a service that relies on three or four other services, they'll get loaded together and initialized together.
+`post_load_initialize` 会递归调用所有所需服务的 post 节点进行初始化。如果一个服务依赖于另外三四个服务，它们会被一起加载、一起初始化。
 
 ```python
     def post_load_initialize(self, service_manager: ServiceManager):
@@ -195,7 +195,7 @@ The `post_load_initialize` is recursively calls all of the required service post
         return True
 ```
 
-There are `start` and `stop` functions where you can take a service online and offline.
+还有 `start` 和 `stop` 函数，用于让服务上线和下线。
 
 ```python
     def start(self):
@@ -213,7 +213,7 @@ There are `start` and `stop` functions where you can take a service online and o
         self.available = False
 ```
 
-The `can_perform` function is used to save cost on the network because you can directly ask the agent if it can perform something before you a request that is going to involve a blockchain contract and potentially some gas costs charged.
+`can_perform` 函数用于节省网络开销：在发出一个会涉及区块链合约、并可能产生一些 gas 费用的请求之前，你可以直接询问代理能否执行。
 
 ```python
     def can_perform(self) -> bool:
@@ -236,7 +236,7 @@ The `can_perform` function is used to save cost on the network because you can d
         return True
 ```
 
-The `perform` function is where the bulk of the work gets done. Let's go to take a look into MNIST classifier for the details.
+`perform` 函数是大部分工作完成的地方。让我们深入 MNIST 分类器看看细节。
 
 ```python
     @abstractmethod
@@ -252,11 +252,11 @@ The `perform` function is where the bulk of the work gets done. Let's go to take
 
 #### TensorFlowMNIST
 
-![SingularityNET Chrome Developer Prediction Response]({{ site.baseurl }}images/singularitynet-ai-service-integration/Singularity_Dev_ServiceAdapterTensorFlowMNIST.jpg)
+![SingularityNET Chrome 开发者预测响应]({{ site.baseurl }}/images/singularitynet-ai-service-integration/Singularity_Dev_ServiceAdapterTensorFlowMNIST.jpg)
 
-MNIST service adapter doesn't really do anything except for checking the classifier ID in the initialization. In the `post_load_initilize`, we do the bulk of the training and loading of the model for the classifier.
+MNIST 服务适配器其实什么也不做，只是在初始化时检查分类器 ID。在 `post_load_initilize` 中，我们完成分类器的大部分训练与模型加载工作。
 
-From the source code, `singnet/agent/adapters/tensorflow/mnist/__init__.py`
+源代码位置：`singnet/agent/adapters/tensorflow/mnist/__init__.py`
 
 ```python
 class TensorflowMNIST(ServiceAdapterABC):
@@ -268,7 +268,7 @@ class TensorflowMNIST(ServiceAdapterABC):
             raise RuntimeError("TensorflowMNIST cannot perform service %s", service.node_id)
 ```
 
-The details of `post_load_initilize` will not be described. We need to put references to the input images and the classifier graph itself. There are few checking to see if the path exists and loading the model.
+`post_load_initilize` 的细节不再赘述。我们需要放入对输入图像和分类器图本身的引用。还有几处检查路径是否存在以及加载模型的逻辑。
 
 ```python
 def post_load_initialize(self, service_manager: ServiceManager):
@@ -367,7 +367,7 @@ def post_load_initialize(self, service_manager: ServiceManager):
             logger.debug('Test accuracy {0}'.format(accuracy))
 ```
 
-The bulk of the work is being done in `perform`. We start a session to restore the model. Then we go one by one through each of the job items in the job. We take the inputs and pull them out of the data that was supplied by the request. We do some sanity checking on the types and then we run the actual classifier. Finally, we pull the confidence out so that the prediction can associate with the confidence value, sending out in the results.
+主要工作在 `perform` 中完成。我们启动一个会话来恢复模型。然后逐一遍历 job 中的每个 job item。我们取出输入，把它们从请求提供的数据中提取出来。对类型做些合理性检查之后，运行实际的分类器。最后，我们取出置信度，让预测与置信度值关联起来，随结果一起发送。
 
 ```python
 def perform(self, job: JobDescriptor):
@@ -416,8 +416,8 @@ def perform(self, job: JobDescriptor):
         return results
 ```
 
-### Service Configuration
-In the `singnet/agent/dev_config.yml` file, we have to define the TensorflowMNIST service with a good unique identifier `deadbeef-aaaa-bbbb-cccc-111111111101` and the module that is loaded `adatper.tensorflow.mnist.TensorflowMNIST` class.
+### 服务配置
+在 `singnet/agent/dev_config.yml` 文件中，我们必须用唯一标识符 `deadbeef-aaaa-bbbb-cccc-111111111101` 定义 TensorflowMNIST 服务，并指定要加载的模块 `adatper.tensorflow.mnist.TensorflowMNIST` 类。
 
 ```yaml
 services:
@@ -431,4 +431,4 @@ services:
 ...
 ````
 
-Ideally, this agent integration example warms up your curiosity on SingularityNET platform, to prepare for the ultimate SingularityNET's AI + Blockchain development.
+但愿这个代理集成示例点燃了你对 SingularityNET 平台的好奇心，为终极的 SingularityNET AI + 区块链开发做好准备。

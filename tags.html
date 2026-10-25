@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Tags
+title: 标签
 date: 2016-04-18 08:31:00
 permalink: /tags/
 main: true
@@ -215,8 +215,8 @@ html.dark-mode .archive-item a:hover {
 <!-- Word Cloud Visualization -->
 <div class="word-cloud-container">
   <div class="tag-stats">
-    <span><strong>{{ site.tags.size }}</strong> Tags</span>
-    <span><strong>{{ site.posts.size }}</strong> Posts</span>
+    <span><strong>{{ site.tags.size }}</strong> 个标签</span>
+    <span><strong>{{ site.posts.size }}</strong> 篇文章</span>
   </div>
   <div id="word-cloud"></div>
 </div>
@@ -227,7 +227,7 @@ html.dark-mode .archive-item a:hover {
 <!-- Archives Section -->
 <div id="archives">
   <div class="archives-header">
-    <h2>Browse by Tag</h2>
+    <h2>按标签浏览</h2>
   </div>
   {% for tag in site.tags %}
   <div class="archive-group">
@@ -235,7 +235,7 @@ html.dark-mode .archive-item a:hover {
     {% assign filtered_tag_count = 0 %}{% for post in site.tags[tag_name] %}{% unless post.unlisted == true %}{% assign filtered_tag_count = filtered_tag_count | plus: 1 %}{% endunless %}{% endfor %}
     <h3 id="{{ tag_name | slugify }}">
       {{ tag_name }}
-      <span class="post-count">{{ filtered_tag_count }} posts</span>
+      <span class="post-count">{{ filtered_tag_count }} 篇文章</span>
     </h3>
     <a name="{{ tag_name | slugify }}"></a>
     {% for post in site.tags[tag_name] %}{% unless post.unlisted == true %}
@@ -248,7 +248,7 @@ html.dark-mode .archive-item a:hover {
 </div>
 
 <!-- D3.js and Word Cloud -->
-<script src="/js/d3/d3.v3.min.js"></script>
+<script src="{{ site.baseurl }}/js/d3/d3.v3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
 
 <script>
@@ -348,7 +348,7 @@ window.addEventListener('load', function() {
           .style("filter", "drop-shadow(0 2px 6px rgba(0,0,0,0.4))")
           .style("cursor", "pointer");
 
-        tooltip.innerHTML = '<strong>' + d.text + '</strong><br>' + d.count + ' post' + (d.count > 1 ? 's' : '');
+        tooltip.innerHTML = '<strong>' + d.text + '</strong><br>' + d.count + ' 篇文章';
         tooltip.classList.add('visible');
       })
       .on("mousemove", function() {

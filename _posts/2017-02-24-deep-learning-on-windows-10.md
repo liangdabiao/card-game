@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Deep Learning with GPU on Windows 10
+title: 在 Windows 10 上用 GPU 做深度学习
 date: 2017-02-24 12:00:00.000000000 -05:00
 permalink: deep-learning-on-windows-10
 author: Benny Cheung
@@ -21,81 +21,82 @@ published: true
 ---
 
 <!--excerpt.start-->
-You just got your latest NVidia GPU on your Windows 10 machine.
-Other than playing the latest games with ultra-high settings to enjoy your new investment,
-we should pause to realize that we are actually having a supercomputer able to do some serious computation.
-A Deep Learning algorithm is one of the hungry beast which can eat up those GPU computing power.
+你刚把最新的 NVidia GPU 装进了自己的 Windows 10 机器。
+除了用超高画质跑最新游戏来享受这笔新投资之外，
+我们应该停下来意识到：我们实际上拥有了一台能做严肃计算的超级计算机。
+深度学习算法正是能吃掉这些 GPU 算力的饥饿巨兽之一。
 <!--excerpt.end-->
 
-Unfortunately, the Deep Learning tools are usually friendly to Unix-like environment.
-When you are trying to start consolidating your tools chain on Windows, you will encounter many difficulties.
-I spent days to settle with a Deep Learning tools chain that can run successfully on Windows 10.
-Here is the summary of my selection and installation procedure. If you have the endurance to complete, towards the end of this article, you can run neural style transfer to create "deep" and impressive image
-(The original paper "A Neural Algorithm of Artistic Style" can be found at <https://arxiv.org/abs/1508.06576>)
+遗憾的是，深度学习工具通常对类 Unix 环境更友好。
+当你试图在 Windows 上整合工具链时，会遇到许多困难。
+我花了好几天才敲定一套能在 Windows 10 上成功运行的深度学习工具链。
+以下是我的选型与安装过程总结。如果你有毅力坚持到最后，
+就能在本文结尾运行神经风格迁移，生成"深刻"而震撼的图像
+（原始论文《A Neural Algorithm of Artistic Style》见 <https://arxiv.org/abs/1508.06576>）
 
-![Grid of Artistic Style Transfer Results]({{ site.baseurl }}images/deep-learning-on-windows-10/Benny_DeepArt_Grid.jpg)
+![艺术风格迁移结果网格]({{ site.baseurl }}/images/deep-learning-on-windows-10/Benny_DeepArt_Grid.jpg)
 
-*Figure. Grid of sample results after running neural style transfer algorithm on a self-portrait*
+*图：对一幅自画像运行神经风格迁移算法后的样例结果网格*
 
-Just a quick overview, the pre-requisite dependencies that we shall install,
-* Scipy + PIL (install via Anaconda Python)
-* Numpy (install via Anaconda Python)
-* CUDA (GPU) (install via NVidia package)
-* CUDNN (GPU) (optional, install via NVidia package)
-* PyCUDA (install via prebuilt binaries)
-* Theano (install via pip)
-* Keras (install via pip)
+先快速概览一下我们要安装的前置依赖，
+* Scipy + PIL（通过 Anaconda Python 安装）
+* Numpy（通过 Anaconda Python 安装）
+* CUDA (GPU)（通过 NVidia 安装包安装）
+* CUDNN (GPU)（可选，通过 NVidia 安装包安装）
+* PyCUDA（通过预编译二进制安装）
+* Theano（通过 pip 安装）
+* Keras（通过 pip 安装）
 
-## Install Theano under Anaconda Python (Windows 10)
+## 在 Anaconda Python（Windows 10）下安装 Theano
 <http://deeplearning.net/software/theano/>
 
-Theano is one of the popular Deep Learning framework,
-which has a Python library that allows you to define, optimize, and evaluate mathematical expressions involving multi-dimensional arrays efficiently.
+Theano 是流行的深度学习框架之一，
+它提供一个 Python 库，让你能够高效地定义、优化和求值涉及多维数组的数学表达式。
 
-**Note**: this article assumes you are using `bash` shell on Windows.
-The recommended `bash` shell comes from Git for Windows <https://git-for-windows.github.io> installation.
-You will need `git` to checkout interesting projects, source codes in your "mind hacking" career.
-So, this is the right time to hit yourselves with the right power tool.
+**注意**：本文假设你在 Windows 上使用 `bash` shell。
+推荐的 `bash` shell 来自 Git for Windows <https://git-for-windows.github.io> 的安装。
+在你的"mind hacking"生涯中，你需要 `git` 来检出有趣的项目和源码。
+所以，现在是时候给自己装备上称手的利器了。
 
 
 ### Anaconda Python
 <https://www.continuum.io/downloads>
 
-Anaconda is an easy-to-install free package manager, environment manager, Python distribution, and collection of over 720 open source packages offering free community support.
+Anaconda 是一个易于安装的免费包管理器、环境管理器和 Python 发行版，收录了 720 多个享有免费社区支持的开源包。
 
-You can install either Anaconda Python 2.7 or Anaconda Python 3.5 on Windows 10. Later, we would create a virtual environment to isolate our Deep Learning tools installation. We shall refer to your Anaconda installation location as `{path_to_anaconda_location}` later.
+你可以在 Windows 10 上安装 Anaconda Python 2.7 或 Anaconda Python 3.5。稍后我们会创建一个虚拟环境来隔离深度学习工具的安装。下文把你的 Anaconda 安装位置记作 `{path_to_anaconda_location}`。
 
-#### Define Anaconda Virtual Environment
-By experience, hacking on a new tools suite are usually messy and full of conflicts. Using an isolated Python virtual environment will protect you from headaches and disaster of installations.
-In `bash` shell, enter the following where `theano` (or your choice of name) is the name of the virtual environment, and `python=2.7` is the Python version you wish to use.
+#### 定义 Anaconda 虚拟环境
+经验之谈：折腾一套新工具通常是一团糟且充满冲突。使用隔离的 Python 虚拟环境可以让你免于安装带来的头痛与灾难。
+在 `bash` shell 中输入以下命令，其中 `theano`（或你自己起的名字）是虚拟环境的名称，`python=2.7` 是你想使用的 Python 版本。
 
 ```bash
 conda create -n theano python=2.7 anaconda
 ```
 
-Press y to proceed. This will install the Python version and all the associated `anaconda` packaged libraries at `{path_to_anaconda_location}/envs/theano`
+按 y 继续。这会把 Python 版本及所有相关的 `anaconda` 打包库安装到 `{path_to_anaconda_location}/envs/theano`
 
-### Install Theano on Virtual Environment
-Once the `theano` virtual environment has been installed, `activate` the virtualenv by
+### 在虚拟环境中安装 Theano
+`theano` 虚拟环境安装完成后，用以下命令 `activate` 该 virtualenv：
 
 ```bash
 source activate theano
 ```
 
-Continue to install all the shell script commands,
+继续安装全部 shell 脚本命令所需的包，
 
 ```bash
 conda install boost
 conda install mingw libpython
 ```
 
-Then, install theano
+然后，安装 theano
 
 ```bash
 pip install theano
 ```
 
-Add the following lines to `$HOME/.theanorc` file
+把以下几行加入 `$HOME/.theanorc` 文件
 
 ```
 [global]
@@ -107,30 +108,30 @@ flags=-L{path_to_anaconda_location}\envs\theano\libs
 compiler_bindir=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin
 ```
 
-Since I have created the virtual environment for Theano, you can see that `flags` is pointing to that virtual environment libs.
-I read that we have to use VS 12.0 in order to compile CUDA. The setting seems to be working with my CUDA 8.0 and Visual Studio 2015 community installation, and I did not bother to investigate if it works for the other Visual Studio versions.
+因为我已经为 Theano 创建了虚拟环境，可以看到 `flags` 指向的是该虚拟环境的 libs。
+我读到过必须使用 VS 12.0 才能编译 CUDA。这个配置在我的 CUDA 8.0 和 Visual Studio 2015 community 安装下工作正常，我没有再费心验证它是否适用于其他 Visual Studio 版本。
 
-### Install PyCUDA
-CUDA is a parallel computing platform and programming model invented by NVidia.
-It enables dramatic increases in computing performance by harnessing the power of the graphics processing unit (GPU).
-You will need to download and install CUDA development toolkit from NVidia <https://developer.nvidia.com/cuda-downloads>.
+### 安装 PyCUDA
+CUDA 是 NVidia 发明的并行计算平台和编程模型。
+它借助图形处理器（GPU）的算力，带来计算性能的显著提升。
+你需要从 NVidia <https://developer.nvidia.com/cuda-downloads> 下载并安装 CUDA 开发工具包。
 
-PyCUDA is the Python wrapper of the CUDA API to allow writing CUDA code in Python.
-In our case, the painless way to install PyCUDA is using the prebuilt Windows 10 binaries. Follow this link to download:
+PyCUDA 是 CUDA API 的 Python 封装，让你可以用 Python 编写 CUDA 代码。
+在我们的场景中，安装 PyCUDA 最省事的方式是使用预编译的 Windows 10 二进制。通过以下链接下载：
 
 <http://www.lfd.uci.edu/~gohlke/pythonlibs/?cm_mc_uid=67672146725714876308558&cm_mc_sid_50200000=1487630855#pycuda>
 
-For my version of CUDA 8.0, Python 2.7 for Windows 10 64 bits, the package will be:
+对应我的 CUDA 8.0、Windows 10 64 位下的 Python 2.7，所需的包是：
 `pycuda‑2016.1.2+cuda8044‑cp27‑cp27m‑win_amd64.whl`
 
-Then, using `pip` to install this package
+然后，用 `pip` 安装这个包
 
 ```bash
 pip install pycuda‑2016.1.2+cuda8044‑cp27‑cp27m‑win_amd64.whl
 ```
 
-### Testing Install
-Fire up Python with interactive shell `-i`.
+### 测试安装
+以交互 shell 模式 `-i` 启动 Python。
 
 ```bash
 python -i
@@ -140,25 +141,25 @@ Using gpu device 0: GeForce GTX 1070 (CNMeM is disabled, cuDNN not available)
 >>>
 ```
 
-If all GPU CUDA libraries are all cooperating with Theano, you should see your GPU device is reported.
+如果所有 GPU CUDA 库都与 Theano 协同正常，你应该能看到你的 GPU 设备被报告出来。
 
 
-### Install Keras
+### 安装 Keras
 <https://keras.io>
 
-Keras is a high-level neural networks library, written in Python and capable of running on top of either TensorFlow or Theano. It was developed with a focus on enabling fast experimentation. This will make your Deep Learning programming even faster.
+Keras 是一个高级神经网络库，用 Python 编写，可以运行在 TensorFlow 或 Theano 之上。它的开发重点是支持快速实验，这会让你的深度学习编程更加高效。
 
-Install keras by `pip`,
+用 `pip` 安装 keras，
 
 ```bash
 pip install keras
 ```
 
-After installing keras, we can change the keras backend to use `theano`.
-Go to `~/.keras/keras.json`
+安装 keras 之后，我们可以把 keras 后端改为 `theano`。
+打开 `~/.keras/keras.json`
 
-Simply change the field backend to either `theano` or `tensorflow`, and Keras will use the new configuration next time you run any Keras code.
-In my case, I want `theano` as my backend.
+只需把 backend 字段改为 `theano` 或 `tensorflow`，Keras 就会在你下次运行任何 Keras 代码时使用新配置。
+就我而言，我希望 `theano` 作为我的后端。
 
 ```json
 {
@@ -169,24 +170,24 @@ In my case, I want `theano` as my backend.
 }
 ```
 
-### Running Neural-Style-Transfer Windows
+### 在 Windows 上运行神经风格迁移
 <https://github.com/bennycheung/PyDeepStyle>
 
-Up to this point, we have installed a full Deep Learning tools chain, which is capable of performing interesting things.
-We shall try to run an algorithm for combining the content of one image with the style of another image using pre-trained convolutional neural networks. Here's an example that maps the artistic style of Vangogh's "The Starry Night" onto a self portrait to create an unique artistic image. Obviously, that hair style is destined to harmonize with Vangogh's curvy strokes.
+到这里，我们已经安装好一套完整的深度学习工具链，足以完成一些有趣的事情。
+我们来尝试运行一个算法，利用预训练卷积神经网络把一张图像的内容与另一张图像的风格结合起来。下面的例子把梵高《星夜》的艺术风格映射到一幅自画像上，生成一幅独特的艺术图像。显然，这样的发型注定与梵高的曲线笔触相得益彰。
 
-![Sample Artistic Style Transfer Algorithm]({{ site.baseurl }}images/deep-learning-on-windows-10/Benny_StarryNight_DeepArt.jpg)
+![艺术风格迁移算法示例]({{ site.baseurl }}/images/deep-learning-on-windows-10/Benny_StarryNight_DeepArt.jpg)
 
-Ensure starting the `theano` virtual environment with all the setups
+确保启动配置齐全的 `theano` 虚拟环境
 ```bash
 source activate theano
 ```
 
-> The script has been updated to work with latest Keras 2.1.6 [2018/05/08]
+> 该脚本已更新，可配合最新 Keras 2.1.6 工作 [2018/05/08]
 
-The python script is `deepstyle.py` is the Keras implementation of the neural style transfer algorithm, using a pre-trained convolutional neural network (VGG19).
+Python 脚本 `deepstyle.py` 是神经风格迁移算法的 Keras 实现，使用预训练卷积神经网络（VGG19）。
 
-The `run.sh` bash script takes your input {content_image}, {style_image} and {output_directory} for generating the results.
+`run.sh` bash 脚本接收你的输入 {content_image}、{style_image} 和 {output_directory} 来生成结果。
 
 
 ```bash
@@ -209,37 +210,37 @@ python deepstyle.py "$1" "$2" "$3/$3" \
   --min_improvement 0
 ```
 
-for example, to run the script `run.sh`
+例如，运行脚本 `run.sh`
 
 ```bash
 sh run.sh self_portrait.jpg starry_night.jpg result_image
 ```
 
-For each epoch, an iteration image will be saved in the `result_image` directory with an image `result_image_at_iteration_{N}.png` file (where {N} is the iteration number). This is interesting to trace through how the neural network perceived and built the image.
+每个 epoch 都会有一张迭代图像保存到 `result_image` 目录，文件名为 `result_image_at_iteration_{N}.png`（其中 {N} 是迭代序号）。借此追踪神经网络如何感知并构建图像，非常有趣。
 
-![Benny Starry Night Epoch]({{ site.baseurl }}images/deep-learning-on-windows-10/Benny_StarryNight_Epoch.jpg)
+![Benny 星夜 Epoch]({{ site.baseurl }}/images/deep-learning-on-windows-10/Benny_StarryNight_Epoch.jpg)
 
-*Figure. Iteration epoch of the self-portrait and starry night style transfer*
+*图：自画像与星夜风格迁移的迭代 epoch 过程*
 
-On a GTX 1070 GPU (has 1,920 cores), the time required for each epoch depends on the image size (gram matrix size):
+在 GTX 1070 GPU（1,920 核）上，每个 epoch 所需时间取决于图像尺寸（gram 矩阵大小）：
 
-* For 400x400 gram matrix, each epoch takes approximately 13 seconds.
-* For 512x512 gram matrix, each epoch takes approximately 20 seconds.
+* 400x400 gram 矩阵，每个 epoch 约需 13 秒。
+* 512x512 gram 矩阵，每个 epoch 约需 20 秒。
 
-Most of the style seems to be converged after 25 epoch. You can try a higher number of iterations for higher quality style transfer's convergence.
+大约 25 个 epoch 后，大部分风格就已收敛。你可以尝试更高的迭代次数，让风格迁移收敛出更高的质量。
 
-For reader's convenience, the script input parameters are repeated here:
+为方便读者，这里再次列出脚本的输入参数：
 
-* *--image_size* : Allows to set the Gram Matrix size. Default is 400 (width), since it produces good results fast.
-* *--iter* : Number of iterations. Default is 10. Test the output with 10 iterations, and increase to improve results.
-* *--content_weight*: The weight given to the content loss (Default is 0.025)
-* *--style_weight*: The weight given to the style loss (Default is 1.0)
-* *--tv_weight* : Regularization factor. Smaller values tend to produce crisp images, but 0 is not useful. Default = 1E-5
-* *--content_layer* : Selects the content layer. Paper suggests block4_conv2, but better results can be obtained from block5_conv2. Default is block5_conv2.
-* *--min_improvement* : Defines minimum improvement required to continue script. Default is 0.0
+* *--image_size*：设置 Gram 矩阵尺寸。默认 400（宽度），因为它出结果又快又好。
+* *--iter*：迭代次数。默认 10。先用 10 次迭代测试输出，再增大以改进结果。
+* *--content_weight*：内容损失的权重（默认 0.025）
+* *--style_weight*：风格损失的权重（默认 1.0）
+* *--tv_weight*：正则化因子。取值越小图像越锐利，但 0 没有用处。默认 = 1E-5
+* *--content_layer*：选择内容层。论文建议 block4_conv2，但 block5_conv2 能得到更好的结果。默认为 block5_conv2。
+* *--min_improvement*：定义继续运行脚本所需的最小改进量。默认 0.0
 
-To replicate the results in the video, try to use the following input parameters
-(tested on the NVidia GTX TitanX):
+要复现视频中的结果，请尝试以下输入参数
+（在 NVidia GTX TitanX 上测试）：
 
 ```
 ...
@@ -253,9 +254,9 @@ python deepstyle.py "$1" "$2" "$3/$3" \
   --min_improvement 0
 ```
 
-## Neural Style Transfer from Abstract Art
-You can watch [Neural Style Transfer from Abstract Art](https://www.youtube.com/watch?v=TLwqG5kh8Wc). This video captured the deep neural style transfer process from a picture to the matching artist's abstract style. This is fascinating to watch how the machine think - the artificial art process!
+## 抽象艺术的神经风格迁移
+你可以观看[抽象艺术的神经风格迁移](https://www.youtube.com/watch?v=TLwqG5kh8Wc)。这段视频记录了从一幅图像到相应艺术家抽象风格的深度神经风格迁移过程。观察机器如何"思考"——这个人工艺术创作过程——着实迷人！
 
 {% include youtubePlayer.html id="TLwqG5kh8Wc" %}
 
-We are ready to dive *deeper* into Deep Learning for another blog post!
+我们已经准备好在下一篇博文中*更深入*地潜入深度学习！

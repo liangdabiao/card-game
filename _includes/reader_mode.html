@@ -35,8 +35,8 @@
   function updateAriaLabel(isReader) {
     var btn = document.getElementById('reader-mode-toggle');
     if (btn) {
-      btn.setAttribute('aria-label', isReader ? 'Exit reader mode' : 'Enter reader mode');
-      btn.setAttribute('title', isReader ? 'Exit reader mode - show full layout' : 'Reader mode - clean view for reading');
+      btn.setAttribute('aria-label', isReader ? '退出阅读模式' : '进入阅读模式');
+      btn.setAttribute('title', isReader ? '退出阅读模式 - 显示完整布局' : '阅读模式 - 简洁的阅读视图');
     }
   }
 
@@ -59,7 +59,7 @@
         applyReaderMode(newState);
 
         // Announce mode change for screen readers
-        var message = newState ? 'Reader mode enabled. Showing article content only.' : 'Reader mode disabled. Showing full layout.';
+        var message = newState ? '已开启阅读模式，仅显示文章内容。' : '已关闭阅读模式，显示完整布局。';
         announceToScreenReader(message);
       });
     }

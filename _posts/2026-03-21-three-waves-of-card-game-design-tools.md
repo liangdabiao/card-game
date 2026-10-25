@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Three Waves of Card Game Design Tools"
+title: "卡牌游戏设计工具的三次浪潮"
 date: 2026-03-21 12:00:00.000000000 -00:00
 permalink: three-waves-of-card-game-design-tools
 author: Benny Cheung
@@ -26,193 +26,193 @@ series_order: 1
 ---
 
 <!--excerpt.start-->
-I am a software architect by profession, but a game designer at heart. When I first looked at how card games get made, I recognized the pain immediately. Hundreds of interdependent data fields living in fragile spreadsheets. Manual rendering pipelines where a three-pixel change means recompiling an entire deck. Hours of tedious formatting before you can even test whether the game is fun. As a programmer, this kind of repetitive, error-prone manual process is exactly the thing I have spent my entire career building tools to eliminate. Behind every elegant piece of cardboard is a staggering web of math, probability, edge case testing, and tedious layout formatting. Over the past 15 years, the tools available to card game designers have gone through three distinct waves of evolution. This article traces that arc from the scripting trenches of the mid-2000s to the AI-native pipelines of 2026.
+我的职业是软件架构师，但骨子里是个游戏设计师。当我第一次审视卡牌游戏的制作过程时，我立刻认出了那种痛苦：数百个相互依赖的数据字段栖身于脆弱的电子表格中；手动渲染流水线里，改动三个像素就意味着重新编译整个牌库；在你还没能测试游戏是否好玩之前，就得先花上几个小时做乏味的排版。作为一名程序员，这种重复且容易出错的手工流程，恰恰是我整个职业生涯致力于构建工具去消除的东西。每一件精美的卡牌成品背后，都缠绕着一张令人咋舌的大网——数学、概率、边界情况测试和繁琐的排版格式化。在过去 15 年里，卡牌游戏设计师可用的工具经历了三次泾渭分明的进化浪潮。本文将追溯这段历程：从 2000 年代中期的脚本战壕，一路走到 2026 年的 AI 原生流水线。
 <!--excerpt.end-->
 
-This is Part 1 of the Card Architecture series. My interest in card game architecture is not new. Back in 2021, I spent a month reverse-engineering *Race for the Galaxy*, dissecting its [game model]({{ site.baseurl }}game-architecture-card-ai-1), [action engine]({{ site.baseurl }}game-architecture-card-ai-2), and [neural network AI]({{ site.baseurl }}game-architecture-card-ai-3). That deep dive taught me how much hidden complexity lives inside a well-designed card game, how tightly the mechanics, the card interactions, and the AI decision-making are coupled together. It also left me frustrated with how manual the entire design and prototyping process remained.
+这是"卡牌架构"（Card Architecture）系列的第 1 部分。我对卡牌游戏架构的兴趣并不是什么新鲜事。早在 2021 年，我就花了一个月时间对 *Race for the Galaxy*（银河竞逐）进行逆向工程，剖析它的[游戏模型]({{ site.baseurl }}/game-architecture-card-ai-1)、[行动引擎]({{ site.baseurl }}/game-architecture-card-ai-2)和[神经网络 AI]({{ site.baseurl }}/game-architecture-card-ai-3)。那次深入钻研让我明白，一款设计精良的卡牌游戏内部隐藏着多少复杂性，游戏机制、卡牌互动与 AI 决策之间又是何等紧密地耦合在一起。但它也让我感到沮丧：整个设计与原型制作过程仍然如此依赖手工。
 
-Programmers are lazy in the best possible way: we hate repeating ourselves, and we will spend a week automating a task that takes ten minutes, purely out of principle. That instinct, combined with what I learned from studying Race for the Galaxy's architecture, is what pulled me into building AI-native game design tools over the past year. But the deeper I got, the more I realized that game design is not a simpler version of software design. It is a different medium with its own complexity, its own craft, and its own hard-won expertise. This series is my attempt to make sense of that world. Subsequent articles will cover multi-agent card generation, the schema limits exposed by famous games like Wingspan and Terraforming Mars, the export pipeline from data to playable prototype, and the algorithms that draw board game maps.
+程序员有一种最好的意义上的"懒"：我们痛恨重复自己，宁愿花上一周时间去自动化一件只需十分钟的任务，纯粹出于原则。正是这种本能，加上研究 Race for the Galaxy 架构过程中的所学，把我拉进了过去一年构建 AI 原生游戏设计工具的工作之中。但越是深入，我越意识到：游戏设计并不是软件设计的简化版。它是一种不同的媒介，有它自己的复杂性、自己的技艺，以及自己来之不易的专业知识。这个系列就是我试图理解那个世界的一次尝试。后续文章将涵盖多智能体卡牌生成、《展翅翱翔》（Wingspan）与《重塑火星》（Terraforming Mars）等知名游戏所暴露的模式（schema）局限、从数据到可玩原型的导出流水线，以及绘制桌游地图的算法。
 
 ---
 
-## The Minor Miracle of a Finished Deck
+## 一副成品牌库的小小奇迹
 
-When you hold a finished card game in your hands, you are holding a minor miracle. Every card in that deck has to talk to every other card. The costs have to scale with the power. The combos have to exist without being degenerate. The types have to distribute across the deck so that no strategy completely dominates. And every single piece of rules text has to be unambiguous enough that two strangers can sit down and agree on what it means.
+当你把一副成品卡牌游戏握在手中时，你握住的是一个小小的奇迹。牌库里的每张卡牌都必须与其他每张卡牌"对话"。费用必须与强度相称。组合技（combo）必须存在，但又不能失衡崩坏。卡牌类型必须在牌库中合理分布，不让任何一种策略完全称霸。而每一条规则文字都必须足够无歧义，让两个素不相识的人坐下来就能对它的含义达成一致。
 
-If even one number is off, the whole ecosystem collapses. A card that costs one resource too little warps the meta. A combo that the designer missed creates an unbeatable strategy that players discover on their second game night. A piece of ambiguous text spawns a 200-comment thread on BoardGameGeek about whether "adjacent" includes diagonals.
+只要有一个数字不对，整个生态系统就会崩塌。一张费用低了 1 点资源的卡牌就会扭曲整个环境（meta）。一个设计师未曾察觉的组合技会造就一种不可战胜的策略，玩家在第二个游戏之夜就会发现它。一段含糊的文字会在 BoardGameGeek 上引发一条 200 楼的讨论帖，争论"相邻"到底包不包括对角线。
 
-For decades, the barrier to entry in game design was not having a good idea. Good ideas are everywhere. The barrier was having the sheer clerical stamina to manage the data. Hundreds of cards, each with five to ten interdependent fields, all living in a spreadsheet that grows more fragile with every edit. In software, we would call this accidental complexity: difficulty that comes from the tools, not from the problem itself. The history of card game design tools is the history of chipping away at that accidental complexity.
+几十年来，进入游戏设计领域的门槛从来不是"有没有一个好点子"。好点子遍地都是。真正的门槛是管理数据所需的、纯粹事务性的耐力。数百张卡牌，每张有五到十个相互依赖的字段，全部栖身于一张每编辑一次就更加脆弱的电子表格里。在软件领域，我们会把这称为偶然复杂性（accidental complexity）：由工具而非问题本身带来的困难。卡牌游戏设计工具的历史，就是不断削除这种偶然复杂性的历史。
 
-That history falls into three clear waves.
+这段历史清晰地分为三次浪潮。
 
-![Three Waves of Card Game Design Tools]({{ site.baseurl }}images/three-waves-of-card-game-design-tools/Three_Waves_Overview.jpg)
-*Figure 1. The three waves of card game design tools: from scripting and spreadsheets, to visual editors, to AI-native pipelines that understand your game.*
+![卡牌游戏设计工具的三次浪潮]({{ site.baseurl }}/images/three-waves-of-card-game-design-tools/Three_Waves_Overview.jpg)
+*图 1. 卡牌游戏设计工具的三次浪潮：从脚本与电子表格，到可视化编辑器，再到能够理解你游戏的 AI 原生流水线。*
 
-## Wave 1: The Template Era (2006-2010s)
+## 第一波浪潮：模板时代（2006-2010s）
 
-### Scripts, Spreadsheets, and Pixel Coordinates
+### 脚本、电子表格与像素坐标
 
-![The Template Era]({{ site.baseurl }}images/three-waves-of-card-game-design-tools/Three_Waves_Template_Era.jpg)
-*Figure 2. Wave 1: the designer's reality, surrounded by spreadsheets, scripts, and pixel coordinates, wrestling data into cards by brute force.*
+![模板时代]({{ site.baseurl }}/images/three-waves-of-card-game-design-tools/Three_Waves_Template_Era.jpg)
+*图 2. 第一波浪潮：设计师的现实——被电子表格、脚本和像素坐标包围，用蛮力把数据折腾成卡牌。*
 
-The first wave of dedicated card game tools began with nanDECK [1], a free Windows scripting language released in 2006, and matured through the 2010s with tools like Squib [2] (an open-source Ruby framework, 2014) and CardPen [5] (a browser-based HTML/CSS generator). These tools were a real step up from doing everything by hand in Photoshop, but using them felt less like game design and more like software engineering. As someone who writes code for a living, I can appreciate that. But I also know that forcing non-programmers into a code-first workflow is a classic product design mistake.
+第一波专门的卡牌游戏工具浪潮始于 nanDECK [1]——一款 2006 年发布的免费 Windows 脚本语言，并在整个 2010 年代随着 Squib [2]（一个开源 Ruby 框架，2014 年）和 CardPen [5]（一个基于浏览器的 HTML/CSS 生成器）等工具而走向成熟。比起在 Photoshop 里全手工操作，这些工具是实实在在的进步，但使用它们的感觉更像软件工程，而不是游戏设计。作为一个以写代码为生的人，我能欣赏这一点。但我也清楚，强迫非程序员接受代码优先的工作流程，是一个经典的产品设计错误。
 
-In this era, a card game was treated purely as a layout problem. All of your game data lived in a massive Excel spreadsheet or a CSV file. Row one was your basic attack card. Row two was your defense card. Row 150 was your ultimate boss monster. Column A was the name. Column B was the cost. Column C was the rules text. And so on, for as many columns as your game demanded.
+在这个时代，卡牌游戏被纯粹当作一个排版问题。你的所有游戏数据都存放在一个庞大的 Excel 电子表格或 CSV 文件中。第一行是你的基础攻击卡，第二行是你的防御卡，第 150 行是你的终极 Boss 怪物。A 列是名称，B 列是费用，C 列是规则文字，以此类推，列数随你的游戏需要而定。
 
-The Wave 1 tools acted as mail merge on steroids. You wrote a script that said: take the text from column A and print it in a 24-point font at these exact x and y pixel coordinates on the image canvas. Take the number from column B and render it inside this icon template at position (45, 120). Repeat for every row in the spreadsheet. If you needed to move a cost icon three pixels to the left, you opened a code editor, changed an x-coordinate from 45 to 42, recompiled the entire 200-card deck, and prayed it looked right. A card with a title slightly too long? You wrote a conditional statement in your code to shrink the font for that one card. Every visual problem required a programming solution.
+第一波浪潮的工具就像打了鸡血的邮件合并。你写一个脚本，告诉它：把 A 列的文字取出来，用 24 号字体打印在图像画布上这些确切的 x、y 像素坐标处；把 B 列的数字取出来，渲染到位置 (45, 120) 处的这个图标模板里；然后对电子表格中的每一行重复这一过程。如果你需要把一个费用图标向左移动三个像素，就得打开代码编辑器，把一个 x 坐标从 45 改成 42，重新编译整个 200 张卡的牌库，然后祈祷它看起来没问题。某张卡的标题稍微太长了一点？你在代码里写一个条件语句，专门为那一张卡缩小字号。每一个视觉问题都需要一个编程解决方案。
 
-The tradeoff was total control. Every pixel was deterministic. Every layout decision was reproducible. Run the script twice with the same data, get the exact same output. For veteran designers who valued precision over convenience, this was worth the pain.
+这种取舍换来的是完全的控制权。每个像素都是确定性的，每个排版决定都可复现。用同样的数据把脚本跑两遍，得到完全相同的输出。对于那些重视精确甚于便利的资深设计师来说，这种痛苦是值得的。
 
-### What Wave 1 Could Not Do
+### 第一波浪潮做不到的事
 
-But for all their rendering power, Wave 1 tools were blind to the game itself. nanDECK could not tell you if your cards were fun to play, if your pirate-themed deck builder had a dominant strategy, or if your resource curve was broken. It knew nothing about your game. It just knew how to print a spreadsheet.
+尽管渲染能力强大，第一波浪潮的工具对游戏本身却是视而不见的。nanDECK 无法告诉你，你的卡牌玩起来是否有趣、你的海盗主题牌库构筑游戏是否存在压倒性策略、你的资源曲线是否已经崩坏。它对你的游戏一无所知，它只知道怎么把电子表格打印出来。
 
-The content, the actual game design, lived entirely in the designer's head and in the rows of that spreadsheet. The tool did not care what you were making. It just printed whatever you told it to print.
+内容——真正的游戏设计——完全存在于设计师的头脑里，以及那张电子表格的一行行数据中。工具并不关心你在做什么，你让它打印什么它就打印什么。
 
-As a programmer, I actually find Wave 1 tools strangely appealing. Reading through BGG forums, you find nanDECK veterans who swear by the total control it gives them. Squib users on GitHub talk about version-controlling their card data alongside their code, which is something most GUI tools still cannot do cleanly. If you already think in code, this workflow makes perfect sense. But that is exactly the problem: most game designers are not programmers. They are people with brilliant ideas about player interaction, narrative tension, and strategic depth, who should not need to learn Ruby to make a prototype.
+作为一名程序员，我其实觉得第一波浪潮的工具有着一种奇特的吸引力。翻阅 BGG 论坛，你会发现一些 nanDECK 老手对它给予的完全控制推崇备至；GitHub 上的 Squib 用户则谈论把卡牌数据和代码一起纳入版本控制，这是大多数 GUI 工具至今仍无法干净利落做到的事情。如果你已经习惯用代码思考，这种工作流程完全说得通。但这恰恰就是问题所在：大多数游戏设计师并不是程序员。他们是那些对玩家互动、叙事张力和策略深度怀有绝妙想法的人，他们不应该为了做一个原型而被迫去学 Ruby。
 
-By the mid-2020s, the tool landscape had diversified into four distinct quadrants, each solving a different piece of the design-to-table pipeline.
+到 2020 年代中期，工具版图已分化为四个截然不同的象限，每个象限解决"从设计到上桌"流水线中不同的一环。
 
-![The 2026 Tool Landscape]({{ site.baseurl }}images/three-waves-of-card-game-design-tools/Three_Waves_Tool_Landscape.jpg)
-*Figure 3. The 2026 tool landscape across four quadrants: scriptable developer tools (nanDECK, Squib, CardPen), WYSIWYG GUI tools (Component.Studio, Dextrous, Tabletop Creator), print-on-demand services (The Game Crafter, MakePlayingCards), and digital prototyping platforms (Tabletop Simulator, Screentop, Tabletopia).*
+![2026 年的工具版图]({{ site.baseurl }}/images/three-waves-of-card-game-design-tools/Three_Waves_Tool_Landscape.jpg)
+*图 3. 2026 年横跨四个象限的工具版图：可脚本化的开发者工具（nanDECK、Squib、CardPen）、所见即所得 GUI 工具（Component.Studio、Dextrous、Tabletop Creator）、按需印刷服务（The Game Crafter、MakePlayingCards），以及数字原型平台（Tabletop Simulator、Screentop、Tabletopia）。*
 
-## Wave 2: The GUI Era (Late 2010s-2020s)
+## 第二波浪潮：GUI 时代（2010 年代末-2020 年代）
 
-### Visual Editors and Export Pipelines
+### 可视化编辑器与导出流水线
 
-![The GUI Era]({{ site.baseurl }}images/three-waves-of-card-game-design-tools/Three_Waves_GUI_Era.jpg)
-*Figure 4. Wave 2: visual editors with one-click export pipelines for Tabletop Simulator, print-on-demand, and PDF.*
+![GUI 时代]({{ site.baseurl }}/images/three-waves-of-card-game-design-tools/Three_Waves_GUI_Era.jpg)
+*图 4. 第二波浪潮：可视化编辑器，配备面向 Tabletop Simulator、按需印刷和 PDF 的一键导出流水线。*
 
-Starting with Component.Studio [3] in 2017 and accelerating through the early 2020s with Dextrous [4] and Tabletop Creator, a new generation of tools introduced something that seems obvious in retrospect but changed everything: visual editors.
+从 2017 年的 Component.Studio [3] 开始，并在 2020 年代初随着 Dextrous [4] 和 Tabletop Creator 的出现而加速，新一代工具引入了某种如今回想起来显而易见、当时却改变了一切的东西：可视化编辑器。
 
-For the first time, card game designers could drag and drop text boxes onto a visual canvas instead of calculating x and y coordinates in their heads. They could see the card as they were building it. They could resize elements with a mouse, preview the deck in real time, and iterate on the layout without touching a line of code.
+卡牌游戏设计师第一次可以把文本框拖放到可视化画布上，而不必在脑子里计算 x 和 y 坐标。他们可以一边构建卡牌一边看到它。他们可以用鼠标调整元素大小、实时预览牌库、迭代排版，而不必碰一行代码。
 
-It was basically desktop publishing software, but specifically built for tabletop games. InDesign for nerds. Component.Studio's killer feature was its Google Sheets integration, which meant your game data and your visual layout stayed in sync automatically. Dextrous took a different approach, focusing on a polished local editing experience with strong TTS export. Tabletop Creator landed on Steam and attracted designers who wanted an all-in-one desktop app rather than a browser tool. Each had tradeoffs, but all of them eliminated the x-y coordinate problem overnight.
+它基本上就是桌面出版软件，只不过专为桌游而建——给极客用的 InDesign。Component.Studio 的杀手级功能是它的 Google Sheets 集成，这意味着你的游戏数据和可视化布局会自动保持同步。Dextrous 采取了不同的路线，专注于打磨精致的本地编辑体验和强大的 TTS 导出。Tabletop Creator 则登陆 Steam，吸引了那些想要一体化桌面应用而非浏览器工具的设计师。它们各有取舍，但都在一夜之间消灭了 x-y 坐标问题。
 
-### Solving the Deployment Problem
+### 解决部署问题
 
-Beyond the visual editor, Wave 2 tools solved a second major pain point: deployment. In software product terms, this is the "last mile" problem, getting the finished work out of the development environment and into the hands of actual users. For card game designers, the last mile had always been awkward. You would export a folder full of raw image files and then spend hours manually importing them into Tabletop Simulator [6], formatting them for print-on-demand services, or arranging them into printable sheets for home prototyping.
+除可视化编辑器之外，第二波浪潮的工具还解决了另一大痛点：部署。用软件产品的术语来说，这就是"最后一公里"问题——把完成的作品从开发环境送到真实用户手中。对卡牌游戏设计师而言，这最后一公里向来令人别扭：你会导出一个装满原始图像文件的文件夹，然后花上几个小时手动把它们导入 Tabletop Simulator [6]、为按需印刷服务排版，或者把它们拼成可打印的卡表供在家制作原型。
 
-Wave 2 tools built direct export pipelines. A single button press could format your deck for Tabletop Simulator, send it to The Game Crafter [7] for physical printing, or generate a PDF laid out for standard card sleeves. The friction between "I finished designing" and "I am playing the game" collapsed from days to minutes.
+第二波浪潮的工具构建了直接导出流水线。只需按一个按钮，就能把你的牌库格式化成 Tabletop Simulator 可用的形式、发送到 The Game Crafter [7] 进行实体印刷，或者生成一份按标准卡套尺寸排版的 PDF。"我完成了设计"与"我在玩这个游戏"之间的摩擦从数天骤减到数分钟。
 
-For the prototyping workflow, this was enormous. The traditional cycle of export, format, upload, test, realize the game is broken, cry, and repeat was dramatically shortened. Designers could iterate faster than ever.
+对原型制作工作流程而言，这是巨大的飞跃。导出、排版、上传、测试、发现游戏坏了、抓狂、再来一遍的传统循环被大幅缩短。设计师的迭代速度前所未有。
 
-### The Blank Page Remained
+### 空白页面依然存在
 
-Wave 2 made formatting easier, exporting seamless, and iteration faster. But the content bottleneck was identical to Wave 1. You were still staring at a spreadsheet, hand-typing 200 rows of card data, and trying to balance the math in your own head. The tool could make your cards look professional and get them onto a table fast, but it could not help you figure out what the cards should actually do.
+第二波浪潮让排版更容易、导出更无缝、迭代更快速。但内容瓶颈与第一波浪潮毫无二致。你仍然要盯着电子表格，手动输入 200 行卡牌数据，并在自己的脑子里琢磨如何平衡数值。工具可以让你的卡牌看起来很专业，并迅速把它们搬上桌面，但它无法帮你弄清这些卡牌到底应该做什么。
 
-If Wave 1 gave a writer a clunky printing press, Wave 2 gave them Microsoft Word. The output was prettier, but the writer still had to write the book. One designer on the Board Game Design Lab forum described spending an entire Saturday getting a card layout pixel-perfect in a GUI editor, only to realize the underlying card design was broken because the resource curve was wrong. The tool could not tell him that. Nothing could, except playtesting.
+如果说第一波浪潮给了作家一台笨重的印刷机，那么第二波浪潮给了他 Microsoft Word。产出更漂亮了，但书仍然得作家自己来写。Board Game Design Lab 论坛上有一位设计师描述过，他花了整整一个周六在 GUI 编辑器里把卡牌排版调到像素级完美，最后才意识到底层的卡牌设计是坏的——因为资源曲线错了。工具无法告诉他这一点。除了试玩，什么都无法告诉他。
 
-## Wave 3: The AI-Native Era (2025+)
+## 第三波浪潮：AI 原生时代（2025 年起）
 
-### Automating the Invention
+### 自动化"发明"本身
 
-![The AI-Native Era]({{ site.baseurl }}images/three-waves-of-card-game-design-tools/Three_Waves_AI_Native.jpg)
-*Figure 5. Wave 3: the system reads your game's ontology and generates balanced cards with mechanics, costs, and synergies. The tool becomes a design partner.*
+![AI 原生时代]({{ site.baseurl }}/images/three-waves-of-card-game-design-tools/Three_Waves_AI_Native.jpg)
+*图 5. 第三波浪潮：系统读取你游戏的本体（ontology），生成带有机制、费用和协同效应的平衡卡牌。工具成为设计伙伴。*
 
-Wave 3 breaks the pattern entirely. Tools emerging in 2025 and 2026 are no longer automating the layout or the export. They are automating the invention.
+第三波浪潮彻底打破了这一模式。2025 与 2026 年涌现的工具不再自动化排版或导出，而是在自动化"发明"本身。
 
-The spreadsheet is removed entirely as the source of truth. Instead, the foundation of your game becomes a structured game description, known in the research literature as an ontology. If you want to understand the ontology approach in depth, I wrote a deep dive on the topic in [Generative Ontology: From Game Knowledge to Game Creation]({{ site.baseurl }}generative-ontology-from-game-knowledge-to-game-creation).
+电子表格作为事实来源被彻底移除。取而代之的是，你游戏的基础变成了一份结构化的游戏描述，在研究文献中被称为本体（ontology）。如果你想深入理解本体方法，我曾在[《生成式本体：从游戏知识到游戏创造》]({{ site.baseurl }}/generative-ontology-from-game-knowledge-to-game-creation)一文中写过一篇深度探讨。
 
-An ontology is a machine-readable map of your game's DNA. It defines the core reality of your game: the theme, the primary mechanics, the resources players use, the turn phases, how victory is achieved, and how all those elements interact with each other.
+本体是一张机器可读的地图，描绘你游戏的 DNA。它定义了你游戏的核心现实：主题、主要机制、玩家使用的资源、回合阶段、如何取得胜利，以及所有这些元素如何相互作用。
 
-You feed this DNA map into the system, and it generates the spreadsheet for you. It is not just laying out the cards. It is authoring the rules text, the costs, and the specific mechanics based on the laws of the universe you defined.
+你把这张 DNA 地图输入系统，它就会为你生成电子表格。它不只是在给卡牌排版，而是在依据你所定义的宇宙法则，撰写规则文字、费用和具体机制。
 
-To return to the writer analogy: Wave 3 gives the writer a co-author who deeply understands their genre and can draft chapters for them. The writer still sets the vision and the direction. The co-author handles the labor of turning that vision into pages.
+回到作家的类比：第三波浪潮给了作家一位合著者，这位合著者深刻理解作家的题材类型，能够为他们起草章节。作家依然掌控愿景与方向，合著者则承担把愿景变成书页的辛劳。
 
-### The Migration of Value
+### 价值的迁移
 
-This shift changes where the competitive advantage lies:
+这一转变改变了竞争优势之所在：
 
-| Wave | Era | Competitive Advantage |
+| 浪潮 | 时代 | 竞争优势 |
 |------|-----|----------------------|
-| **Wave 1** | 2006-2010s | Rendering quality: pixel-perfect card images from data |
-| **Wave 2** | Late 2010s-2020s | Export breadth: how quickly cards reach TTS or print |
-| **Wave 3** | 2025+ | Content intelligence: the tool understands your game's strategy |
+| **第一波** | 2006-2010s | 渲染质量：从数据生成像素级完美的卡牌图像 |
+| **第二波** | 2010 年代末-2020 年代 | 导出广度：卡牌多快能进入 TTS 或付印 |
+| **第三波** | 2025+ | 内容智能：工具理解你游戏的策略 |
 
-A Wave 1 or Wave 2 tool does not know that your pirate-themed deck builder desperately needs a counter to a dominant "hoard gold" strategy. To those tools, a card is just a string of characters. A Wave 3 tool reads the ontology, recognizes the resource economy, and generates cards that participate in balancing the ecosystem. Whether it generates *good* cards is a separate question, and one I will be honest about in the next article in this series.
+第一波或第二波的工具不会知道，你的海盗主题牌库构筑游戏迫切需要一个针对"囤积金币"这一主导策略的反制手段。对那些工具而言，一张卡只是一串字符。第三波工具则会读取本体，识别出资源经济，并生成参与生态系统制衡的卡牌。至于它生成的是不是*好*卡牌，那是另一个问题——在本系列下一篇文章中，我会坦诚地谈谈这一点。
 
-### What Changed to Make This Possible
+### 让这成为可能的三大变化
 
-Three technical shifts converged to enable Wave 3:
+三大技术变化汇聚在一起，使第三波浪潮成为可能：
 
-**Large language models became reliable enough for structured output.** Early LLMs could write creative text, but they could not consistently produce data in a rigid schema. By 2025, models like Claude and GPT-4 could reliably output structured JSON with specific fields, types, and constraints, making them usable as data generators, not just text generators.
+**大语言模型在结构化输出方面变得足够可靠。** 早期的 LLM 能写出富有创意的文字，却无法稳定地按严格的模式（schema）生成数据。到 2025 年，Claude 和 GPT-4 等模型已经能够可靠地输出带有特定字段、类型和约束的结构化 JSON，使它们不仅可以当文本生成器，还能当数据生成器使用。
 
-**Multi-agent architectures replaced single prompts.** Asking one AI to "make a card game" produces generic mush. But splitting the task across specialized agents (one for theme, one for mechanics, one for card generation, one for balance testing) produces output with real mechanical depth. Each agent focuses on what it does best, and the pipeline enforces quality at every stage. Cardiverse [12], an academic system presented at EMNLP 2025, demonstrated this approach with graph-based mechanic indexing and self-play validation.
+**多智能体架构取代了单一提示。** 让一个 AI"做一个卡牌游戏"，只会产出一锅平庸的浆糊。但把任务拆分给专门的智能体（一个负责主题、一个负责机制、一个负责卡牌生成、一个负责平衡测试），就能产出具有真正机制深度的结果。每个智能体专注于自己最擅长的事，而流水线在每个阶段都实施质量把关。Cardiverse [12] 是一个在 EMNLP 2025 上发表的学术系统，它用基于图的机制索引和自我对弈验证演示了这种方法。
 
-**Automated playtesting became computationally feasible.** Algorithms like Monte Carlo Tree Search, the same family that powered AlphaGo, can now simulate thousands of games in minutes. For simple card games like deck builders and drafting games, where card effects map cleanly to executable actions (draw, gain resource, force discard), a generated deck can be stress-tested for dominant strategies before a human touches it. For more complex engine builders like Terraforming Mars or Wingspan, the technology can validate card data structure and trigger timing, but fully simulating the game-specific economy (resource production, trading chains, cards-as-currency) remains an active area of development. The gap between "the AI understands your card grammar" and "the AI plays your game" is real, and I will be honest about it in a later article in this series. For a deep dive into how the simulation works today, see [AI Playtesting: When Your Board Game Tests Itself]({{ site.baseurl }}ai-playtesting-when-your-game-tests-itself).
+**自动化试玩在计算上变得可行。** 像蒙特卡洛树搜索（Monte Carlo Tree Search）这类算法——与驱动 AlphaGo 的算法同属一族——如今可以在几分钟内模拟数千局游戏。对于牌库构筑游戏和轮抽游戏这类简单卡牌游戏，卡牌效果能够干净地映射为可执行动作（抽牌、获得资源、强制弃牌），生成的牌库在人类碰它之前，就可以针对压倒性策略进行压力测试。对于《重塑火星》（Terraforming Mars）或《展翅翱翔》（Wingspan）这类更复杂的引擎构筑游戏，该技术可以验证卡牌数据结构和触发时机，但要完整模拟游戏专属的经济系统（资源生产、交易链、以卡牌为货币）仍是一个活跃的开发领域。"AI 理解你的卡牌语法"与"AI 会玩你的游戏"之间的鸿沟是真实存在的，在本系列后续文章中我会坦诚地面对它。关于如今的模拟技术如何运作的深度探讨，参见[《AI 试玩：当你的桌游学会测试自己》]({{ site.baseurl }}/ai-playtesting-when-your-game-tests-itself)。
 
-These three shifts did not arrive as a coherent plan. They converged messily, the way most real technological transitions do.
+这三大变化并不是作为一个连贯的计划到来的。它们以凌乱的方式汇聚，一如大多数真实的技术转型。
 
-## What This Means for Designers
+## 这对设计师意味着什么
 
-![The Designer's Evolving Role]({{ site.baseurl }}images/three-waves-of-card-game-design-tools/Three_Waves_Designer_Role.jpg)
-*Figure 6. The designer's role evolves: from spreadsheet manager to creative visionary, with tools handling the data while humans define the vision.*
+![设计师角色的演变]({{ site.baseurl }}/images/three-waves-of-card-game-design-tools/Three_Waves_Designer_Role.jpg)
+*图 6. 设计师的角色在演变：从电子表格管理者到创意远见者，工具负责处理数据，而人类负责定义愿景。*
 
-### From Spreadsheet Manager to Creative Director
+### 从电子表格管理者到创意总监
 
-From what I have gathered talking to designers and reading their forum posts, being a card game designer has meant being a spreadsheet manager first and a creative visionary second. The bulk of the time goes to data entry, layout formatting, and manual balance calculations. The actual design work, choosing mechanics, crafting theme, engineering the moments that make a game memorable, gets squeezed into whatever time is left. Any product designer would recognize this as the same problem we see in enterprise software: users spending most of their time fighting the tool instead of doing their actual job.
+根据我与设计师们的交谈以及阅读他们的论坛发帖所了解到的情况，身为卡牌游戏设计师，意味着首先是一名电子表格管理者，其次才是创意远见者。大部分时间都花在数据录入、排版格式化和手动平衡计算上；而真正的设计工作——选择机制、打磨主题、精心营造让游戏令人难忘的时刻——则被挤压到所剩无几的空闲时间里。任何产品设计师都会认出，这与我们在企业软件中看到的问题是同一个：用户把大部分时间花在与工具搏斗上，而不是去做他们真正的工作。
 
-Wave 3 inverts that ratio. The machine handles the data entry, the layout, the initial balance pass, and the formatting. The designer gets to focus on what they actually care about: what the game should feel like, what decisions should be agonizing, what moments should make players laugh or groan or slam the table.
+第三波浪潮逆转了这个比例。机器来处理数据录入、排版、初轮平衡调整和格式化。设计师得以专注于他们真正在乎的事情：游戏应该给人什么感觉，哪些决策应该令人纠结挣扎，哪些时刻应该让玩家大笑、哀叹或拍桌。
 
-I want to be honest about the tension here. A lot of designers I have talked to in the community are deeply skeptical of AI in game design, and they have good reasons. There is a real risk that AI-generated content floods the market with mediocre games that technically work but have no soul. I have generated card sets that were mechanically balanced and completely boring to play. Balance is not the same as fun, and I learned that the hard way.
+我想坦诚地谈谈这里的紧张关系。我在社区里交谈过的许多设计师，对 AI 参与游戏设计深表怀疑，而且他们的理由很充分。确实存在一种真实的风险：AI 生成的内容会让大量技术上说得通、却没有灵魂的平庸游戏淹没市场。我生成过机制上平衡、玩起来却索然无味的卡牌集。平衡不等于有趣——这是我用惨痛教训换来的认识。
 
-But as someone who has spent decades in software engineering, I see a pattern I have seen before. Programmers went through the same anxiety when IDEs started auto-completing code, when Stack Overflow made every answer searchable, when GitHub Copilot started writing functions for us. Every time, the fear was that the craft would be devalued. Every time, what actually happened was that the tedious parts got automated and the creative parts became more important. The engineers who understood *why* they were building something became more valuable, not less. The ones who only knew *how* to type the code had a harder time.
+但作为一个在软件工程领域浸淫数十年的人，我看到了一个自己早已见过的模式。当 IDE 开始自动补全代码时，当 Stack Overflow 让每个答案都可以被搜到时，当 GitHub Copilot 开始替我们编写函数时，程序员们都经历过同样的焦虑。每一次，恐惧都是这门手艺会被贬值；每一次，实际发生的事情却是：乏味的部分被自动化了，而创造性的部分变得更重要。理解自己*为什么*要构建某个东西的工程师变得更值钱了，而不是更廉价。那些只知道*如何*敲代码的人，日子则更难过了。
 
-I think game design is heading for the same split. The designer who understands game systems, who can sense that the midgame needs a crisis event to prevent stalling, who knows why a mechanic creates tension at the table even though the math says it is balanced, that person's expertise matters more than ever. The machine can generate 200 cards. It has no idea which 200 cards the game actually needs. That is still the designer's call.
+我认为游戏设计正走向同样的分化。理解游戏系统的设计师、能察觉对局中期需要一个危机事件来防止僵滞的设计师、明白为什么某个机制尽管数值平衡却能在桌面上制造紧张感的设计师——这些人的专业知识比以往任何时候都重要。机器可以生成 200 张卡牌，但它完全不知道这个游戏真正需要的是哪 200 张。这仍然是设计师的决断。
 
-### The New Skill: Describing Constraints
+### 新技能：描述约束
 
-What has changed is the skill the designer needs to bring to the table. In Wave 1, the critical skill was scripting. In Wave 2, it was visual layout. In Wave 3, the critical skill is the ability to describe the constraints of your game with precision.
+改变的是设计师需要带上桌的技能。在第一波浪潮中，关键技能是脚本编写；在第二波浪潮中，是可视化排版；而在第三波浪潮中，关键技能是精确描述你游戏之约束的能力。
 
-The AI's output is only as good as the ontology you feed it. A vague description produces vague cards. A precise, well-structured description of your mechanics, resources, turn phases, and victory conditions produces cards that interlock, synergize, and challenge.
+AI 的输出不会好过你喂给它的本体。模糊的描述产出模糊的卡牌；而对你的机制、资源、回合阶段和胜利条件给出精确且结构良好的描述，才能产出相互咬合、彼此协同、富于挑战的卡牌。
 
-The designer's job is shifting from "fill in the spreadsheet" to "define the universe." In software, we went through the same transition when we moved from writing assembly code to writing high-level specifications. The abstraction level rose, but the design work got harder, not easier. I suspect game design is heading the same direction.
+设计师的工作正在从"填写电子表格"转向"定义宇宙"。在软件领域，我们也经历过同样的转变——从编写汇编代码转向编写高级规格说明。抽象层次提高了，但设计工作变得更难了，而不是更容易。我怀疑游戏设计也正朝着同一个方向前进。
 
-## What Comes Next
+## 接下来会怎样
 
-Wave 3 is powerful, but it is not the end of the story. The current generation of AI-native tools excels at certain types of card games, particularly deck builders and simple drafting games, where the card data model maps cleanly to a structured schema. But as we will explore in the next article in this series, more complex games expose fundamental limits in how AI represents cards.
+第三波浪潮很强大，但它并不是故事的终点。当前这一代 AI 原生工具擅长某些类型的卡牌游戏，尤其是牌库构筑游戏和简单的轮抽游戏——它们的卡牌数据模型可以干净地映射为结构化模式。但正如我们将在本系列下一篇文章中探讨的，更复杂的游戏会暴露出 AI 表示卡牌方式的根本局限。
 
-Engine builders like Wingspan and Terraforming Mars, with their multi-resource costs and cross-card synergy systems, challenge the basic assumptions of the schema. Living card games like Arkham Horror require entirely separate data models for player cards and encounter cards. And games like KeyForge, where a single card has four distinct abilities that fire at different phases of the game, break the schema entirely.
+《展翅翱翔》（Wingspan）和《重塑火星》（Terraforming Mars）这类引擎构筑游戏，凭借其多资源费用和跨卡牌协同系统，挑战着模式的基本假设。《诡镇奇谈》（Arkham Horror）这类 Living Card Game（LCG，动态卡牌游戏）需要为玩家牌和遭遇牌建立完全独立的数据模型；而 KeyForge 这类游戏——单张卡牌拥有四个在游戏不同阶段触发的不同能力——则把模式彻底打破。
 
-The tools are evolving to meet these challenges. But the gap between what AI can design today and what the most ambitious designers aspire to create is where the most interesting work is happening.
+工具正在进化以应对这些挑战。而 AI 今天所能设计的，与最具雄心的设计师渴望创造的，两者之间的差距正是最有趣的工作正在发生的地方。
 
-I should be clear about what I am not arguing. I am not saying every designer should adopt Wave 3 tools, or that earlier approaches are obsolete. Some designers may look at everything described in this article and decide it is too complicated, or that the hands-on process of manually crafting each card is part of what makes designing fun for them. There are designers who resist spreadsheets, designers who resist GUIs, and there will certainly be designers who resist AI. That is completely valid. The act of hand-cutting prototype cards on a Saturday afternoon has a tactile satisfaction that no pipeline can replicate. Not every efficiency gain is a net gain if it removes the part of the process you actually enjoy.
+我应该澄清自己并没有在主张什么。我不是说每个设计师都应该采用第三波浪潮的工具，也不是说更早的方法已经过时。有些设计师看到本文描述的一切，可能会觉得太复杂了；或者觉得亲手打磨每张卡牌的过程，本身就是设计乐趣的一部分。有抵制电子表格的设计师，有抵制 GUI 的设计师，将来肯定也会有抵制 AI 的设计师。这完全正当。在一个周六的下午亲手裁剪原型卡牌，带来的是一种任何流水线都无法复刻的触觉满足。如果效率的提升剥夺了流程中你真正享受的那部分，那它未必是净收益。
 
-My goal with this series is not to convert anyone. It is to show and tell what can be done, so that designers who are curious have a clear picture of the landscape.
+我做这个系列的目标不是说动任何人，而是展示并讲述哪些事情是可行的，让那些心怀好奇的设计师对这片版图有一幅清晰的图景。
 
-I know a number of card game designers personally. Several of them have game ideas that have been collecting dust for years, stuck somewhere between a napkin sketch and a playable prototype, for exactly the reasons laid out in this article. The spreadsheet got too big. The layout took too long. The balance math was overwhelming. Life got in the way, and the project never made it to a table. The designers who are open-minded about new tooling, especially the ones with enough technical fluency to understand what AI pipelines can and cannot do, are the ones I have seen light up when they realize their shelved idea might actually be buildable now. Bringing a designer's dormant idea back to life, giving them a path from "I always wanted to make this game" to "here is a playable prototype, let us see if it works," that is the most valuable thing these new tools can offer. Not replacing the designer's vision, but removing the obstacles that buried it.
+我私下认识不少卡牌游戏设计师。他们中有几个人的游戏点子已经积灰多年，卡在餐巾纸草图与可玩原型之间的某处，原因恰恰就是本文所列出的那些。电子表格变得太庞大了；排版耗时太久；平衡计算令人望而生畏；生活从中作梗，项目从未上过桌。那些对新工具持开放心态的设计师——尤其是那些具备足够技术素养、能理解 AI 流水线能与不能的设计师——正是我见过的、当他们意识到自己搁置已久的点子如今也许真的能做出来时会眼睛发亮的人。让设计师休眠的点子重获新生，给他们一条从"我一直想做这个游戏"通往"这是一个可玩的原型，我们来看看它行不行"的路径——这才是这些新工具所能提供的最有价值的东西。不是取代设计师的愿景，而是移除那些埋葬了愿景的障碍。
 
-For now, the practical reality is this: if you have a game idea sketched on a napkin, the barrier between that napkin and a playable prototype has never been lower. Whether the prototype is any good still depends entirely on you. I have spent enough time in both worlds now to know that game design is no less serious, no less complex, and no less creative than software engineering. It is just a different medium. The tools have gotten dramatically better. The hard part has not changed at all.
+眼下的现实是这样的：如果你有一个画在餐巾纸上的游戏点子，这张餐巾纸与可玩原型之间的门槛从未如此之低。但原型好不好，仍然完全取决于你自己。如今我在这两个世界里都浸泡了足够久，深知游戏设计的严肃性、复杂性和创造性丝毫不亚于软件工程。它只是另一种媒介而已。工具已经突飞猛进，而最难的部分从未改变。
 
 ---
 
-## References
+## 参考文献
 
-[1] nanDECK. [*nanDECK Card Generation Tool*](https://nandeck.com/). Free Windows scripting language for card layout and rendering.
+[1] nanDECK. [*nanDECK Card Generation Tool*](https://nandeck.com/)（卡牌生成工具）。用于卡牌排版与渲染的免费 Windows 脚本语言。
 
-[2] Andy Meneely. [*Squib: A Ruby DSL for Card Prototyping*](https://github.com/andymeneely/squib). Open-source framework for programmatic card generation.
+[2] Andy Meneely. [*Squib: A Ruby DSL for Card Prototyping*](https://github.com/andymeneely/squib)（用于卡牌原型的 Ruby DSL）。以编程方式生成卡牌的开源框架。
 
-[3] Component.Studio. [*Web-based Card Design with Google Sheets Integration*](https://component.studio/). WYSIWYG card design tool with data-driven templates.
+[3] Component.Studio. [*Web-based Card Design with Google Sheets Integration*](https://component.studio/)（集成 Google Sheets 的网页卡牌设计）。带数据驱动模板的所见即所得卡牌设计工具。
 
-[4] Dextrous. [*Modern WYSIWYG Card Design*](https://www.dextrous.com.au/). Visual editor with TTS and print-on-demand export.
+[4] Dextrous. [*Modern WYSIWYG Card Design*](https://www.dextrous.com.au/)（现代所见即所得卡牌设计）。带 TTS 与按需印刷导出的可视化编辑器。
 
-[5] CardPen. [*Browser-based HTML/CSS Card Generator*](https://cardpen.mcdemarco.net/). Lightweight web tool for card prototyping.
+[5] CardPen. [*Browser-based HTML/CSS Card Generator*](https://cardpen.mcdemarco.net/)（基于浏览器的 HTML/CSS 卡牌生成器）。用于卡牌原型的轻量级 Web 工具。
 
-[6] Berserk Games. [*Tabletop Simulator*](https://store.steampowered.com/app/286160/). 3D physics sandbox for digital board game prototyping.
+[6] Berserk Games. [*Tabletop Simulator*](https://store.steampowered.com/app/286160/)。用于数字桌游原型的 3D 物理沙盒。
 
-[7] The Game Crafter. [*Print-on-Demand for Tabletop Games*](https://www.thegamecrafter.com/). Physical production service for indie designers.
+[7] The Game Crafter. [*Print-on-Demand for Tabletop Games*](https://www.thegamecrafter.com/)（桌游按需印刷）。面向独立设计师的实体生产服务。
 
-[8] MakePlayingCards. [*Volume Card Printing*](https://makeplayingcards.com/). Mid-to-high volume card production.
+[8] MakePlayingCards. [*Volume Card Printing*](https://makeplayingcards.com/)（批量卡牌印刷）。中大批量的卡牌生产。
 
-[9] Geoffrey Engelstein and Isaac Shalev. [*Building Blocks of Tabletop Game Design: An Encyclopedia of Mechanisms*](https://www.routledge.com/Building-Blocks-of-Tabletop-Game-Design-An-Encyclopedia-of-Mechanisms/Engelstein-Shalev/p/book/9781138365490). CRC Press, 2019.
-  - The definitive taxonomy of tabletop game mechanisms, providing the vocabulary that AI ontologies use to classify mechanics.
+[9] Geoffrey Engelstein and Isaac Shalev. [*Building Blocks of Tabletop Game Design: An Encyclopedia of Mechanisms*](https://www.routledge.com/Building-Blocks-of-Tabletop-Game-Design-An-Encyclopedia-of-Mechanisms/Engelstein-Shalev/p/book/9781138365490)（《桌游设计的基础构件：机制百科全书》）。CRC Press, 2019。
+  - 桌游机制最权威的分类学，为 AI 本体分类机制提供了词汇表。
 
-[10] Benny Cheung. [*Game Architecture for Card Game Model, Action, and AI*](https://bennycheung.github.io/game-architecture-card-ai-1) (Parts [1](https://bennycheung.github.io/game-architecture-card-ai-1), [2](https://bennycheung.github.io/game-architecture-card-ai-2), [3](https://bennycheung.github.io/game-architecture-card-ai-3)). bennycheung.github.io, 2021.
-  - Three-part series reverse-engineering the architecture and neural network AI of Race for the Galaxy.
+[10] Benny Cheung. [*Game Architecture for Card Game Model, Action, and AI*]({{ site.baseurl }}/game-architecture-card-ai-1)（《卡牌游戏的模型、行动与 AI 之游戏架构》），第 [1]({{ site.baseurl }}/game-architecture-card-ai-1)、[2]({{ site.baseurl }}/game-architecture-card-ai-2)、[3]({{ site.baseurl }}/game-architecture-card-ai-3) 部分。bennycheung.github.io, 2021。
+  - 对 Race for the Galaxy 的架构与神经网络 AI 进行逆向工程的三部曲系列。
 
-[11] Benny Cheung. [*Generative Ontology: From Game Knowledge to Game Creation*](https://bennycheung.github.io/generative-ontology-from-game-knowledge-to-game-creation). bennycheung.github.io, 2026.
-  - Deep dive into the ontology-driven approach to generative game design.
+[11] Benny Cheung. [*Generative Ontology: From Game Knowledge to Game Creation*]({{ site.baseurl }}/generative-ontology-from-game-knowledge-to-game-creation)（《生成式本体：从游戏知识到游戏创造》）。bennycheung.github.io, 2026。
+  - 深入探讨以本体驱动的生成式游戏设计方法。
 
-[12] Danrui Li, Sen Zhang, Samuel S. Sohn, Kaidong Hu, Muhammad Usman, and Mubbasir Kapadia. [*Cardiverse: Harnessing LLMs for Novel Card Game Prototyping*](https://arxiv.org/abs/2502.07128). EMNLP 2025.
-  - Academic research on multi-agent LLM pipelines for card game generation, using graph-based mechanic indexing and self-play validation.
+[12] Danrui Li, Sen Zhang, Samuel S. Sohn, Kaidong Hu, Muhammad Usman, and Mubbasir Kapadia. [*Cardiverse: Harnessing LLMs for Novel Card Game Prototyping*](https://arxiv.org/abs/2502.07128)（利用 LLM 进行新型卡牌游戏原型设计）。EMNLP 2025。
+  - 关于多智能体 LLM 卡牌生成流水线的学术研究，采用基于图的机制索引与自我对弈验证。

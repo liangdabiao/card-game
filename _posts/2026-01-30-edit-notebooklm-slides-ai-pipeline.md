@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Editing NotebookLM Slides: A 4-Tool Pipeline"
+title: "编辑 NotebookLM 幻灯片：一条四工具流水线"
 date: 2026-01-30 12:00:00.000000000 -00:00
 permalink: edit-notebooklm-slides-ai-pipeline
 author: Benny Cheung
@@ -23,156 +23,156 @@ published: true
 ---
 
 <!--excerpt.start-->
-Google's NotebookLM can generate beautiful slide decks from your notes in seconds, but it exports them as PDFs with no edit button. When the AI gets a date wrong or hallucinates a statistic, you are stuck. This article walks through a 4-tool pipeline, NotebookLM to Canva to Google Slides to Nano Banana Pro, that converts locked PDF slides into fully editable presentations and uses AI again to fix the content without breaking the design.
+Google 的 NotebookLM 能在几秒钟内根据你的笔记生成精美的幻灯片，但它导出的是 PDF，没有编辑按钮。当 AI 把日期搞错或幻觉出一个统计数据时，你就卡住了。本文介绍一条四工具流水线——NotebookLM 到 Canva 到 Google Slides 再到 Nano Banana Pro——把锁死的 PDF 幻灯片转换为完全可编辑的演示文稿，并再次用 AI 修正内容而不破坏设计。
 <!--excerpt.end-->
 
 ----
 
-![Pipeline unlocking PDF slides into editable presentations]({{ site.baseurl }}images/edit-notebooklm-slides-ai-pipeline/cover2x.jpg)
+![把 PDF 幻灯片解锁为可编辑演示文稿的流水线]({{ site.baseurl }}/images/edit-notebooklm-slides-ai-pipeline/cover2x.jpg)
 
-*Figure. When AI gives you 90%, build a pipeline for the last 10%.*
+*图：当 AI 给了你 90%，就为最后的 10% 搭建一条流水线。*
 
-## The Problem: Beautiful Slides You Cannot Edit
+## 问题：精美却无法编辑的幻灯片
 
-NotebookLM [1] is one of Google's most impressive AI tools. Feed it your notes, research documents, or meeting transcripts, and it can generate a polished slide deck in seconds. The output looks professional. The structure is logical. The content is drawn directly from your sources.
+NotebookLM [1] 是 Google 最令人印象深刻的 AI 工具之一。把你的笔记、研究文档或会议记录喂给它，它能在几秒钟内生成一套 polished 的幻灯片。输出看起来很专业，结构合乎逻辑，内容直接取自你的资料。
 
-It feels like magic. Until you look closer.
+感觉就像魔法。直到你凑近细看。
 
-Maybe a date is wrong. Maybe it hallucinated a statistic. Maybe you just want to rephrase a bullet point that reads awkwardly. You stare at the output and realize the uncomfortable truth: **NotebookLM exports slides as a PDF.** There is no "edit" button. No way back into a slide editor. You are stuck with a read-only document.
+也许某个日期错了，也许它幻觉出了一个统计数字，也许你只是想改写一条读起来别扭的要点。你盯着输出，意识到一个令人不安的事实：**NotebookLM 导出的幻灯片是 PDF。**没有"编辑"按钮，无法回到任何幻灯片编辑器。你被困在一份只读文档里。
 
-Your only options are to regenerate the entire deck, hoping the AI gets it right this time, or accept the errors and move on. Neither option is acceptable when you are presenting to a client, a class, or your team.
+你唯一的选择是重新生成整套幻灯片并祈祷这次 AI 能做对，或者接受错误继续前行。当你要向客户、课堂或团队做演示时，这两个选项都无法接受。
 
-Google may eventually add direct export to Google Slides from NotebookLM, but that functionality is not available yet. Instead of waiting, we can solve the problem right now by chaining together tools that already exist into a simple pipeline.
+Google 也许终会在 NotebookLM 中加入直接导出到 Google Slides 的功能，但目前还没有。与其等待，我们现在就可以把已有的工具串成一条简单的流水线来解决这个问题。
 
-## The Insight: A 4-Tool Pipeline
+## 洞见：一条四工具流水线
 
-The fix is not a single tool. It is a chain of four tools, each doing what it does best, that transforms a locked PDF into a fully editable, AI-correctable slide deck.
+解法不是单个工具，而是一条由四个工具组成的链，各司其职，把一份锁死的 PDF 变成完全可编辑、可由 AI 修正的幻灯片。
 
-The pipeline:
+流水线如下：
 
-| Step | Tool | What It Does |
+| 步骤 | 工具 | 作用 |
 |------|------|-------------|
-| 1 | **NotebookLM** | Generates the initial slide deck from your notes |
-| 2 | **Canva** | Converts the PDF into an editable PPTX file |
-| 3 | **Google Slides** | Provides a cloud-native editor with add-on support |
-| 4 | **Nano Banana Pro** | Uses AI to fix slide content without breaking design |
+| 1 | **NotebookLM** | 从你的笔记生成初始幻灯片 |
+| 2 | **Canva** | 把 PDF 转换为可编辑的 PPTX 文件 |
+| 3 | **Google Slides** | 提供支持插件生态的云端原生编辑器 |
+| 4 | **Nano Banana Pro** | 用 AI 修正幻灯片内容而不破坏设计 |
 
-The principle is straightforward: AI generates, you convert, AI fixes. Let's walk through each step.
+原则很直接：AI 生成，你转换，AI 修正。让我们逐步走一遍。
 
-## Step 1: Generate Your Slides in NotebookLM
+## 第 1 步：在 NotebookLM 中生成幻灯片
 
-Start where the magic happens. Open NotebookLM [1], upload your source material (notes, documents, research papers), and let it generate a slide deck. The tool analyzes your content, identifies key themes, and produces a structured presentation.
+从魔法发生的地方开始。打开 NotebookLM [1]，上传你的源材料（笔记、文档、研究论文），让它生成一套幻灯片。该工具会分析你的内容、识别关键主题，并产出结构化的演示文稿。
 
-![NotebookLM generating slides from source material]({{ site.baseurl }}images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_00_Generate_Slides.png)
+![NotebookLM 从源材料生成幻灯片]({{ site.baseurl }}/images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_00_Generate_Slides.png)
 
-*Figure. NotebookLM generates polished slide decks from your uploaded source material. Download the result as a PDF.*
+*图：NotebookLM 从上传的源材料生成精美的幻灯片。将结果下载为 PDF。*
 
-This gives you a visually polished deck, but one that is locked inside a static document. We need to break it out.
+这给了你一套视觉上很 polished 的幻灯片，但它被锁在一份静态文档里。我们需要把它解救出来。
 
-## Step 2: Convert PDF to PPTX Using Canva
+## 第 2 步：用 Canva 把 PDF 转换为 PPTX
 
-Canva [2] offers a free PDF-to-PPTX converter that does the heavy lifting of turning your static slides into editable PowerPoint format. You will need a Canva account (the free tier works).
+Canva [2] 提供免费的 PDF 转 PPTX 转换器，可以完成把静态幻灯片变成可编辑 PowerPoint 格式的繁重工作。你需要一个 Canva 账户（免费版即可）。
 
-Go to [Canva's PDF to PPT Converter](https://www.canva.com/features/pdf-to-ppt-converter/) and upload your NotebookLM PDF.
+前往 [Canva 的 PDF 转 PPT 转换器](https://www.canva.com/features/pdf-to-ppt-converter/)并上传你的 NotebookLM PDF。
 
-![Canva PDF to PPTX converter interface]({{ site.baseurl }}images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_01_Canva_PDF_to_PPTX.png)
+![Canva PDF 转 PPTX 转换器界面]({{ site.baseurl }}/images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_01_Canva_PDF_to_PPTX.png)
 
-*Figure. Canva's free PDF to PPT converter parses your NotebookLM PDF into editable slide elements.*
+*图：Canva 的免费 PDF 转 PPT 转换器把你的 NotebookLM PDF 解析为可编辑的幻灯片元素。*
 
-Canva will parse the PDF into editable slides. Now, here is a critical detail that can save you frustration later.
+Canva 会把 PDF 解析为可编辑的幻灯片。现在，有一个关键细节能帮你省去之后的挫败。
 
-**Do not just download the converted file directly.** Instead, use the **Share > Microsoft PowerPoint** export option. This preserves the aspect ratios of all images in the deck. The difference is subtle but important: a direct download can stretch or crop images when you open the file in another editor, while the Share export maintains fidelity.
+**不要直接下载转换后的文件。**应该使用 **Share > Microsoft PowerPoint** 导出选项。这能保留幻灯片中所有图像的宽高比。区别细微但重要：直接下载的文件在其他编辑器中打开时可能会拉伸或裁剪图像，而 Share 导出能保持保真度。
 
-![Canva download options]({{ site.baseurl }}images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_02_Canva_Download_PPTX.png)
+![Canva 下载选项]({{ site.baseurl }}/images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_02_Canva_Download_PPTX.png)
 
-*Figure. Canva provides multiple download options. The direct download works, but the Share export preserves image aspect ratios more reliably.*
+*图：Canva 提供多种下载选项。直接下载也可行，但 Share 导出能更可靠地保留图像宽高比。*
 
-![Canva Share as PowerPoint]({{ site.baseurl }}images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_03_Canva_As_PPTX.png)
+![Canva 以 PowerPoint 分享]({{ site.baseurl }}/images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_03_Canva_As_PPTX.png)
 
-*Figure. Use Share > Microsoft PowerPoint to export. This method preserves the original image dimensions and layout fidelity.*
+*图：使用 Share > Microsoft PowerPoint 导出。这种方式能保留原始图像尺寸和布局保真度。*
 
-## Step 3: Import into Google Slides
+## 第 3 步：导入 Google Slides
 
-Take the PPTX file and import it into Google Drive. Open it, then select **Save as Google Slides** [3]. This converts the PowerPoint file into Google's native slide format.
+拿到 PPTX 文件后，把它导入 Google Drive。打开它，然后选择 **Save as Google Slides** [3]。这会把 PowerPoint 文件转换为 Google 原生幻灯片格式。
 
-![Importing PPTX and saving as Google Slides]({{ site.baseurl }}images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_04_Import_Save_as_Google_Slides.png)
+![导入 PPTX 并另存为 Google Slides]({{ site.baseurl }}/images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_04_Import_Save_as_Google_Slides.png)
 
-*Figure. Import the PPTX file into Google Drive and save as Google Slides to gain access to the full editing suite and add-on ecosystem.*
+*图：把 PPTX 文件导入 Google Drive 并另存为 Google Slides，即可使用完整的编辑套件和插件生态。*
 
-Why Google Slides specifically? Three reasons:
+为什么特别选 Google Slides？三个理由：
 
-1. **Full editability.** Every text box, image, and shape becomes individually editable.
-2. **Cloud-native collaboration.** Share with your team for real-time review and refinement.
-3. **Add-on ecosystem.** This is where the final piece of the puzzle lives.
+1. **完全可编辑。**每个文本框、图像和形状都可以单独编辑。
+2. **云端原生协作。**与团队共享，实时评审和打磨。
+3. **插件生态。**拼图的最后一块就在这里。
 
-## Step 4: Fix Content with Nano Banana Pro
+## 第 4 步：用 Nano Banana Pro 修正内容
 
-Here is where the workflow becomes genuinely clever.
+这里是整个工作流真正巧妙的地方。
 
-Nano Banana Pro [4] is a Google Slides add-on that brings AI-powered editing directly into your slide deck. Instead of manually retyping text on slides (which often breaks formatting, misaligns elements, or introduces visual inconsistencies), you describe what needs to change and the AI regenerates the slide while preserving the visual style.
+Nano Banana Pro [4] 是一个 Google Slides 插件，把 AI 驱动的编辑直接带进你的幻灯片。你不再需要手动重新输入幻灯片上的文字（那常常破坏格式、错位元素或引入视觉上的不一致），而是描述需要修改什么，AI 就会在保留视觉风格的同时重新生成幻灯片。
 
-For example, say NotebookLM misspelled a key term, cited a wrong year, or used awkward phrasing. You open Nano Banana Pro in the sidebar and describe the fix in plain English:
+举例来说，假如 NotebookLM 把一个关键术语拼错了、引用了错误的年份，或使用了别扭的措辞。你在侧边栏打开 Nano Banana Pro，用平实的语言描述要修正什么：
 
-![Nano Banana Pro editing interface in Google Slides]({{ site.baseurl }}images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_05_Built-in_Nano_Banana_Magic_01.png)
+![Google Slides 中的 Nano Banana Pro 编辑界面]({{ site.baseurl }}/images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_05_Built-in_Nano_Banana_Magic_01.png)
 
-*Figure. Nano Banana Pro's sidebar lets you describe corrections in natural language. The AI understands both the content change and the visual context.*
+*图：Nano Banana Pro 的侧边栏让你用自然语言描述修正。AI 同时理解内容变更与视觉上下文。*
 
-After a few seconds, it generates a corrected version of the slide. You insert the result as a new slide:
+几秒钟后，它会生成幻灯片的修正版本。你把结果作为新幻灯片插入：
 
-![Generated corrected slide ready to insert]({{ site.baseurl }}images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_05_Built-in_Nano_Banana_Magic_02.png)
+![生成的修正幻灯片，待插入]({{ site.baseurl }}/images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_05_Built-in_Nano_Banana_Magic_02.png)
 
-*Figure. The AI generates a corrected slide that maintains the original visual design while incorporating your content changes.*
+*图：AI 生成的修正幻灯片保持了原有视觉设计，同时纳入了你的内容修改。*
 
-Then you delete the old slide with the error. Done. A clean, corrected deck that looks like nothing was ever wrong.
+然后删除带错误的那张旧幻灯片。完成。一套干净、已修正的幻灯片，看上去就像从未出过错。
 
-![Final corrected slide deck]({{ site.baseurl }}images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_05_Built-in_Nano_Banana_Magic_03.png)
+![最终修正后的幻灯片]({{ site.baseurl }}/images/edit-notebooklm-slides-ai-pipeline/NotebookLM_Slides_Editing_05_Built-in_Nano_Banana_Magic_03.png)
 
-*Figure. The final result: a corrected slide seamlessly replaces the original, with no visible signs of editing.*
+*图：最终结果——修正后的幻灯片无缝替换原件，看不出任何编辑痕迹。*
 
-## What You Get
+## 你得到了什么
 
-By chaining NotebookLM, Canva, Google Slides, and Nano Banana Pro, you get:
+把 NotebookLM、Canva、Google Slides 和 Nano Banana Pro 串联起来，你将获得：
 
-- **AI-generated first drafts** that save hours of slide creation
-- **Full editability** despite the original output being a locked PDF
-- **AI-assisted corrections** that fix content without breaking design
-- **Cloud-native collaboration** so your team can review and refine together
+- **AI 生成的初稿**，节省数小时的幻灯片制作时间
+- **完全可编辑性**，尽管原始输出是锁死的 PDF
+- **AI 辅助修正**，修复内容而不破坏设计
+- **云端原生协作**，团队可以一起评审与打磨
 
-Note that if you do not need the AI-powered correction step, you can stop at Step 3. Google Slides gives you full manual editing capability. Nano Banana Pro is the addition that makes corrections faster and less error-prone.
+注意，如果你不需要 AI 修正这一步，在第 3 步就可以停下。Google Slides 已经给你完整的手动编辑能力。Nano Banana Pro 是让修正更快、更不易出错的加分项。
 
-## Limitations
+## 局限
 
-This workflow is effective, but it is not perfect. Here are the honest trade-offs:
+这个工作流行之有效，但并不完美。以下是坦诚的取舍：
 
-**Slides are images, not editable elements.** Canva's PDF-to-PPTX conversion extracts each PDF page as an image and inserts it into a PowerPoint slide. This means the text, shapes, and charts are not individually editable in the PPTX. You get one flat image per slide. This is exactly why Step 4 matters: Nano Banana Pro can regenerate a slide from its visual content, giving you a corrected version without needing to edit individual text boxes that do not exist.
+**幻灯片是图像，不是可编辑元素。**Canva 的 PDF 转 PPTX 功能会把每页 PDF 提取为图像并插入 PowerPoint 幻灯片。这意味着 PPTX 中的文字、形状和图表无法单独编辑——每张幻灯片就是一整张平面图像。这正是第 4 步重要的原因：Nano Banana Pro 可以根据幻灯片的视觉内容重新生成一张幻灯片，给你修正后的版本，而不需要去编辑那些根本不存在的独立文本框。
 
-**Tool chain complexity.** Four tools is more steps than anyone would prefer. Ideally, Google would add native slide editing to NotebookLM's output, or at least offer PPTX export alongside PDF. Until then, this pipeline fills the gap.
+**工具链复杂。**四个工具的步骤比任何人希望的都多。理想情况下，Google 应该为 NotebookLM 的输出添加原生幻灯片编辑能力，或至少在 PDF 之外提供 PPTX 导出。在那之前，这条流水线填补了空缺。
 
-**Nano Banana Pro scope.** The add-on works best for targeted corrections such as fixing text, adjusting bullet points, and correcting data. It is less suited for wholesale redesigns of slide structure or layout. For major changes, you are better off editing directly in Google Slides.
+**Nano Banana Pro 的适用范围。**该插件最擅长针对性修正，例如修改文字、调整要点、纠正数据。它不太适合对幻灯片结构或布局进行大改。重大改动最好直接在 Google Slides 中编辑。
 
-## Concluding Remarks
+## 结语
 
-The bigger lesson here extends beyond NotebookLM slides. This workflow solves a friction point that is becoming common across AI tools: **the output is impressive but imperfect, and the "last mile" of editing is either impossible or painfully manual.**
+这里更大的启示超出了 NotebookLM 幻灯片本身。这个工作流解决了 AI 工具中日益普遍的一个摩擦点：**输出令人惊艳但不完美，而编辑的"最后一公里"要么无从下手，要么痛苦地全靠手工。**
 
-The pattern repeats everywhere. An AI image generator produces a nearly-perfect visual with one wrong detail. A code assistant scaffolds an entire project but misses an edge case. A writing tool nails the structure but stumbles on a specific claim. In each case, the most productive response is not to regenerate and hope, but to build a workflow that bridges the gap.
+这一模式处处重演。AI 图像生成器产出一张几乎完美的图，却有一处细节错误。代码助手搭好整个项目骨架，却漏掉一个边界情况。写作工具把结构立得很好，却在一个具体论断上栽跟头。在每种情况下，最有生产力的回应都不是重新生成然后祈祷，而是搭建一个弥合差距的工作流。
 
-This is what it means to be an [AI-powered super individual]({{ site.baseurl }}rise-of-the-ai-powered-super-individual) [5], not mastering every tool, but knowing how to chain them into workflows that turn "almost right" into "exactly right." The value is not in any single tool. It is in the orchestration.
+这就是成为 [AI 赋能的超级个体]({{ site.baseurl }}/rise-of-the-ai-powered-super-individual) [5] 的含义——不是精通每个工具，而是知道如何把它们串成工作流，把"几乎正确"变成"完全正确"。价值不在任何单个工具里，而在编排之中。
 
-When one AI tool gives you 90% of what you need, the answer is not to fight that tool's limitations. Build a pipeline for the last 10%.
+当一个 AI 工具给了你所需 90% 的东西，答案不是与该工具的局限搏斗。为最后的 10% 搭一条流水线。
 
-## References
+## 参考文献
 
 [1] Google. [*NotebookLM*](https://notebooklm.google.com/). Google Labs, 2024.
-  - Google's AI-powered notebook that can generate slide decks, podcasts, and summaries from uploaded source material.
+  - Google 的 AI 笔记本，可以从上传的源材料生成幻灯片、播客和摘要。
 
 [2] Canva. [*PDF to PPT Converter*](https://www.canva.com/features/pdf-to-ppt-converter/). Canva, 2024.
-  - Free online tool for converting PDF documents into editable PowerPoint (PPTX) format.
+  - 把 PDF 文档转换为可编辑 PowerPoint（PPTX）格式的免费在线工具。
 
 [3] Google. [*Google Slides*](https://workspace.google.com/products/slides/). Google Workspace, 2024.
-  - Cloud-native presentation editor with real-time collaboration, version history, and an add-on ecosystem.
+  - 具备实时协作、版本历史和插件生态的云端原生演示文稿编辑器。
 
 [4] Nano Banana. [*Nano Banana Pro - Google Workspace Marketplace*](https://workspace.google.com/marketplace). Google Workspace Marketplace, 2024.
-  - AI-powered Google Slides add-on that enables natural language editing of slide content while preserving visual design.
+  - AI 驱动的 Google Slides 插件，能在保留视觉设计的同时用自然语言编辑幻灯片内容。
 
-[5] Benny Cheung. [*The Rise of the AI-Powered Super Individual*]({{ site.baseurl }}rise-of-the-ai-powered-super-individual). Benny's Mind Hack, 2025.
-  - How AI empowers individuals to achieve the output of entire teams through tool orchestration and "Silicon Intelligence Management."
+[5] Benny Cheung. [*The Rise of the AI-Powered Super Individual*]({{ site.baseurl }}/rise-of-the-ai-powered-super-individual). Benny's Mind Hack, 2025.
+  - AI 如何赋能个体，通过工具编排和"硅智能管理"达成整个团队的产出。

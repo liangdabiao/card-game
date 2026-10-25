@@ -85,7 +85,7 @@ function mp3_embed() {
                 if(autoplay==1) newInnerHTML += ' autoplay';
                 if(loop==1) newInnerHTML += ' loop';
                 if(controls==1) newInnerHTML += ' controls';
-                newInnerHTML += '><source src="'+str[0]+'" type="audio/mpeg">Your browser does not support the audio element.</audio>';
+                newInnerHTML += '><source src="'+str[0]+'" type="audio/mpeg">您的浏览器不支持音频播放。</audio>';
                 p[i].innerHTML = newInnerHTML;
             }
         }

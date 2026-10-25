@@ -7,7 +7,7 @@ layout: null
   {
     "title": {{ post.title | jsonify }},
     "url": "{{ post.url }}",
-    "date": "{{ post.date | date: '%b %d, %Y' }}",
+    "date": "{{ post.date | date: '%Y-%m-%d' }}",
     "categories": {{ post.categories | jsonify }},
     "tags": {{ post.tags | jsonify }},
     "excerpt": {{ post.excerpt | strip_html | truncate: 200 | jsonify }},

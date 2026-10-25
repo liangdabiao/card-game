@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Interactive Hex World Map using D3
+title: 用 D3 制作交互式六边形世界地图
 date: 2018-06-14 00:00:00.000000000 -05:00
 permalink: interactive-hex-world-map-using-d3
 author: Benny Cheung
@@ -21,72 +21,67 @@ published: true
 ---
 
 <!--excerpt.start-->
-How does the nature inspires us about the optimal geometry?
-The bees create their honeycombs with precision engineering, an array of prism-shaped cells with a perfectly hexagonal cross-section.
-If you blow a layer of bubbles on the surface of water, they instantly rearrange into three-wall junctions with more or less equal angles of 120 degrees between them. You will never find a raft of square bubbles.
-There is great explanation that the law of nature, which automatically optimized in a self-organized system, which approximate to hexagons, read more from [Why Nature Prefers Hexagons (2016)](http://nautil.us/issue/35/boundaries/why-nature-prefers-hexagons).
+大自然是如何启发我们认识最优几何的？
+蜜蜂以精密工程建造蜂巢：一排排棱柱形巢室，横截面是完美的六边形。
+如果你在水面上吹出一层泡泡，它们会立即重排成三面墙式的接点，彼此之间大致呈 120 度的等角。你永远不会看到一堆方形泡泡。
+对这条自然规律——自组织系统中自动优化出的、近似六边形的结构——有一个精彩的解释，详见 [Why Nature Prefers Hexagons (2016)](http://nautil.us/issue/35/boundaries/why-nature-prefers-hexagons)。
 <!--excerpt.end-->
 
-![Hexagonal Nature](images/interactive-hex-world-map-using-d3/Hexagonal_Nature_700.jpg)
+![六边形的自然]({{ site.baseurl }}/images/interactive-hex-world-map-using-d3/Hexagonal_Nature_700.jpg)
 
-I remembered the pleasure of reading [The Computational Beauty of Nature](https://www.amazon.com/Computational-Beauty-Nature-Explorations-Adaptation-ebook/dp/B00MHAV10O).
-The topics in the book taught me an important lesson, development can be divided into immediate needs for professional life
-and spiritual food for enriching life. **Spatial Tessellation** belongs to the spiritual side of my computing adventure,
-because spatial representation and reasoning are my on-going research thesis.
-I sense the pure fun of the spatial computing and try to bring my understanding closer to nature.
+我至今记得阅读[《The Computational Beauty of Nature》](https://www.amazon.com/Computational-Beauty-Nature-Explorations-Adaptation-ebook/dp/B00MHAV10O)时的愉悦。
+书中的主题教会了我重要的一课：开发可以分为职业生活的即时所需，以及丰盈人生的精神食粮。**空间镶嵌（Spatial Tessellation）**属于我计算探险的精神食粮一侧，
+因为空间表示与推理是我持续进行的研究课题。
+我感受着空间计算的纯粹乐趣，并试图让我的理解更贴近自然。
 
-This article will take on the following investigation path,
+本文将沿着以下探究路径展开，
 
-* Understanding the hexagonal coordinate system
-* Creating the hexagonal grid to cover the world 
-* Aggregating the world terrian into the hexagonal grid
-* Projecting the hexagonal grid onto a globe
-* Implementing the hexagonal grid and the globe for visualization in D3
+* 理解六边形坐标系
+* 创建覆盖全球的六边形网格
+* 把世界地形聚合到六边形网格
+* 把六边形网格投影到地球仪上
+* 用 D3 实现用于可视化的六边形网格与地球仪
 
-You will see a working interactive [demo in this page](#demo); subsequently you can checkout the [demo code](#code) yourselves to play.
+你会在[本页看到一个可运行的交互式演示](#demo)；随后你可以自行检出[演示代码](#code)来玩。
 
-## Covering Earth with Hexagonal Map Tiles
-On the practical side of tessellation, many strategy games have good reason to choose the hexagonal tiles as their game board.
-One of the main advantages is that the distance between the center of any tile and all its neighboring tiles is the same.
-In term of strategy, this equidistance property enables consistent strategic moves (see the right diagram below, move to all connected cells is 1 (green arrow))
-When comparing with the rectangular grid,
-the diagonal move is unfair because it takes 1 step but the equivalent orthogonal move takes 2 steps
-(see the left diagram of rectangular grid, the diagonal move (red arrow) is equal taking 2 orthogonal moves (green arrows)).
+## 用六边形地图瓦片覆盖地球
+从镶嵌的实用角度讲，许多策略游戏都有充分理由选择六边形瓦片作为游戏棋盘。
+一个主要优点是：任何瓦片中心与其所有相邻瓦片中心的距离都相等。
+就策略而言，这种等距特性保证了策略移动的一致性（见下图右图，移动到所有相连格子都是 1 步（绿色箭头））。
+与之相比，在矩形网格中，
+对角线移动是不公平的：它只需 1 步，而等价的正交移动需要 2 步
+（见下图左侧矩形网格，对角线移动（红色箭头）等价于 2 次正交移动（绿色箭头））。
 
-![Rectangular vs Hexagonal Tessellation](images/interactive-hex-world-map-using-d3/Rectangular_vs_Hexagonal_Tessellation_600.jpg)
+![矩形与六边形镶嵌对比]({{ site.baseurl }}/images/interactive-hex-world-map-using-d3/Rectangular_vs_Hexagonal_Tessellation_600.jpg)
 
-I was wondering if anyone has any thoughts on marrying a hexagonal tile system
-with the traditional geographic system (longitude/latitude). I think it would be
-interesting to cover a globe with hexagonal tiles and be able to map a
-geographic coordinate to a tile. This is a topic belongs to [The Promise of Discrete Global Grid Systems](https://www.geoconnexion.com/uploads/publication_pdfs/int-v13i7-OGC-the-promise-of-discrete-global.pdf), which is beyond my speculation.
+我曾好奇是否有人考虑过把六边形瓦片系统
+与传统地理系统（经度/纬度）结合起来。我觉得用六边形瓦片覆盖地球仪，
+并能把地理坐标映射到某个瓦片上，会是一件有趣的事。这属于[离散全球网格系统的前景](https://www.geoconnexion.com/uploads/publication_pdfs/int-v13i7-OGC-the-promise-of-discrete-global.pdf)这一议题，超出了本文的 speculate 范围。
 
-### Hexagon Coordinate System
-To understand *Hexagon Coordinate System* and it's mathematics,
-the excellent website that comes to mind is Amit's game programming information and
-his collection of interactive explanation on [Hexagon Grids](http://www.redblobgames.com/grids/hexagons/).
-This article will simply use the results explained by Amit.
+### 六边形坐标系
+要理解*六边形坐标系*及其数学，
+我首先想到的优秀网站是 Amit 的游戏编程资料，以及他关于[六边形网格](http://www.redblobgames.com/grids/hexagons/)的交互式讲解合集。
+本文将直接沿用 Amit 阐述的结果。
 
-Unlike the familiar *Cartesian Coordinate System* that we learned since our high school days, which has only 1 type of grid layout.
-*Hexagon Coordinate System* comes with 4 types of grid layout! For this article's world map,
-I choose to use the "odd-r" horizontal layout, which shoves odd rows right.
+与我们从中学就熟悉的*笛卡尔坐标系*不同——后者只有 1 种网格布局——
+*六边形坐标系*有 4 种网格布局！对于本文的世界地图，
+我选择使用 "odd-r" 水平布局，即奇数行向右推移。
 
-![odd-r Horizontal Hex Grid Layout](images/interactive-hex-world-map-using-d3/Hex_odd-r_grid_layout.png)
+![odd-r 水平六边形网格布局]({{ site.baseurl }}/images/interactive-hex-world-map-using-d3/Hex_odd-r_grid_layout.png)
 
-> You are free to choose other hex layout type but the mathematics is slightly different. See later, the `hexlib.js` implementation supposed to support all 4 layout types.
+> 你可以自由选择其他六边形布局类型，只是数学稍有不同。后文会看到，`hexlib.js` 实现应该支持全部 4 种布局类型。
 
-### Hexagon Binning
-D3 comes with a [Hexagon Binning package](https://github.com/d3/d3-hexbin), useful for aggregating data into
-a coarser representation for display. Rather than rendering a scatterplot of tens of thousands of points,
-bin the points into a few hundred hexagons to show the data. The `hexbin` is chosen to use color encoding
-of the average height of the world's terrain height image (the smaller black & white picture).
+### 六边形分箱（Hexagon Binning）
+D3 自带一个[六边形分箱包](https://github.com/d3/d3-hexbin)，可用于把数据聚合成更粗的表示再展示。它不是渲染数万个点的散点图，
+而是把这些点分箱进几百个六边形来呈现数据。这里选用 `hexbin` 对世界地形高度图（那张较小的黑白图片）的平均高度做颜色编码。
 
-![World Terrain Height Map to HexBin](images/interactive-hex-world-map-using-d3/world_height_hex_overlay_700.jpg)
+![世界地形高度图映射到 HexBin]({{ site.baseurl }}/images/interactive-hex-world-map-using-d3/world_height_hex_overlay_700.jpg)
 
-For all the terrain pixels that fall within the same hex bin, the average pixel value is calculated and mapped to a color,
-where the gradient map from red (is low) and blue (is high) altitude.
+对落入同一个六边形分箱的所有地形像素，计算平均像素值并映射为颜色，
+梯度从红色（低海拔）到蓝色（高海拔）。
 
-## Hexagonal Grid Generation and Projection
-In order to support the interactivity, the three Javascript files are combined to map the screen coordinate to the corresponding hex grid coordinate. Also, the location of the hex point is sent to display on a rotating globe.
+## 六边形网格生成与投影
+为了支持交互性，三个 Javascript 文件协同把屏幕坐标映射为对应的六边形网格坐标。同时，六边形点的位置会被发送到旋转的地球仪上展示。
 
 ```html
 <script src="js/hexmap/hexlib.js"></script>
@@ -94,13 +89,13 @@ In order to support the interactivity, the three Javascript files are combined t
 <script src="js/hexmap/hexglobe.js"></script>
 ```
 
-Unfortunately, the 2D hex cylindrical map projecting onto a 3D spherical map is not perfect (*no matter what you do, the projection will be distorted*), as you can see towards the north/south poles, the area of the hex cells are distorted. May be the interested reader can enhance the code?
+遗憾的是，把 2D 六边形圆柱投影映射到 3D 球面地图并不完美（*无论怎么做，投影都会失真*），如你所见，靠近南北极处六边形格子的面积发生了变形。也许有兴趣的读者可以改进这段代码？
 
-The full demo source code can be checkout from the companion [D3HexMap github repo](https://github.com/bennycheung/D3HexMap).
-More explanation will come after the demonstration.
+完整的演示源码可以从配套的 [D3HexMap github 仓库](https://github.com/bennycheung/D3HexMap)检出。
+演示之后的章节会有更多解释。
 
-### Demo Interactive Visualization
-Try to move your cursor over the hex grid to view the globe rotated to center (the red dot) on the highlighted hex cell.
+### 交互式可视化演示 {: #demo }
+试着把光标移到六边形网格上，可以看到地球仪旋转到以高亮的六边形格子（红点）为中心。
 
 <link rel="stylesheet" href="css/hexmap/hexlib.css">
 <script src="js/d3/d3.v3.min.js"></script>
@@ -134,57 +129,57 @@ Try to move your cursor over the hex grid to view the globe rotated to center (t
 <script src="js/jquery/jquery.event.drag-2.2.js"></script>
 
 
-## Implementation Details
+## 实现细节
 
 ### hexlib.js
-The hexagonal representation and mathematic functions are implemented in `hexlib.js`,
-which is essentially Amit's Hex Grid implementation, details are here <https://www.redblobgames.com/grids/hexagons/implementation.html>
+六边形表示与数学函数实现在 `hexlib.js` 中，
+它本质上就是 Amit 的 Hex Grid 实现，细节见 <https://www.redblobgames.com/grids/hexagons/implementation.html>
 
 ### hexlib_ui.js
-The hex grid interactivity is provided by `hexlib_ui.js`,
-which is carefully extracted and cleaned up from the hexagon explanation page at <http://www.redblobgames.com/grids/hexagons.html>,
-making the code has minimal dependencies so that the script can be easily reused on other pages.
+六边形网格的交互性由 `hexlib_ui.js` 提供，
+它是从 <http://www.redblobgames.com/grids/hexagons.html> 的六边形讲解页面中仔细抽取并清理出来的，
+让代码具有最少的依赖，从而可以轻松地在其他页面复用。
 
-The `makeGridDiagram(svg, cubes)` will take,
+`makeGridDiagram(svg, cubes)` 将：
 
-1. Convert a list of hexagonal cube object, and create a list of nodes = {cube: Cube object, key: string, node: d3 selection of <g> containing polygon}
-2. Make diagram = d3 selection of root <g> of diagram
-3. Make polygons = d3 selection of the hexagons inside the <g> per tile
-4. Define update = function(scale, orientation) to call any time orientation changes, including initialization
-5. Setup onLayout = callback function that will be called before an update (to assign new cube coordinates);this will be called immediately on update
-6. Setup onUpdate = callback function that will be called after an update; this will be called after a delay, and only if there hasn't been another update
+1. 转换一组六边形 cube 对象，创建节点列表 = {cube: Cube 对象, key: 字符串, node: 包含 polygon 的 <g> 的 d3 selection}
+2. 创建 diagram = 图根 <g> 的 d3 selection
+3. 创建 polygons = 每个瓦片 <g> 内六边形的 d3 selection
+4. 定义 update = function(scale, orientation)，在任何朝向变化（包括初始化）时调用
+5. 设置 onLayout = 回调函数，在每次 update 之前调用（用于分配新的 cube 坐标）；update 时会立即调用
+6. 设置 onUpdate = 回调函数，在每次 update 之后调用；延迟调用，且仅当没有新的 update 发生时
 
-The hex grid diagram is later called with `addHexCoordinates()` from `hexglobe.js` function `makeHexOddR()`;
-this is how the interactivity of the mouse movement is detected.
-If the mouse is over the hex grid,
-the selected (row,column) cells are classed with highlighting, and the globe's `updateGlobe()` function is called with the selected cell (lon, lat) for the globe rotation and view.
+六边形网格图随后由 `hexglobe.js` 的 `makeHexOddR()` 函数调用 `addHexCoordinates()`；
+这就是检测鼠标移动交互性的机制。
+如果鼠标悬停在六边形网格上，
+被选中的 (行,列) 格子会加上高亮 class，并调用地球仪的 `updateGlobe()` 函数传入所选格子的 (lon, lat)，用于地球仪旋转与视角定位。
 
 ### hexglobe.js
-Finally with the support of previous routines,
-the `hexglobe.js` adds a set of convenience functions to build the interactive hex grid and globe for the visualization. They are briefly described here,
+最后，在前面各例程的支持下，
+`hexglobe.js` 添加了一组便捷函数，用于构建可视化所需的交互式六边形网格与地球仪。这里简要描述如下，
 
 * `makeHexOddR(svg, hexsize, width, height)`
-  * create a "odd-r" hex grid, with the given hexagon pixels size, and the width, height of the reference terrain image.
+  * 创建一个 "odd-r" 六边形网格，给定六边形像素尺寸以及参考地形图的宽度、高度。
 * `screenToLonLat(grid_odd_r, screenPoint)`
-  * transform the screen coordinate on the image to (lon, lat) point
+  * 把图像上的屏幕坐标变换为 (lon, lat) 点
 * `hexToLonLatHex(grid_odd_r, hex)`
-  * transform the hex grid (q, r) coordinate to a polygon with the list of (lon, lat) points
+  * 把六边形网格 (q, r) 坐标变换为一张由 (lon, lat) 点列表构成的多边形
 * `hexWorldGrid(grid_odd_r)`
-  * create topojson line features for the hex world grid
+  * 为六边形世界网格创建 topojson 线要素
 * `makeHexBinMap(grid_odd_r, hexbin_id, hexsize, image_url, width, height)`
-  * define d3.hexbin
-  * define the color gradient map
-  * read the terrain image and hexbin() each pixel value
-    * for each hex, find the average of the pixel values
-  * for each hex, map the average pixel value to a color, according to it's gradient range.
-  * construct the world hex "odd-r" grid with all the colored hex polygons
+  * 定义 d3.hexbin
+  * 定义颜色梯度映射
+  * 读取地形图像并对每个像素值做 hexbin()
+    * 对每个六边形，求像素值的平均
+  * 对每个六边形，按其梯度范围把平均像素值映射为颜色
+  * 用所有着色的六边形多边形构建世界六边形 "odd-r" 网格
 
-The globe is constructed from `world-110m.json` topojson file, then the hex grid is projected onto the globe surface. A timer is setup to check if the globe's projection has been updated; consequently, the global will be rotated and redrawn to center at the given (lon, lat) location.
+地球仪由 `world-110m.json` topojson 文件构建，然后六边形网格被投影到地球仪表面。代码设置了一个定时器来检查地球仪投影是否已更新；一旦更新，地球仪就会旋转并重绘到以给定 (lon, lat) 为中心。
 
-### Putting Together
-The main visualization `index.html` can be checkout from [here](https://github.com/bennycheung/D3HexMap/index.html).
+### 组装起来 {: #code }
+主可视化页面 `index.html` 可以从[这里](https://github.com/bennycheung/D3HexMap/index.html)检出。
 
-Here is the html code,
+html 代码如下，
 
 ```html
 <h1>Interactive Hex Global Visualization</h1>
@@ -224,9 +219,9 @@ Try to move your cursor over the hex grid to view the globl rotated to center (t
 <script src="js/jquery/jquery.event.drag-2.2.js"></script>
 ```
 
-> Inspire and tell me any further modification and application of the supplied code!
-Please enjoy your hexagonal journey.
+> 欢迎从中获得启发，并告诉我对这些代码的任何进一步修改与应用！
+祝你享受这段六边形之旅。
 
-## Other Interesting Hexagon Grid Layout
-Also, take a look at [vraid/earthgen](https://github.com/vraid/earthgen-old), 
-it uses hexagons (plus a few pentagons) to generate a simulated earth surface and includes source code (see `planet/grid/create_grid.cpp`).
+## 其他有趣的六边形网格布局
+另外，可以看看 [vraid/earthgen](https://github.com/vraid/earthgen-old)，
+它使用六边形（外加少量五边形）生成模拟的地球表面，并附有源码（见 `planet/grid/create_grid.cpp`）。

@@ -31,7 +31,7 @@
 		{% assign share_image_width = "400" %}
 		{% assign share_image_height = "400" %}
 	{% endif %}
-	{% assign share_image_url = site.url | append: "/" | append: share_image %}
+	{% assign share_image_url = site.url | append: site.baseurl | append: "/" | append: share_image %}
 	{% assign share_image_alt = page.title | default: site.title | append: " - " | append: site.title %}
 
 	<!-- Twitter Card -->
@@ -51,10 +51,10 @@
 
 	<!-- Open Graph -->
 	<meta property="og:type" content="{% if page.layout == 'post' %}article{% else %}website{% endif %}" />
-	<meta property="og:url" content="{{ site.url }}{% if page.permalink %}/{{ page.permalink }}{% else %}{{ page.url }}{% endif %}" />
+	<meta property="og:url" content="{{ site.url }}{{ site.baseurl }}{% if page.permalink %}/{{ page.permalink }}{% else %}{{ page.url }}{% endif %}" />
 	<meta property="og:site_name" content="{{ site.title }}" />
 	<meta property="og:title" content="{{ page.title | default: site.title }}" />
-	<meta property="og:locale" content="en_US" />
+	<meta property="og:locale" content="zh_CN" />
 	{% if page.description %}
 		<meta property="og:description" content="{{ page.description }}" />
 	{% elsif page.layout == 'post' %}
@@ -83,25 +83,25 @@
 	{% endif %}
 
 	<!-- Canonical & Icons -->
-	<link rel="icon" href="/assets/favicon.ico">
-	<link rel="canonical" href="{{ site.url }}{% if page.permalink %}/{{ page.permalink }}{% else %}{{ page.url }}{% endif %}" />
+	<link rel="icon" href="{{ site.baseurl }}/assets/favicon.ico">
+	<link rel="canonical" href="{{ site.url }}{{ site.baseurl }}{% if page.permalink %}/{{ page.permalink }}{% else %}{{ page.url }}{% endif %}" />
 
 	<!-- RSS Feed -->
-	<link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ site.url }}/feed.xml" />
+	<link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ site.url }}{{ site.baseurl }}/feed.xml" />
 
 	<!-- Page Title -->
 	<title>{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
 
 	<!-- Bootstrap core CSS -->
-	<link href="/css/bootstrap.css" rel="stylesheet">
+	<link href="{{ site.baseurl }}/css/bootstrap.css" rel="stylesheet">
 	<!-- Bootstrap theme -->
-	<link href="/css/bootstrap-theme.css" rel="stylesheet">
+	<link href="{{ site.baseurl }}/css/bootstrap-theme.css" rel="stylesheet">
 	<!-- Font Awesome -->
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
 
 	<!-- Custom styles for this template -->
-	<link href="/css/blog.css" rel="stylesheet">
-	<link rel="stylesheet" href="/css/pygments.css">
+	<link href="{{ site.baseurl }}/css/blog.css" rel="stylesheet">
+	<link rel="stylesheet" href="{{ site.baseurl }}/css/pygments.css">
 
 	{% include schema_markup.html %}
 	{% include dark_mode.html %}

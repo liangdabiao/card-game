@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Deep Dream with Caffe on Windows 10
+title: 在 Windows 10 上用 Caffe 运行 Deep Dream
 date: 2017-03-03 12:00:00.000000000 -05:00
 permalink: deep-dream-on-windows-10
 author: Benny Cheung
@@ -21,125 +21,125 @@ published: true
 ---
 
 <!--excerpt.start-->
-Deep Dream is an algorithm that makes an pattern detection algorithm over-interpret patterns. The Deep Dream algorithm is a modified neural network. Instead of identifying objects in an input image, it changes the image into the direction of its training data set, which produces impressive surrealistic, dream-like images.
+Deep Dream 是一种让模式检测算法"过度解读"模式的算法。Deep Dream 算法是一个经过改造的神经网络：它不再是识别输入图像中的物体，而是把图像朝着其训练数据集的方向改变，从而产生令人惊叹的超现实主义、如梦似幻的图像。
 <!--excerpt.end-->
-(read the original Google blog <https://research.googleblog.com/2015/06/inceptionism-going-deeper-into-neural.html>)
+（阅读 Google 原始博客 <https://research.googleblog.com/2015/06/inceptionism-going-deeper-into-neural.html>）
 
-The result are beautiful hallucinations like the one below. The neural network amplified the perceived objects that it is being trained to recognized. I wondered if this is the same effects on our visual cortex subdued by some drugs?
+其结果是美丽的幻觉图像，如下图所示。神经网络把它被训练去识别的感知对象放大了。我不禁想：这与某些药物作用于我们视觉皮层的效果是否如出一辙？
 
-![Deep Dream Transform]({{ site.baseurl }}images/deep-dream-on-windows-10/Dream_transform_result_annotate_650.jpg)
+![Deep Dream 变换]({{ site.baseurl }}/images/deep-dream-on-windows-10/Dream_transform_result_annotate_650.jpg)
 
-*Figure. Vangogh's "Starry Night" Deep Dream transformation*
+*图：梵高《星夜》的 Deep Dream 变换*
 
-This article is a continuation of my previous blog on [Deep Learning with GPU on Windows 10](http://bennycheung.github.io/deep-learning-on-windows-10). You may want to read how to setup NVidia CUDA 8.0 to utilize your GPU for speeding up Deep Dream calcuations.
+本文是我上一篇博客 [Windows 10 上的 GPU 深度学习]({{ site.baseurl }}/deep-learning-on-windows-10)的续篇。你可能想先了解如何设置 NVidia CUDA 8.0，以利用 GPU 加速 Deep Dream 计算。
 
 ## Caffe
 <http://caffe.berkeleyvision.org>
 
-Caffe is perhaps the first mainstream industry-grade deep learning toolkit, started in late 2013, due to its excellent convolutional neural network implementation (at the time). It is still the most popular toolkit within the computer vision community, with many extensions being actively added. Especially, there are many popular pre-trained neural network (aka. Caffe Model Zoo) can be easily downloaded and used.
+Caffe 或许是最早的主流工业级深度学习工具包，始于 2013 年底，凭借其（当时）出色的卷积神经网络实现而流行。它至今仍是计算机视觉社区中最流行的工具包，许多扩展仍在积极增加。尤其是，众多流行的预训练神经网络（即 Caffe Model Zoo）可以轻松下载和使用。
 
-The Deep Dream script is using Google's award winning entry of ILSVRC 2014 **GoogLeNet**, a 22 layers deep network trained to regconize images. (explained in <http://joelouismarino.github.io/blog_posts/blog_googlenet_keras.html>)
-GoogLeNet achieved the classification of the ImageNet dataset (all sorts of animals, household objects, vehicles, etc.), 93.33% of the time the correct object class will be contained in the GoogLeNet ensemble's top five predictions.
+Deep Dream 脚本使用的是 Google 在 ILSVRC 2014 中的获奖作品 **GoogLeNet**，一个用于图像识别的 22 层深层网络（原理说明见 <http://joelouismarino.github.io/blog_posts/blog_googlenet_keras.html>）。
+GoogLeNet 完成了 ImageNet 数据集（各种动物、家居用品、车辆等）的分类任务：GoogLeNet 集成模型的前五个预测中有 93.33% 的概率包含正确类别。
 
-![GoogLeNet CNN Diagram]({{ site.baseurl }}images/deep-dream-on-windows-10/GoogLeNet_diagram_650.png)
+![GoogLeNet CNN 结构图]({{ site.baseurl }}/images/deep-dream-on-windows-10/GoogLeNet_diagram_650.png)
 
-*Figure. Showing the GoogLeNet CNN 22 layers deep network*
+*图：GoogLeNet CNN 22 层深层网络*
 
-The Caffe's pre-trained model that we downloaded and used is the iteration 2,400,000 snapshot (60 epochs) using quick_solver.prototxt.
+我们下载并使用的 Caffe 预训练模型，是使用 quick_solver.prototxt 迭代 2,400,000 次（60 个 epoch）的快照。
 
 | name | caffemodel | caffemodel_url |
 |------|------------|----------------|
 | BVLC GoogleNet Model | bvlc_googlenet.caffemodel | <http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel>
 
-Further Caffe info can be found:
-* [Caffe Tutorial Documentation](http://caffe.berkeleyvision.org/tutorial/)
-* [BVLC Reference Models](http://caffe.berkeleyvision.org/model_zoo.html) and the [Community Model Zoo](https://github.com/BVLC/caffe/wiki/Model-Zoo)
+更多 Caffe 信息见：
+* [Caffe 教程文档](http://caffe.berkeleyvision.org/tutorial/)
+* [BVLC 参考模型](http://caffe.berkeleyvision.org/model_zoo.html)与[社区 Model Zoo](https://github.com/BVLC/caffe/wiki/Model-Zoo)
 
-### Prepare Python Virtual Environment
+### 准备 Python 虚拟环境
 <https://www.continuum.io/downloads>
 
-**Note**: this article assumes you are using `bash` shell on Windows.
-The recommended `bash` shell comes from Git for Windows <https://git-for-windows.github.io> installation.
+**注意**：本文假设你在 Windows 上使用 `bash` shell。
+推荐的 `bash` shell 来自 Git for Windows <https://git-for-windows.github.io> 的安装。
 
-You can install either Anaconda Python 2.7 or Anaconda Python 3.5 on Windows 10. Later, we would create a virtual environment to isolate our Deep Dream tools installation. We shall refer to your Anaconda installation location as `{path_to_anaconda_location}` later.
+你可以在 Windows 10 上安装 Anaconda Python 2.7 或 Anaconda Python 3.5。稍后我们会创建一个虚拟环境来隔离 Deep Dream 工具的安装。下文把你的 Anaconda 安装位置记作 `{path_to_anaconda_location}`。
 
-#### Define Anaconda Virtual Environment
-By experience, hacking on a new tools suite are usually messy and full of conflicts. Using an isolated Python virtual environment will protect you from headaches and disaster of installations.
-In `bash` shell, enter the following where `caffe` (or your choice of name) is the name of the virtual environment, and `python=2.7` is the Python version you wish to use.
+#### 定义 Anaconda 虚拟环境
+经验之谈：折腾一套新工具通常是一团糟且充满冲突。使用隔离的 Python 虚拟环境可以让你免于安装带来的头痛与灾难。
+在 `bash` shell 中输入以下命令，其中 `caffe`（或你自己起的名字）是虚拟环境的名称，`python=2.7` 是你想使用的 Python 版本。
 
 ```bash
 conda create -n caffe python=2.7 anaconda
 ```
 
-Press y to proceed. This will install the Python version and all the associated `anaconda` packaged libraries at `{path_to_anaconda_location}/envs/caffe`
+按 y 继续。这会把 Python 版本及所有相关的 `anaconda` 打包库安装到 `{path_to_anaconda_location}/envs/caffe`
 
-### Install Support Packages on Virtual Environment
-Once the `caffe` virtual environment has been installed, `activate` the virtualenv by
+### 在虚拟环境中安装支持包
+`caffe` 虚拟环境安装完成后，用以下命令 `activate` 该 virtualenv：
 
 ```bash
 source activate caffe
 ```
 
-Continue to install all the shell script commands,
+继续安装全部 shell 脚本命令所需的包，
 
 ```bash
 conda install boost
 conda install mingw libpython
 ```
 
-Then install Caffe's dependencies
+然后安装 Caffe 的依赖
 
 ```bash
 conda install --yes numpy scipy matplotlib scikit-image pip six
 ```
 
-also you will need a Google's protobuf python package that is compatible with pre-built dependencies. This package can be installed this way:
+你还需要一个与预编译依赖兼容的 Google protobuf Python 包。该包可以这样安装：
 
 ```bash
 conda install --yes --channel willyd protobuf==3.1.0
 ```
 
-### Install Caffe on Windows 10
-The lazy way to install Caffe on Windows 10 is downloading the prebuilt binaries from Caffe's Windows branch on Github:
+### 在 Windows 10 上安装 Caffe
+在 Windows 10 上安装 Caffe 的偷懒方式，是从 Github 上 Caffe 的 Windows 分支下载预编译二进制：
 <https://github.com/BVLC/caffe/tree/windows>
 
-For my Windows 10 setup, I can choose either of these,
-* Visual Studio 2015, CUDA 8.0, Python 3.5: Caffe Release (64 bits)
-* Visual Studio 2015, CUDA 8.0, Python 2.7: Caffe Release (64 bits)
+就我的 Windows 10 环境而言，可以在以下两者中任选：
+* Visual Studio 2015, CUDA 8.0, Python 3.5: Caffe Release（64 位）
+* Visual Studio 2015, CUDA 8.0, Python 2.7: Caffe Release（64 位）
 
-Since we have created the Anaconda Python 2.7 virtual environment to host our experiment, we choose to install `Visual Studio 2015, CUDA 8.0, Python 2.7: Caffe Release` package.
+由于我们已经创建了 Anaconda Python 2.7 虚拟环境来承载实验，我们选择安装 `Visual Studio 2015, CUDA 8.0, Python 2.7: Caffe Release` 包。
 
-After completing the install, ensure to add the following into your Windows's environment variable, `{path_to_caffe}` refers to Caffe's installation.
+安装完成后，务必把以下内容加入 Windows 的环境变量，其中 `{path_to_caffe}` 指 Caffe 的安装位置。
 
 ```bash
 PYTHONPATH={path_to_caffe}\caffe\python
 ```
 
-## Deep Dream Python Script
+## Deep Dream Python 脚本
 
-### Install Deep Dream Script
-You can clone the Deep Dream script from GitHub repository
+### 安装 Deep Dream 脚本
+你可以从 GitHub 仓库克隆 Deep Dream 脚本
 <https://github.com/bennycheung/PyDeepDream>
 
 ```bash
 git clone https://github.com/bennycheung/PyDeepDream.git
 ```
-*([2017/08/02] make correction to the git repository path to `PyDeepDream.git`)*
+*（[2017/08/02] 修正 git 仓库路径为 `PyDeepDream.git`）*
 
-Then install of the Deep Dream script's dependencies from `requirements.txt` list
+然后按 `requirements.txt` 清单安装 Deep Dream 脚本的依赖
 
 ```bash
 cd PyDeepDream
 conda install --yes --file requirements.txt
 ```
 
-See the commandline options,
+查看命令行选项，
 
 ```bash
 python deepdream.py --help
 ```
 
-Install the GoogLeNet Caffe pre-trained model
+安装 GoogLeNet Caffe 预训练模型
 
 ```bash
 cd PyDeepDream
@@ -147,30 +147,30 @@ mkdir bvlc_googlenet
 cd bvlc_googlenet
 ```
 
-download from <http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel> (~54 MB)
-and save the model here at `bvlc_googlenet/bvlc_googlenet.caffemodel`. The `deepdream.py` assumes it can find the model there.
+从 <http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel> 下载（约 54 MB）
+并把模型保存为 `bvlc_googlenet/bvlc_googlenet.caffemodel`。`deepdream.py` 默认在该位置查找模型。
 
-#### How to Use
-Don't forget to activate your prepared `caffe` virtual environment.
+#### 使用方法
+别忘了激活你准备好的 `caffe` 虚拟环境。
 
 ```bash
 source activate caffe
 ```
 
-Use `-i` to specify your input content image. It will deep dream at a random layer.
+用 `-i` 指定输入的内容图像。它会在一个随机层上进行 deep dream。
 
 ```bash
 python deepdream.py -i {your_image}.jpg
 ```
 
-If you want to start Deep Dream at a layer depth, type and octave manually:
+如果你想手动指定 Deep Dream 起始的层深度、类型和八度（octave）：
 
 ```bash
 python deepdream.py -d 1 -t 1 -o 6 -i Style_StarryNight.jpg
 ```
 
-#### Running All Layers Experiment
-We are using `-d` to define which layer that we shall perform the Deep Dream. The level number will be mapped to a GoogLeNet layer name.
+#### 跑遍所有层的实验
+我们用 `-d` 定义在哪一层执行 Deep Dream。层级数字会被映射为一个 GoogLeNet 层名。
 
 ```bash
 # Level 1 - inception_3a_1x1
@@ -192,19 +192,19 @@ python deepdream.py -d 7 -t 1 -o 6 -i Style_StarryNight.jpg
 python deepdream.py -d 9 -t 1 -o 6 -i Style_StarryNight.jpg
 ```
 
-The output dream images are stored with the original photo and tagged with a inception layer name. For example, `Style_StarryNight.jpg` with `-d 1` will produce the Deep Dream result `Style_StrarryNight_inception_3a_1x1_dream.jpg`.
+输出的 dream 图像与原图存放在一起，并带有所用 inception 层名的标记。例如，`Style_StarryNight.jpg` 配合 `-d 1` 将产生 Deep Dream 结果 `Style_StrarryNight_inception_3a_1x1_dream.jpg`。
 
-Here are the images of the Deep Dreaming,
+以下是 Deep Dreaming 的图像，
 
-![Deep Dream Layers]({{ site.baseurl }}images/deep-dream-on-windows-10/Dream_layer_results_annotate_650.jpg)
+![Deep Dream 各层结果]({{ site.baseurl }}/images/deep-dream-on-windows-10/Dream_layer_results_annotate_650.jpg)
 
-*Figure. Deep Dream results from the inception into different levels of the neural network. Lower levels amplify the NN patterns. Higher levels amplify the NN objects*
+*图：从神经网络不同深度的 inception 层得到的 Deep Dream 结果。浅层放大神经网络的纹理模式，深层放大神经网络识别的物体*
 
 
-## Deep Dream on the Raspberry Pi 3
-Deep Dream can actually be run on the Raspberry Pi 3 and Raspbian Jessie; find out how from this excellent tutorial:
+## 树莓派 3 上的 Deep Dream
+Deep Dream 实际上也可以运行在树莓派 3 和 Raspbian Jessie 上；具体方法见这篇出色的教程：
 
 <http://www.knight-of-pi.org/deepdream-on-the-raspberry-pi-3-with-raspbian-jessie/>
 
-**Notes:**
-Running on Raspberry Pi 3 is not fast (as expected due to a weaker CPU and no GPU acceleration). Each snapshot will take 5 to 20 minutes. Also due to the memory limitation, it can not Deep Dream beyond layer level 6 (i.e. inception_4d_1x1 is the limit).
+**注意：**
+在树莓派 3 上运行并不快（意料之中，因为 CPU 较弱且没有 GPU 加速）。每次快照需要 5 到 20 分钟。另外受内存限制，它无法进行第 6 层之后的 Deep Dream（即 inception_4d_1x1 是极限）。

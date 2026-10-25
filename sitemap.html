@@ -3,11 +3,11 @@ layout: default
 ---
 <article class="content-box post">
     <header>
-        <h1>Sitemap</h1>
+        <h1>站点地图</h1>
     </header>
     <p>
         {% if site.posts %}
-            <h3>Posts</h3>
+            <h3>文章</h3>
             <ul>
                 {% for post in site.posts %}
                     <li><a href="{{ post.url }}">{{ post.title }}</a></li>
@@ -17,7 +17,7 @@ layout: default
 
         {% if site.pages %}
             {% assign ignore = "404.html|index.html|feed.xml|sitemap.html|sitemap.xml|sent.html" | split: "|" %}
-            <h3>Pages</h3>
+            <h3>页面</h3>
             <ul>
             {% for page in site.pages %}
                 {% assign ignore_pagination = page.path | split: "/" %}

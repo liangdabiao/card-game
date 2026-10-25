@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Ethereum Mining on Windows 10
+title: 在 Windows 10 上挖以太坊
 date: 2017-09-17 01:00:00.000000000 -05:00
 permalink: ethereum-mining-on-windows-10
 author: Benny Cheung
@@ -22,90 +22,90 @@ published: true
 ---
 
 <!--excerpt.start-->
-The value of dedicated GPU is going beyond the needs of gaming, it is proven to fulfill the professional needs for Deep Learning researches.
-As it turns out the modern graphics cards are very good at achieving the framerate requirements for virtual-reality. To our biggest surprise, GPU is profitable at mining crypto-currency again, such as Ethereum, so we can profit from our current hardware setup. This article will run through the basic mining knowledge, and guides how to setup a Windows 10's machine with a GPU to do Ethereum mining.
+专用 GPU 的价值早已超越游戏需求，事实证明它也能满足深度学习研究的专业需要。
+事实证明，现代显卡非常擅长达成虚拟现实所需的帧率。最令我们惊讶的是，GPU 挖加密货币（如以太坊）再次变得有利可图，我们可以从现有的硬件配置中获利。本文将快速讲解挖矿的基础知识，并指导如何在配备 GPU 的 Windows 10 机器上搭建以太坊挖矿。
 <!--excerpt.end-->
 
-## Bitcoin Mining History
-A few years ago, after reading the paper by pseudonym author "Satoshi Nakamoto" on [Bitcoin: A Peer-to-Peer Electronic Cash System](https://bitcoin.org/bitcoin.pdf) describing a distributed trust solution to the open network, the sense of computational beauty about it's concepts and solutions propelled my interest to try out Bitcoin mining. The value of Bitcoin is approximately $120 USD at 2013, which is impressive for it's growth from zero value within a short few years of Bitcoin invention.
+## 比特币挖矿简史
+几年前，读完化名作者"中本聪"（Satoshi Nakamoto）关于[《Bitcoin: A Peer-to-Peer Electronic Cash System》](https://bitcoin.org/bitcoin.pdf)的论文——它为开放网络描述了一种分布式信任方案——其中概念与解法带来的计算之美激发了我的兴趣，让我想尝试比特币挖矿。2013 年比特币价值约 120 美元，相比其发明后短短几年内从零价值起步的增长，令人印象深刻。
 
-To reduce the risk of the adventure, like everyone at that time, we started out by utilizing the gaming GPU to reach a profitable hashrate (to be explained later).
-The profitability is measured by how much coin value that you generated against how much electricity that you paid. If the coin value is higher then the cost of electricity, you are in a profitable mining business, excluding the initial equipment cost.
-The original Bitcoin hashing algorithm (SHA256), performing a complex but fixed sequence of operation can be replaced by ASIC (Application Specific Integrated Circuit) dedicated hardware. The computation speed and power efficiency of ASIC essentially killed the profitability of using GPU based mining quickly. In order to stay in the Bitcoin mining game, Adafruit's instruction to build a [Raspberry Pi Bitcoin Miner](https://learn.adafruit.com/piminer-raspberry-pi-bitcoin-miner/initial-setup-and-assembly), which can hash at 2 GH/s with extremely low power consumption (see the following picture), will keep mining alive for a little longer.
+为了降低这次冒险的风险，和当时所有人一样，我们从用游戏 GPU 达到有利可图的算力（下文解释）开始。
+盈利能力用"产出的币价值相对支付的电费"来衡量。如果币值高于电费成本，你就是在一个有利可图的挖矿生意中（不含初始设备成本）。
+比特币最初的哈希算法（SHA256）执行复杂但固定的操作序列，可以被 ASIC（专用集成电路）硬件取代。ASIC 的计算速度和能效很快就扼杀了 GPU 挖矿的盈利能力。为了留在比特币挖矿的游戏里，Adafruit 给出了组装[树莓派比特币矿机](https://learn.adafruit.com/piminer-raspberry-pi-bitcoin-miner/initial-setup-and-assembly)的教程：它以极低功耗达到 2 GH/s 的哈希率（见下图），可以让挖矿多存活一段时间。
 
-![Raspberry Pi Mining Rig running at 2 GH/s]({{ site.baseurl }}images/ethereum-mining-on-windows-10/Bitcoin_RaspberryPi_Mining_Rig.jpg)
+![以 2 GH/s 运行的树莓派矿机]({{ site.baseurl }}/images/ethereum-mining-on-windows-10/Bitcoin_RaspberryPi_Mining_Rig.jpg)
 
-*Figure. Raspberry Pi Mining Rig running at 2 GH/s, the Raspberry Pi has attached to Adafruit 16x2 LCD + Keypad Kit to display mining statistics. The row of ASICMiner Block Erupter USB sticks, each is capable of 300 MH/s. The power consumption for each Block Erupter will be 5W, making the miner very profitable at 2013. But it is useless at 2017.*
+*图：以 2 GH/s 运行的树莓派矿机，树莓派接上了 Adafruit 16x2 LCD + Keypad 套件以显示挖矿统计。那一排 ASICMiner Block Erupter USB 棒，每根具备 300 MH/s 算力。每个 Block Erupter 功耗 5W，让这套矿机在 2013 年非常有利可图。但到 2017 年它已毫无用处。*
 
-For the history of Bitcoin mining, the rise of ASIC dedicated hardware basically destroyed all GPU-based mining profitability by the exponential grow of the [Bitcoin Network Difficulty](https://bitcoinwisdom.com/bitcoin/difficulty).
+就比特币挖矿的历史而言，ASIC 专用硬件的崛起，伴随着[比特币网络难度](https://bitcoinwisdom.com/bitcoin/difficulty)的指数级增长，基本上摧毁了所有基于 GPU 的挖矿盈利能力。
 
-## Ethereum Mining
-Until recently [Ethereum](https://www.ethereum.org/), which is believed to be [Bitcoin 2.0](https://bitconnect.co/bitcoin-news/89/is-ethereum-bitcoin-20), specifically designed it's [Ethash as Memory Hardness Algorithm](https://www.vijaypradeep.com/blog/2017-04-28-ethereums-memory-hardness-explained/) to make ASIC hardware based solution impractical; subsequently, Ethash has made GPU-based mining profitable again. Also, adding to the miner incentive, the Ethereum trading price has enjoyed some significant growth. Ethereum not only shows it's profitability but also the Ethereum trading liquidity as a popular cryptocurrency for the future.
+## 以太坊挖矿
+直到最近，[以太坊](https://www.ethereum.org/)——被认为是 [Bitcoin 2.0](https://bitconnect.co/bitcoin-news/89/is-ethereum-bitcoin-20)——专门把它的 [Ethash 设计为内存困难算法](https://www.vijaypradeep.com/blog/2017-04-28-ethereums-memory-hardness-explained/)，让基于 ASIC 的方案不切实际；随后，Ethash 让基于 GPU 的挖矿重新有利可图。此外，进一步激励矿工的是，以太坊交易价格经历了显著增长。以太坊不仅展示了它的盈利能力，也展示了它作为未来流行加密货币的交易流动性。
 
-As a Ethereum Miner and Researcher, there are few essential concepts must be clarified for the purpose of mining. If you don't care about the beauty of computing, you can skip ahead to the section of "Road to Mining".
+作为一名以太坊矿工和研究者，出于挖矿目的，有几个基本概念必须澄清。如果你不关心计算之美，可以直接跳到"挖矿之路"一节。
 
-### Blockchain for Distributed Trust
-The key cryptocurrency technology is Blockchain. The Blockchain "locked-in" all the transactional facts into space and time, such that modification will be almost impossible in the open and distributed network. The "space" is the content and "time" is the sequence of contents. Imagine a **Block** content is the facts about money transfers, the Block's hash value will provide an unique signature (or digest) to tell if the Block's content is authentic. If the Block's content has been tempered in anyway, the hash value will be different so that everyone knows that the content cannot be trusted. Since the Blockchain has been distributed throughout the open network, other untempered copy of the Blockchain can continue to maintain the truth. The tempered Blockchain will simply be ignored.
+### 用区块链实现分布式信任
+关键的加密货币技术是区块链。区块链把所有交易事实"锁定"进空间与时间之中，使得在开放分布式网络上篡改几乎不可能。"空间"是内容，"时间"是内容的序列。设想一个**区块**（Block）的内容是资金转移的事实，该区块的哈希值将提供一个唯一的签名（或摘要），用以判断区块内容是否可信。如果区块内容以任何方式被篡改，哈希值就会不同，于是所有人都知道该内容不可信。由于区块链已分布在整个开放网络中，其他未被篡改的区块链副本可以继续维护真相。被篡改的区块链只会被无视。
 
-![Explaining Blockchain Security by Showing the Hash Value is Linked Together]({{ site.baseurl }}images/ethereum-mining-on-windows-10/Explain_Blockchain_Security.jpg)
+![通过展示哈希值彼此链接来解释区块链安全]({{ site.baseurl }}/images/ethereum-mining-on-windows-10/Explain_Blockchain_Security.jpg)
 
-*Figure. This picture explains the Blockchain Security by showing the current Block has the hash value of the previous Block. If the previous Block content has been modified, the hash value will be different.*
+*图：这幅图解释了区块链的安全性：当前区块含有前一个区块的哈希值。如果前一个区块的内容被修改，哈希值就会不同。*
 
-In addition, this is impossible to reverse engineering the content to produce the same hash value, as if modifying the content enough to fake the hash value. This is the beauty of the [Cryptographic Hash Function](https://en.wikipedia.org/wiki/Cryptographic_hash_function); even if you changed a single character, the hash value will be changed so significantly such that you have no way to control the changes.
+此外，不可能通过逆向工程从内容伪造出相同的哈希值，仿佛把内容修改到足以伪造哈希值。这正是[密码学哈希函数](https://en.wikipedia.org/wiki/Cryptographic_hash_function)的精妙之处：哪怕只改动一个字符，哈希值都会剧烈变化，让你根本无法控制变化的方向。
 
-### Mining as Proof of Work for Values
-For the Blockchain of cryptocurrency, e.g. Bitcoin or Ethereum, the Block's content will be the transfer of coins. Imagine the following Blocks for the coin transactions, we can always trace back the origin of a coin. For example, the coin sent by $$A$$ can be traced back in time through the Blockchain connectivity, where the totality of $$A$$ coins funding are received from $$B \rightarrow A$$ and $$C \rightarrow A$$ transactions. However, we have noticed the $$C$$ original funding seems to come from the thin air.
+### 挖矿作为价值的工作量证明
+对于加密货币（如比特币或以太坊）的区块链而言，区块的内容将是币的转移。设想下面的区块记录着币的交易，我们总可以追溯一枚币的来源。例如，$$A$$ 发出的币可以通过区块链的连接按时间回溯，其中 $$A$$ 币的资金总量来自 $$B \rightarrow A$$ 和 $$C \rightarrow A$$ 两笔交易。然而，我们注意到 $$C$$ 的原始资金似乎凭空而来。
 
-![Explaining Cryptocurrency Coin Generation as the value of Mining]({{ site.baseurl }}images/ethereum-mining-on-windows-10/Explain_Mining_Coin_Generation.jpg)
+![把加密货币的币生成解释为挖矿的价值]({{ site.baseurl }}/images/ethereum-mining-on-windows-10/Explain_Mining_Coin_Generation.jpg)
 
-*Figure. This picture illustrated all coins sent and received can be traced through the Blockchain. Except the origin of $$C$$ funding seems to be generated from the thin air, which is the reward of mining.*
+*图：这幅图说明所有收发的币都可以沿区块链追溯。唯独 $$C$$ 资金的来源似乎是凭空产生的——那正是挖矿的奖励。*
 
-The original funding of $$C$$ is the reward of mining. The miner provides the computational power in the form of electricity consumption, to produce the hash value (signature) to a Block. The effort of finding the correct hash value is also known as [Proof of Work](https://en.bitcoin.it/wiki/Proof_of_work). The miner who first successfully found the correct hash value will be reward with some number of coins. This is precisely the concept of mining which is rewarding the coins for solving the hash value problem, benefiting the Blockchain to advance in space and time.
+$$C$$ 的原始资金就是挖矿奖励。矿工以电力消耗的形式提供算力，为一个区块产出哈希值（签名）。寻找正确哈希值的努力也被称为[工作量证明](https://en.bitcoin.it/wiki/Proof_of_work)（Proof of Work）。最先成功找到正确哈希值的矿工将获得一定数量的币作为奖励。这正是"挖矿"的概念：用解决哈希值难题来换取币，同时让区块链在空间与时间中前进。
 
-Many popular opinion doubts about the value of Bitcoin or Ethereum. The computational power in the form of electricity consumption is the value of the coin. Currently, generating 1 Bitcoin will cost approximately $1000 USD electricity, where the intrinsic value of Bitcoin is stored. While you are receiving the printed $100 USD bill, that bill has no intrinsic value other than a piece of paper promise. The $100 bill does not have any backing stored to retain it's value (no equivalent gold value is stored along with USD anymore). But the Bitcoin or Ethereum has the value stored by the difficulty of their generation.
+许多流行观点质疑比特币或以太坊的价值。以电力消耗形式体现的算力，就是币的价值所在。目前，产出 1 枚比特币大约耗费 1000 美元的电力，比特币的内在价值就储存于此。而当你收到一张印好的 100 美元钞票时，除了"一张纸做的承诺"，它没有任何内在价值。100 美元钞票没有任何储备来支撑其价值（美元早已不再储存等值黄金）。但比特币或以太坊的价值，是由其产出的难度储存起来的。
 
-### Difficulty for Timeliness
-The remaining question is the significance of the network difficulty. Imagine the guessing game of between 1 to 10, the difficulty that one can guess it right is the chance of 1/10. We say the equivalent of 1 guess is equal 1 hash, the difficult is 10. In average, a player needs to guess 5 times before a guess is hitting the correct number. However, if this guessing game is having too many guesses happening in a short time, the correct guess may happen too fast. The guessing game's maker (the whole network) will automatically adjust the difficulty, adjusting from 10 to 100, to reduce the correct guess happening too fast. This is the essence of using the network difficulty to control how fast a correct guess can happen.
+### 用难度保证时效性
+剩下的问题是网络难度的意义。设想一个 1 到 10 的猜数游戏，猜对的难度是 1/10 的概率。我们说等价地：1 次猜测等于 1 次哈希，难度为 10。平均而言，玩家需要猜 5 次才能命中正确数字。然而，如果这个猜数游戏在短时间内发生了太多次猜测，正确的猜测可能出现过快。猜数游戏的设计者（整个网络）会自动调整难度——从 10 调到 100——来减缓正确猜测出现过快的速度。这就是用网络难度来控制正确猜测出现速度的本质。
 
-![Explaining Hash Difficulty]({{ site.baseurl }}images/ethereum-mining-on-windows-10/Explain_Hash_Difficulty.jpg)
+![解释哈希难度]({{ site.baseurl }}/images/ethereum-mining-on-windows-10/Explain_Hash_Difficulty.jpg)
 
-*Figure. This picture explain the input of the hash function $$f()$$ must be manipulated to generate a hash result of specified difficulty. The difficulty is a pattern of easy comparison, in this case, the hash result is less than 100.*
+*图：这幅图解释了必须操纵哈希函数 $$f()$$ 的输入，才能生成满足指定难度的哈希结果。难度是一种易于比较的模式，在本例中，哈希结果要小于 100。*
 
-In **NO** scenario that a miner should modify the transactional content, in order to manipulate the hash result, miner can only modify the "nonce" section to generate a hash result and check if the hash result meets the target requirements. For each "nonce" change, recompute the hash result and compare against the target requirements, is exactly **ONE** hash. The speed of Ethereum hash is currently measured by MH/s (1,000,000 hashes per second) by using a GPU. For instance, Nvidia GTX 1070 can compute 25 MH/s without overclock (after overclock, it gains 20% speed and reaches 30 MH/s).
+在任何情况下，矿工都**不**应该修改交易内容来操纵哈希结果；矿工只能修改 "nonce" 字段来生成哈希结果，并检查哈希结果是否满足目标要求。每改动一次 "nonce"，重新计算哈希结果并与目标要求比较，就恰好是**一次**哈希。以太坊哈希速度目前以 MH/s（每秒 1,000,000 次哈希）为单位、用 GPU 来衡量。例如，Nvidia GTX 1070 不超频可以达到 25 MH/s（超频后提速 20%，达到 30 MH/s）。
 
-Different cryptocurrency has different hash algorithm and requirements, but the essence of a hash is the same. If a miner be the first who compute the hash result matched the requirements against the whole network; then that winning miner will be reward with the coins! That's exactly the goal of mining. Obviously, only using a small computing resources winning against the whole network is very difficult; that's why the [Mining Pool](https://en.wikipedia.org/wiki/Mining_pool) concept can be applied to join force to win.
+不同的加密货币有不同的哈希算法和要求，但哈希的本质相同。如果一名矿工第一个算出满足全网要求的哈希结果，那么这名获胜的矿工将获得币的奖励！这正是挖矿的目标。显然，只用很小的算力去赢过整个网络是非常困难的；这就是为什么可以应用[矿池](https://en.wikipedia.org/wiki/Mining_pool)（Mining Pool）的概念来合力取胜。
 
-## Road to Mining
-The prerequisite to mining is having a machine installed with a modern GPU. For a typical gamer or a Deep Learning researcher, you would probably have a Windows 10 machine ready to be deployed for Ethereum mining.
+## 挖矿之路
+挖矿的前提是拥有一台装有现代 GPU 的机器。对于典型的游戏玩家或深度学习研究者来说，你很可能已经有一台可以部署以太坊挖矿的 Windows 10 机器。
 
-![Display Claymore Miner Hashrate and MSI After Burner GPU Settings]({{ site.baseurl }}images/ethereum-mining-on-windows-10/DX4_Ehtererum_1070_Overclock.jpg)
+![显示 Claymore 矿机算力与 MSI Afterburner GPU 设置]({{ site.baseurl }}/images/ethereum-mining-on-windows-10/DX4_Ehtererum_1070_Overclock.jpg)
 
-*Figure. Showing Claymore Ethereum Miner in action after all the following setup. GPU can be put to work hard for your money.*
+*图：完成以下全部设置后，Claymore 以太坊矿机的运行画面。GPU 可以为你的钱包卖力工作。*
 
-Here is a quick run down on the 10 steps.
+以下是 10 个步骤的快速过览。
 
-**(1) Setup the GPU on Windows 10**
+**(1) 在 Windows 10 上设置好 GPU**
 
-**(2) Setup an Ethereum Wallet**: [Jaxx](https://jaxx.io) is a multipurpose cryptocurrency wallet that can run on any platform. Miner needs to get the public address of the Ethereum wallet; that public address is used to store the mining rewards.
+**(2) 设置以太坊钱包**：[Jaxx](https://jaxx.io) 是一款可在任何平台运行的多用途加密货币钱包。矿工需要拿到以太坊钱包的公开地址；该公开地址用于存放挖矿奖励。
 
-![Jaxx Ethereum Wallet's Public Address]({{ site.baseurl }}images/ethereum-mining-on-windows-10/Jaxx_Ethereum_Wallet_public_address.jpg)
+![Jaxx 以太坊钱包的公开地址]({{ site.baseurl }}/images/ethereum-mining-on-windows-10/Jaxx_Ethereum_Wallet_public_address.jpg)
 
-**(3) Ethereum Mining Software**: Download and install [Claymore-Ethereum-Miner](https://github.com/nanopool/Claymore-Dual-Miner/releases) that works with Nvidia GPU optimally. Please follow the [Mining Clients - Claymore - Windows](https://eth.nanopool.org/help) instructions from Nanapool help page, the next few steps repeat the important info.
+**(3) 以太坊挖矿软件**：下载并安装 [Claymore-Ethereum-Miner](https://github.com/nanopool/Claymore-Dual-Miner/releases)，它与 Nvidia GPU 配合效果最佳。请遵循 Nanopool 帮助页面的 [Mining Clients - Claymore - Windows](https://eth.nanopool.org/help) 说明，接下来几步会重复其中的重要信息。
 
-For this article, the `Claymore's Dual Ethereum AMD GPU Miner v9.8 (Windows/Linux)` for Windows 10 is used.
+本文使用的是 Windows 10 版的 `Claymore's Dual Ethereum AMD GPU Miner v9.8 (Windows/Linux)`。
 
-**(4) Choose a Mining Pool to join**: Claymore Ethereum Miner's default is [Nanopool](https://nanopool.org/) which has a great API and Web UI. Miner doesn't need to register with Nanapool. As soon as a Ethereum's public address using Nanapool to receive some reward, the account will be automatically setup with that public address.
+**(4) 选择要加入的矿池**：Claymore 以太坊矿机默认使用 [Nanopool](https://nanopool.org/)，它有出色的 API 和 Web UI。矿工无需在 Nanopool 注册。一旦某个以太坊公开地址通过 Nanopool 收到奖励，账户就会以该公开地址自动建立。
 
-**(5) Install Overclock Tool**: [MSI Afterburner](https://www.msi.com/page/afterburner) as the overclock setup and monitor.
-The following shows an optimal overclock settings for Nvidia GTX 1070 GPU, which produce 30 MH/s, 100 Watt power draw, 61C temperature with 40% fan speed.
+**(5) 安装超频工具**：[MSI Afterburner](https://www.msi.com/page/afterburner) 用作超频设置与监控。
+下面展示 Nvidia GTX 1070 GPU 的一组优化超频设置：产出 30 MH/s、功耗 100 瓦、温度 61°C、风扇转速 40%。
 
-![Nvidia GTX 1070 Overclock Settings]({{ site.baseurl }}images/ethereum-mining-on-windows-10/MSI_Afterburner_overclock_settings.jpg)
+![Nvidia GTX 1070 超频设置]({{ site.baseurl }}/images/ethereum-mining-on-windows-10/MSI_Afterburner_overclock_settings.jpg)
 
-Since `Ethash` (Ethereum Hash function) is essentially GPU memory bounded, overclock the GPU memory is sufficient without increasing the GPU core clock. This should reduce the power draw and the temperature of the GPU, while maintaining a great hashrate!
+由于 `Ethash`（以太坊哈希函数）本质上受 GPU 显存限制，只需超频显存即可，无需提高 GPU 核心频率。这可以降低 GPU 的功耗与温度，同时保持出色的算力！
 
-**(6) Setup and run the Miner Script**: The Claymore miner comes with many batch scripts to do mining. For simplicity, starting with the Ethereum only mining script, follows the instructions to modify with your Ethereum wallet's public address.
+**(6) 设置并运行矿机脚本**：Claymore 矿机自带许多批处理脚本用于挖矿。为简单起见，从纯以太坊挖矿脚本开始，按照说明修改为你自己的以太坊钱包公开地址。
 
-This is how the `start_only_eth.bat` file should look after modification to miner's information:
+以下是 `start_only_eth.bat` 文件修改为矿工信息后的样子：
 
 ```dos
 setx GPU_FORCE_64BIT_PTR 0
@@ -117,35 +117,35 @@ setx GPU_SINGLE_ALLOC_PERCENT 100
 EthDcrMiner64.exe -epool eth-us-east1.nanopool.org:9999 -ewal 0xf1cfc50567acf36c55ba75540b7f1c3f1aaa9869/mining_name/my_email@gmail.com -epsw x -mode 1 -ftime 10
 ```
 
-It is using Nanapool in US east cost address `eth-us-east1.nanopool.org:9999` as the mining pool. As a general rule of thumb, choose a pool address that is closest to your geographic location. **Important** don't forget to change `0xf1cfc50567acf36c55ba75540b7f1c3f1aaa986` to your Ethereum wallet's public address; otherwise, you are contributing to my wallet `:)`.
-After the next `/`, gives a name to the mining machine. The next `/` is optional, you can provide your email address for notifications and enabled the ability to update Nanopool's payout schedule, i.e. this is good to provide an email.
+它使用美东海岸地址 `eth-us-east1.nanopool.org:9999` 的 Nanopool 作为矿池。一般经验法则是：选择离你地理位置最近的矿池地址。**重要**：别忘了把 `0xf1cfc50567acf36c55ba75540b7f1c3f1aaa986` 改成你自己的以太坊钱包公开地址；否则，你就是在给我的钱包捐款 `:)`。
+下一个 `/` 之后，给矿机起个名字。再下一个 `/` 是可选的，你可以提供邮箱用于接收通知，并获得调整 Nanopool 支付计划的权限，也就是说，提供一个邮箱是件好事。
 
-**(7) Monitor the Mining Operation**: You can observe the hashrate measured in MH/s (1,000,000 hashes per second). The following screen output shows a typical Claymore Miner's log report.
+**(7) 监控挖矿运行**：你可以观察以 MH/s（每秒 1,000,000 次哈希）计量的算力。下面的屏幕输出展示了典型的 Claymore 矿机日志报告。
 
-![Claymore Miner Output Window Readings]({{ site.baseurl }}images/ethereum-mining-on-windows-10/Claymore_Miner_readings.jpg)
+![Claymore 矿机输出窗口读数]({{ site.baseurl }}/images/ethereum-mining-on-windows-10/Claymore_Miner_readings.jpg)
 
-From the illustrated output, Ethereum mining logs are prefixed with `ETH:`. We can see the miner is fetching jobs from `eth-us-east1.nanopool.org:9999` that we have setup in the miner script, which confirmed that we are joining the Nanopool mining. The observed `GPU0`, the only GTX 1070 on the PC, hashing at 30 MH/s. When the mining pool is lucky and win, the `SHARE FOUND` will be reported. The shared computation effort will be awarded relative to the overall pool contribution to the winning Block!
+从图示输出可以看到，以太坊挖矿日志带有 `ETH:` 前缀。我们可以看到矿机正在从我们在矿机脚本中设置的 `eth-us-east1.nanopool.org:9999` 拉取任务，这确认了我们已加入 Nanopool 挖矿。图中可见的 `GPU0`——这台 PC 上唯一的 GTX 1070——正以 30 MH/s 的速度哈希。当矿池走运并获胜时，会报告 `SHARE FOUND`。共享的计算贡献将相对整个矿池对获胜区块的贡献而获得奖励！
 
-**(8) Keep Cool and Pay Electricity Bill**: We need to understand how to keep our mining profitable by using a Ethereum calculator to estimate earnings. Here is one calculator by inputing the hashrate, power consumption and power cost per kiloWatt to estimate the profit [https://www.cryptocompare.com/mining/calculator/eth](https://www.cryptocompare.com/mining/calculator/eth)
+**(8) 保持凉爽并交电费**：我们需要懂得如何用以太坊计算器估算收益，保持挖矿有利可图。这里有一个计算器：输入算力、功耗和每千瓦时电费即可估算利润 [https://www.cryptocompare.com/mining/calculator/eth](https://www.cryptocompare.com/mining/calculator/eth)
 
-For example, GTX 1070 hashrate is 30 MH/s, with 110 Watt power draw and average electricity cost of $0.12 KW/h.
+例如，GTX 1070 算力 30 MH/s，功耗 110 瓦，平均电价 0.12 美元/千瓦时。
 
-![Ethereum Calculator Sample]({{ site.baseurl }}images/ethereum-mining-on-windows-10/Ethereum_Calculator_Sample_20170917.jpg)
+![以太坊计算器示例]({{ site.baseurl }}/images/ethereum-mining-on-windows-10/Ethereum_Calculator_Sample_20170917.jpg)
 
-*Figure. Screen Capture of Ethereum profit calcuation on `17 Sep, 2017`, where 1 ETH is traded at $263.89 USD*
+*图：`2017 年 9 月 17 日`的以太坊利润计算截屏，当时 1 ETH 交易价 263.89 美元*
 
-The estimated dollar earning is affected by the current Ethereum trading price. It is easier to measure by ETHs that have been mined.
+估算的美元收益受当前以太坊交易价格影响。用已挖到的 ETH 数量来衡量更容易。
 
-**(9) Repeat (6)-(8)**: Visit Nanpool and search for the Ethereum public address. It will display the mining statistics.
+**(9) 重复 (6)-(8)**：访问 Nanopool 并搜索以太坊公开地址。它会显示挖矿统计数据。
 
-**(10) Increase Mining Operation**: If one's mining appetite grows, then it is time to learn how to build an [Ethereum Mining Rig](https://www.youtube.com/watch?v=mYgd33zaNc8). This video introduces how to build a 6x GTX 1070 GPUs mining rig has a hashrate of 180 MH/s, please have a look. Another article should be written on how to build this dedicated hardware.
+**(10) 扩大挖矿规模**：如果你的挖矿胃口变大，那么是时候学习如何组建[以太坊矿架（Mining Rig）](https://www.youtube.com/watch?v=mYgd33zaNc8)了。这期视频介绍如何搭建一套 6 卡 GTX 1070 GPU、算力 180 MH/s 的矿架，值得一看。关于如何组装这套专用硬件，值得再写一篇文章。
 
 {% include youtubePlayer.html id="mYgd33zaNc8" %}
 
 
-Happy Ethereum mining!
+祝以太坊挖矿愉快！
 
-### Donations
+### 捐赠
 
 ETH: 0xf1cfc50567acf36c55ba75540b7f1c3f1aaa986
 

@@ -1,17 +1,17 @@
-# How to Setup Jekyll Blogging
+# 如何搭建 Jekyll 博客
 
-## Edit Jekyll Configuration
-This Jekyll `_config.yml` defines all the site's keys; change all the keys to your relevant information
+## 编辑 Jekyll 配置
+Jekyll 的 `_config.yml` 定义了站点的所有配置键；请将这些键的值改成你自己的相关信息
 
-## Edit Link Pages
-This set of pages, with layout `pages`, will show up in the sidebar navigation as links. By default, we have
-  1. About - about.md tell something about you and your site
-  2. Research - research.md list the research items
+## 编辑链接页面
+这组使用 `pages` 布局的页面，会以链接形式显示在侧边栏导航中。默认包括：
+  1. About（关于）- about.md 介绍你自己和你的站点
+  2. Research（研究）- research.md 列出研究条目
 
-## Write Blog Pages
-Put your blog pages into `_posts` directory, with the proper `YYYY-MM-DD-your-post-title.md` as the file name format. Within the post, you should have at least the following metadata, the layout `post` should be used.
+## 撰写博客页面
+把你的博客页面放入 `_posts` 目录，文件名必须遵循 `YYYY-MM-DD-your-post-title.md` 的格式。在文章内，你至少需要以下元数据，布局应使用 `post`。
 
-For example,
+例如，
 
 ```
 ---
@@ -36,13 +36,13 @@ published: true
 ---
 ```
 
-The `image.cover` metadata key is for the post's teaser image (assumed to be 400x300). The `image.header` metadata key is for the post's header image (assumed to be 800x160). You can find the samples in the `_posts` directory. For the social media site, define `image` will be appeared for the referred link from your social media post.
+`image.cover` 元数据键用于文章的预览图（假定尺寸为 400x300）。`image.header` 元数据键用于文章的页头图（假定尺寸为 800x160）。你可以在 `_posts` 目录中找到示例。对于社交媒体站点，定义 `image` 后，社交媒体帖子中引用本站链接时会显示该图片。
 
 
-### Post Excerpt
-The tag `<!--excerpt.start-->` and `<!--excerpt.end-->` mark the beginning and the end of the excerpt in the post, that would be put on the post's summary block in the front page.
+### 文章摘要
+标签 `<!--excerpt.start-->` 和 `<!--excerpt.end-->` 标记文章中摘要的开始和结束，摘要将显示在首页的文章摘要区块中。
 
-For example,
+例如，
 
 ```
 <!--excerpt.start-->
@@ -50,16 +50,16 @@ The obsession of recognizing snacks and foods has been a fun theme ...
 <!--excerpt.end-->
 ```
 
-### Image Location
-My site's organizational convention, all images referenced in the post should be placed in `images` directory, and refers to the image prefixed by `{{ site.baseurl }}/images/`.
+### 图片位置
+按照本站的组织约定，文章中引用的所有图片都应放在 `images` 目录中，引用时以 `{{ site.baseurl }}/images/` 作为前缀。
 
-## Local Testing
-You can install Jekyll locally, and serve the pages locally by running (--baseurl to override the configured site URL to nothing, make it able to run locally with all the links correctly points to localhost),
+## 本地测试
+你可以在本地安装 Jekyll，并通过运行以下命令在本地提供页面服务（`--baseurl` 将配置的站点 URL 覆盖为空，使所有链接都能正确指向 localhost，从而可以在本地运行），
 
 ```
   jekyll server --baseurl ""
 ```
 
-Now, you can navigate to `localhost:4000` to view your blog pages.
+现在，你可以访问 `localhost:4000` 查看你的博客页面。
 
 > alias jekyllserve='bundle exec jekyll serve --livereload'

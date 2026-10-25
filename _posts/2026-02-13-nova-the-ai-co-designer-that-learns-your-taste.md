@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Nova - The AI Co-Designer That Learns Your Taste"
+title: "Nova——学习你品味的 AI 联合设计师"
 date: 2026-02-13 12:00:00.000000000 -00:00
 permalink: nova-the-ai-co-designer-that-learns-your-taste
 author: Benny Cheung
@@ -27,246 +27,245 @@ series_order: 7
 ---
 
 <!--excerpt.start-->
-In the previous article, we laid out the theory behind GameGrammar: structure enables generation, generation enables iteration, and the designer stays in control. But there was something missing. As the designer pushes buttons and fills out forms, the AI is reduced to a toolbox, rather than a colleague. Our solution is Nova, a conversational AI co-designer that remembers your decisions, learns your taste, explains its reasoning, and gets better at helping you the more you work together. Every design session becomes training data for improved partnership.
+在上一篇文章中，我们阐明了 GameGrammar 背后的理论：结构使生成成为可能，生成使迭代成为可能，而设计师始终掌控全局。但有一样东西缺失了。当设计师按按钮、填表单时，AI 被降格为一个工具箱，而不是一位同事。我们的解法是 Nova——一个对话式 AI 联合设计师：它记得你的决策、学习你的品味、解释自己的推理，并且与你合作越多、帮助你就越到位。每一次设计会话都成为改进伙伴关系的训练数据。
 <!--excerpt.end-->
 
-![Nova: The AI Co-Designer]({{ site.baseurl }}images/nova-the-ai-co-designer/Nova_Co_Designer_Theme.jpg)
+![Nova：AI 联合设计师]({{ site.baseurl }}/images/nova-the-ai-co-designer/Nova_Co_Designer_Theme.jpg)
 
-_Figure. A designer and their co-designer, working together on a board game blueprint. Nova is not a robot. It is a pattern of light, a constellation that accumulates the designer's intent and helps them flare with creative energy._
+_图：一位设计师与他的联合设计师，共同俯身于一张桌游蓝图。Nova 不是机器人。它是一束光的模式，一个星座，积累着设计师的意图，帮他们迸发创造能量。_
 
-## Where We Left Off
+## 上次我们停在哪里
 
-In [The Theory of Generative Board Game Design]({{ site.baseurl }}gamegrammar-the-theory-of-generative-board-game-design) [2], we established a principle: **AI proposes, you decide.** How do we close the interaction gap between the two?
+在[生成式桌游设计理论]({{ site.baseurl }}/gamegrammar-the-theory-of-generative-board-game-design) [2] 中，我们确立了一条原则：**AI 提议，你决定。**我们如何弥合两者之间的交互鸿沟？
 
-When you used GameGrammar's AI assistance, you clicked buttons. "Fix this inconsistency." "Rewrite this section." "Show me suggestions." Each action was a one-shot transaction. The AI did not remember what you asked last time. It did not know that you had already rejected the auction mechanism because it clashed with your game's tempo. It did not learn that you consistently prefer indirect competition over direct conflict, or that your complexity sweet spot is somewhere between Azul and Terraforming Mars.
+使用 GameGrammar 的 AI 辅助时，你点击按钮。"修复这个不一致。""重写这一节。""给我看建议。"每个动作都是一次性的交易。AI 不记得你上次问了什么。它不知道你已经否决了拍卖机制——因为它与你游戏的节奏冲突。它没学会你一贯偏好间接竞争而非直接冲突，也没学会你的复杂度甜点在《Azul》与《殖民火星》之间的某处。
 
 {% include youtubePlayer.html id="i8Swu4MhMEY" %}
 
 ---
 
-## The Morning Standup That Does Not Exist
+## 那个不存在的晨会
 
-The idea for Nova came from a GameGrammar [4] user named Donald, an experienced game designer who saw the potential before we did:
+Nova 的想法来自一位叫 Donald 的 GameGrammar [4] 用户——一位经验丰富的游戏设计师，他比我们先看到了潜力：
 
-> "Have you thought about having a running chat with an AI about the game holistically, who would know when to kick something to one of the agents? Similar to a morning discussion about yesterday's prototype that would be happening in creator studios."
+> "你们想过和一个 AI 就游戏整体持续聊天吗？它知道什么时候该把某件事转给某个代理。就像创作者工作室里每天早上关于昨天原型的讨论。"
 
-Donald was describing something specific: the standup meeting that every professional design studio has. From the moment you walk in, your collaborator knows your game and past decisions. They understand your decisions, and do not require any explanation for what “the auction mechanism feels too slow at four players” means. They remember what you tried and why you tried it. Their direction is informed and useful.
+Donald 描述的是一种具体的东西：每家专业设计工作室都有的晨会。从你走进门的那一刻起，你的合作者就知道你的游戏与过往决策。他们理解你的决策，不需要任何解释就明白"拍卖机制在四人局里感觉太慢"是什么意思。他们记得你试过什么、为什么试。他们给的方向有依据、有用。
 
-That collaborator does not exist for solo designers. It does not exist for small teams working evenings and weekends. The talent and vision are there. The time for a second brain is not.
+这位合作者，对独立设计师而言不存在。对利用晚上和周末工作的小团队而言也不存在。才华与愿景都在，缺的是"第二个大脑"的时间。
 
 ---
 
-## From Toolbox to Colleague
+## 从工具箱到同事
 
-GameGrammar's previous AI assistance was a toolbox: five modes of help (rewrite, fix, edit, suggest, evaluate), each powerful on its own, each stateless. Nova unifies those five modes into a single conversation where context accumulates instead of resetting.
+GameGrammar 之前的 AI 辅助是一个工具箱：五种帮助模式（重写、修复、编辑、建议、评估），各自强大，但各自无状态。Nova 把这五种模式统一进一个对话——上下文在其中累积，而不是重置。
 
-![From Toolbox to Colleague]({{ site.baseurl }}images/nova-the-ai-co-designer/Nova_Toolbox_vs_Colleague.jpg)
+![从工具箱到同事]({{ site.baseurl }}/images/nova-the-ai-co-designer/Nova_Toolbox_vs_Colleague.jpg)
 
-_Figure. Left: a workbench with tools laid out neatly, each use independent. Right: two collaborators in conversation, context accumulating between them. The shift from toolbox to colleague is the shift from stateless to stateful._
+_图：左：一个摆满工具的工作台，每次使用相互独立。右：两位合作者在交谈，上下文在两人之间累积。从工具箱到同事的转变，就是从无状态到有状态的转变。_
 
 
-| Before Nova | With Nova |
+| 没有 Nova 时 | 有 Nova 时 |
 |-------------|-----------|
-| Click "Fix" on a critique issue | "The scoring curve feels flat" |
-| Type intent in a modal | "Make this less punishing at 4 players" |
-| Click "Get Suggestions" | Nova proactively surfaces ideas in conversation |
-| Click "Regenerate" on a stale section | "The synergies feel outdated after our last change" |
-| Click "Re-Evaluate" to score | "How did that change affect the balance?" |
+| 在批评问题上点击"修复" | "计分曲线感觉太平了" |
+| 在弹窗里输入意图 | "让它在四人局里没那么惩罚性" |
+| 点击"获取建议" | Nova 在对话中主动浮出想法 |
+| 对过时的区块点击"重新生成" | "上次改动之后，这些协同感觉过时了" |
+| 点击"重新评估"打分 | "那个改动对平衡有什么影响？" |
 
-The designer never sees agent names. They never select a mode. They talk to Nova. Nova decides which specialist to invoke, collects the results, and presents them as a coherent conversational response. The orchestration is invisible.
+设计师永远看不到代理的名字。他们从不需要选模式。他们与 Nova 交谈。Nova 决定调用哪位专家、收集结果，并把它们呈现为一个连贯的对话式回应。编排是隐形的。
 
-Nova is a conversational layer on top of a multi-agent pipeline: six specialist agents, a structured game ontology, a reference library of 2,000 published games, and a persistent memory of every decision you have made, all accessible through natural language [5]. The shift from toolbox to colleague is the shift Mollick describes in *Co-Intelligence* [6]: treating AI not as a productivity shortcut but as a collaborative partner with its own contributions to the work.
+Nova 是架在多代理流水线之上的对话层：六个专家代理、一个结构化的游戏本体、一个收录 2,000 款出版游戏的参考库，以及对你每个决策的持久记忆——全部通过自然语言访问 [5]。从工具箱到同事的转变，正是 Mollick 在《Co-Intelligence》[6] 中描述的转变：把 AI 不当作生产力捷径，而是当作对工作有自己的贡献的协作伙伴。
 
 ---
 
-## The Reinforcement Learning Loop
+## 强化学习回路
 
-Here is the idea at the center of Nova, the reason it is more than a chat interface. Every interaction with Nova feeds a cycle that makes the next interaction better.
+这是 Nova 的核心思想，也是它不止于一个聊天界面的原因。与 Nova 的每次交互都喂给一个让下次交互变得更好的循环。
 
-![The Reinforcement Learning Loop]({{ site.baseurl }}images/nova-the-ai-co-designer/Nova_Reinforcement_Learning_Loop.jpg)
+![强化学习回路]({{ site.baseurl }}/images/nova-the-ai-co-designer/Nova_Reinforcement_Learning_Loop.jpg)
 
-_Figure. The five-stage reinforcement learning cycle at Nova's core. Learn builds a profile from your decisions. Trace captures reasoning chains. Explain presents conclusions with evidence. Reason surfaces intervention options at different levels of abstraction. Track records every decision. The cycle closes: tracked decisions feed the learning profile, and the partnership improves with use._
+_图：Nova 核心的五阶段强化学习循环。Learn 从你的决策中构建画像。Trace 捕获推理链。Explain 携证据呈现结论。Reason 在不同抽象层级上浮出干预选项。Track 记录每个决策。循环闭合：被追踪的决策反哺学习画像，伙伴关系随使用而改进。_
 
-**Learn.** Nova builds a profile of your design preferences from the pattern of what you accept and reject across sessions. Mechanism affinities, complexity tolerance, theme preferences, interaction style, risk appetite. Recent choices weigh more, but old patterns do not vanish overnight.
+**学习（Learn）。** Nova 从你在各会话中接受与拒绝的模式里，构建你的设计偏好画像：机制亲和度、复杂度容忍度、主题偏好、交互风格、风险偏好。近期的选择权重更大，但旧模式不会一夜消失。
 
-**Trace.** When Nova analyzes your design, it traces a reasoning chain: observation (what was measured), data (the specific numbers), mechanism (the game structure causing the pattern), and impact (what breaks downstream). The designer sees not just "this is unbalanced" but the full evidence trail that led there.
+**追踪（Trace）。** 当 Nova 分析你的设计时，它会追踪一条推理链：观察（测量了什么）、数据（具体数字）、机制（造成该模式的游戏结构）与影响（下游会坏掉什么）。设计师看到的不是"这不平衡"，而是通向该结论的完整证据轨迹。
 
-**Explain.** Nova presents the conclusion first, for quick scanning. The reasoning chain is always available. The designer can ask "Why?" and get the forensic breakdown. This mirrors how a real design partner works: they tell you the problem, and you ask clarifying questions when you need the depth.
+**解释（Explain）。** Nova 先呈现结论，便于快速浏览。推理链随时可得。设计师可以问"为什么？"并得到法证式的拆解。这映照着真实设计伙伴的工作方式：他们告诉你问题，你需要深度时再问澄清性问题。
 
-**Reason.** After presenting the evidence, Nova surfaces decision levels, a menu of intervention strategies at different levels of abstraction:
+**推理（Reason）。** 呈现证据之后，Nova 浮出决策层级——一份处于不同抽象层级的干预策略菜单：
 
-| Decision Level | What It Means | Example |
+| 决策层级 | 含义 | 示例 |
 |----------------|---------------|---------|
-| **Structural** | Redesign the mechanism or flow | Change how rounds scale with player count |
-| **Numerical** | Adjust parameters or thresholds | Tune the draw rate or pool growth formulas |
+| **结构层** | 重设计机制或流程 | 改变回合数如何随玩家数缩放 |
+| **数值层** | 调整参数或阈值 | 调整抽牌速率或奖池增长公式 |
 
-The designer chooses which level to operate at. This is the actual lead-designer decision: not "fix the problem" but "at what level should I intervene?"
+设计师选择在哪个层级操作。这才是真正的首席设计师决策：不是"修复问题"，而是"我应该在哪个层级干预？"
 
-**Track.** Every decision, whether accepted, rejected, or deferred, is recorded in a structured decision log linked to the game's version history. When the designer returns tomorrow, Nova reconstructs context from the current game state plus the decision log. The designer picks up where they left off.
+**追踪记录（Track）。** 每个决策——无论接受、拒绝还是搁置——都被记录到一个结构化的决策日志中，并与游戏的版本历史链接。当设计师明天回来，Nova 从当前游戏状态加决策日志重建上下文。设计师从上次停下的地方继续。
 
-The cycle closes. Tracked decisions feed the learning profile. The profile shapes future proposals. Better proposals lead to more informative accept/reject signals. The partnership improves with use.
+循环闭合。被追踪的决策反哺学习画像。画像塑造未来的提议。更好的提议产生更有信息量的接受/拒绝信号。伙伴关系随使用而改进。
 
-The conversation gets smarter with every decision you make.
-
----
-
-## Not a Copy of You
-
-The first instinct with personalization is to make Nova a mirror. Learn what the designer likes, propose more of it. This is a trap. Donald identified it immediately:
-
-> "Nova could be uniquely helpful because it learns and proposes things in a way I would, BUT it isn't locked into particular taste patterns. It's like how when you want to build a powerful team, you add people who understand you and what you are trying to do, but aren't copies of you."
-
-A designer with 30 years of experience has powerful pattern recognition, but also powerful pattern *lock-in*. They reach for familiar solutions because those solutions have worked before. The value of a good collaborator is not "me but faster." It is "me but with fresh eyes." Someone who understands your intent and quality bar but is not constrained by your habitual approaches.
-
-Nova's designer profile captures *intent and standards*, not *habits*. What you care about (theme coherence, elegant mechanisms, tight player interaction), beyond what you usually do (engine building, indirect competition, medium complexity). The best proposals are the ones you would not have thought of but immediately recognize as right.
-
-![Nova Designer Profile]({{ site.baseurl }}images/nova-the-ai-co-designer/Nova_Designer_Profile.jpg)
-
-_Figure. The designer profile is the accumulation of accept/reject decisions, updated via exponential moving average so recent choices weigh more._
-
-To prevent convergence, Nova deliberately introduces creative tension. Most proposals align with your demonstrated preferences. But some push one step outside your comfort zone, combining something familiar with something you have not tried. And occasionally, Nova throws a genuine curveball from a part of the design space you have never touched.
-
-If you consistently accept the curveballs, Nova throws more of them. If you consistently reject them, it pulls back. The system learns how adventurous you are feeling.
-
-The result is a collaborator who gets you but does not become you:
-
-> "I know you usually go for engine building here, but have you considered a negotiation mechanism? It pairs with the worker placement in a way that creates the indirect competition you prefer, but through a mechanism you have not explored."
-
-And you think: *huh, that is actually interesting.*
+你做的每个决策都让对话更聪明。
 
 ---
 
-## Show Your Thinking
+## 不是你的复制品
 
-The most requested upgrade from experienced designers was not more features. It was more transparency. Donald articulated the frustration precisely:
+个性化最初的本能是把 Nova 做成一面镜子。学习设计师喜欢什么，多提议那样的东西。这是个陷阱。Donald 立刻指出了这一点：
 
-> "I wish I had more information. Not always knowing HOW or WHY Nova highlighted something. I was in a game jam, I could ask the game developer 'what did you see that led you there?' Some critiques are just obvious because I'm inferring the reasoning, but it's definitely me inferring."
+> "Nova 的独特帮助之处在于，它会以我会采用的方式学习并提出东西，但它不被锁死在特定的品味模式里。就像你想组建一支强大的团队时，你会加入那些理解你、理解你想做什么的人，但他们不是你的复制品。"
 
-For a casual designer building a game for their nine-year-old, "player count scaling is too punitive at high counts" is enough. For an experienced designer planning a commercial release, the *reasoning* behind the critique is more valuable than the critique itself. The conclusion confirms what they already suspect. The evidence chain is what they need to make the right structural decision.
+一位有 30 年经验的设计师拥有强大的模式识别，但也有强大的模式*锁定*。他们伸手去拿熟悉的解法，因为那些解法以前管用。好合作者的价值不是"我，但更快"，而是"我，但带着新的眼睛"——一个理解你的意图与质量标准、却不受你的习惯性方法约束的人。
 
-Compare the two experiences. Without Nova, you hear "this level feels off" and spend an afternoon tracing why. With Nova, you hear "player count scaling is too punitive because CPU costs outpace Focus generation, creating dominant strategies around low-cost cards," and you jump straight to the fix.
+Nova 的设计师画像捕捉的是*意图与标准*，而非*习惯*。你在乎什么（主题连贯、机制优雅、紧凑的玩家交互），而不是你通常做什么（引擎构筑、间接竞争、中等复杂度）。最好的提议，是你自己想不到、却立刻认出"对，就是这个"的东西。
 
-Nova acts like a Lead Designer preparing a brief for a Creative Director. The value is not raw data. It is the synthesis of data into strategic insight, so the designer stays at the level where their judgment matters most.
+![Nova 设计师画像]({{ site.baseurl }}/images/nova-the-ai-co-designer/Nova_Designer_Profile.jpg)
 
-![Show Your Thinking: Critique Reasoning Chain]({{ site.baseurl }}images/nova-the-ai-co-designer/Nova_Show_Your_Thinking.jpg)
+_图：设计师画像是接受/拒绝决策的积累，通过指数移动平均更新，近期选择权重更大。_
 
-_Figure. An expanded critique reasoning chain. The conclusion is for quick scanning. The chain traces from observation through data and mechanism to impact. The decision buttons at the bottom let the designer choose the level of intervention: restructure the mechanism, or tune the numbers._
+为防止趋同，Nova 有意引入创造性张力。大多数提议与你的既有偏好对齐。但有些会向你的舒适区外迈出一步，把熟悉的东西与你没试过的东西组合起来。偶尔，Nova 会从你从未触及的设计空间角落抛出一记真正的变化球。
 
-Nova's critique reasoning chains follow a structured format:
+如果你持续接受变化球，Nova 会多抛几个。如果你持续拒绝，它就收着点。系统在学习你现在有多大冒险意愿。
 
-> **Conclusion**: The resource economy has structural imbalances around CPU costs and Focus token generation.
+结果是一位懂你却不会变成你的协作者：
+
+> "我知道你这里通常走引擎构筑路线，但你考虑过谈判机制吗？它与工人放置的搭配方式，恰好能创造出你偏好的间接竞争——通过一个你尚未探索过的机制。"
+
+然后你想：*咦，这其实挺有意思。*
+
+---
+
+## 展示你的思考
+
+资深设计师最想要的升级不是更多功能，而是更多透明度。Donald 精确地表达了这种挫败：
+
+> "我希望有更多信息。Nova 为什么高亮某个东西、怎么高亮的，我并不总是知道。我在一次 game jam 里，本可以问游戏开发者'你看到了什么让你走到这一步？'有些批评显而易见，因为我在推断其推理——但这确实只是我在推断。"
+
+对一个为九岁孩子做游戏的设计师来说，"高人数下玩家人数缩放惩罚过重"就够了。对一个规划商业发行的资深设计师来说，批评背后的*推理*比批评本身更有价值。结论只是确认了他们已经怀疑的事。证据链才是他们做出正确结构决策所需的东西。
+
+比较两种体验。没有 Nova，你听到"这一层感觉不对"，然后花一下午追查原因。有了 Nova，你听到"玩家人数缩放之所以惩罚过重，是因为 CPU 消耗超过了 Focus 生成速度，围绕低成本卡牌形成了支配性策略"——然后你直奔修复。
+
+Nova 的行为像一个为创意总监准备简报的首席设计师。价值不在原始数据，而在于把数据综合为战略洞见，让设计师停留在其判断最值钱的层级上。
+
+![展示你的思考：批评推理链]({{ site.baseurl }}/images/nova-the-ai-co-designer/Nova_Show_Your_Thinking.jpg)
+
+_图：展开的批评推理链。结论用于快速浏览。链条从观察经数据与机制追踪到影响。底部的决策按钮让设计师选择干预层级：重构机制，或调数值。_
+
+Nova 的批评推理链遵循结构化格式：
+
+> **结论**：资源经济在 CPU 消耗与 Focus 代币生成上存在结构性失衡。
 >
-> **Reasoning Chain**:
-> - **Observation**: The game uses three main resource types with different generation and consumption rates
-> - **Data**: CPU costs range from 2-6, Focus generation is 2-3 per round, alarm escalation is +1/+2 per incident
-> - **Mechanism**: Fixed hand size (6 cards) with exactly 3 programmed actions creates a constrained economy where CPU efficiency determines available options
-> - **Impact**: Inefficient CPU ratios create dominant strategies around low-cost cards; insufficient Focus generation makes coordination failures inevitable rather than skillful
+> **推理链**：
+> - **观察**：游戏使用三种主要资源类型，生成与消耗速率各不相同
+> - **数据**：CPU 消耗范围 2-6，Focus 每轮生成 2-3，警报每起事件 +1/+2
+> - **机制**：固定手牌数（6 张）配恰好 3 个已编排行动，形成受限经济，CPU 效率决定可用选项
+> - **影响**：低效的 CPU 比率围绕低成本卡牌形成支配性策略；Focus 生成不足使协作失败成为必然而非失手
 >
-> **Approach**: [Restructure] [Tune Numbers]
+> **方案**：[重构] [调数值]
 
-![Nova Balance Analysis in GameGrammar]({{ site.baseurl }}images/nova-the-ai-co-designer/Nova_Screenshot_Balance_Analysis.jpg)
+![Nova 在 GameGrammar 中的平衡分析]({{ site.baseurl }}/images/nova-the-ai-co-designer/Nova_Screenshot_Balance_Analysis.jpg)
 
-_Figure. Nova analyzing the balance of Neural Race inside GameGrammar. The full reasoning chain, from observation through mechanism to impact, surfaces alongside decision levels and a version history trail of every Nova-applied change._
+_图：Nova 在 GameGrammar 内分析《Neural Race》的平衡。完整的推理链——从观察到机制再到影响——与决策层级、以及每次 Nova 应用改动的版本历史轨迹一同呈现。_
 
-The conclusion is for quick scanning. The chain is for deep analysis. The approach buttons are for action. This mirrors how the best design conversations work in a professional studio: someone identifies the problem, explains why it is a problem, and presents the structural options for resolution. The lead designer chooses which level to intervene at.
+结论用于快速浏览。链条用于深入分析。方案按钮用于行动。这映照着专业工作室中最好的设计对话如何进行：有人识别问题、解释为什么是问题，并呈现解决的结构性选项。首席设计师选择在哪个层级干预。
 
-Without the reasoning chain, you get one thing to react to. With it, you see the full decision tree. Do you redesign the round structure? Or do you just tune the draw rate? Those are fundamentally different design decisions at different levels of abstraction, and the lead designer is the one who should choose which level to operate at.
+没有推理链，你只能对一个结论做出反应。有了它，你看到整棵决策树。你是重设计回合结构？还是只调抽牌速率？这些是处于不同抽象层级的、根本不同的设计决策，而首席设计师才是应当选择在哪个层级操作的人。
 
-![Nova Change Proposals]({{ site.baseurl }}images/nova-the-ai-co-designer/Nova_Screenshot_Change_Proposals.jpg)
+![Nova 变更提议]({{ site.baseurl }}/images/nova-the-ai-co-designer/Nova_Screenshot_Change_Proposals.jpg)
 
-_Figure. Nova presenting concrete change proposals after a structural intervention. Each proposal shows the exact ontology path, old value, new value, and rationale. The designer clicks Apply or Dismiss on each one individually._
-
----
-
-## The Architecture: Orchestration, Not Invention
-
-Nova's power comes from unification, not from new AI capabilities. The same specialist agents that power GameGrammar's button-click interface also power Nova. The difference is the interaction model.
-
-![Nova Architecture: Orchestration Layer]({{ site.baseurl }}images/nova-the-ai-co-designer/Nova_Architecture.jpg)
-
-_Figure. Nova sits as a conversational orchestration layer on top of six specialist agents. The designer talks to Nova in natural language. Nova routes to the appropriate agent, collects structured results, and synthesizes them into a conversational response with change proposals and decision options._
-
-Nova uses intent capability to decide which agent to invoke. The designer's natural language is the input. Nova's system prompt includes tool definitions for all available agents: balance analysis, design intent resolution, consistency checking, section regeneration, design suggestions, and reference game search. The model decides which tools to call based on the conversation context, the same way it decides which tools to use in any other agentic workflow.
-
-This architecture has a crucial property: **the AI capabilities are already proven in production.** The BalanceCritic has been analyzing games for months. The DesignIntentResolver has been translating plain-language edits into ontology patches. Nova does not introduce new capabilities that might hallucinate in novel ways. It wraps trusted agents in a conversational interface with memory.
-
-The agents run as tool calls within Nova's conversation loop. When the designer says "make this less punishing at four players," Nova does not try to solve the problem from first principles. It invokes the BalanceCritic to analyze the specific scaling issue, then invokes the DesignIntentResolver to translate the fix into a concrete ontology patch. The result is grounded in the same structural analysis that the button-click interface uses, but presented conversationally with reasoning.
-
-**The zero-write principle still holds.** Nova proposes changes but never writes to the database without explicit designer approval. Every change proposal shows the exact path, old value, new value, and rationale. The designer clicks Apply or Dismiss. Applied changes go through the same version history system as manual edits, creating a traceable record. This is not a safety net. It is a statement of values: Nova suggests, but the designer remains the sole author.
+_图：Nova 在一次结构性干预后呈现具体的变更提议。每个提议显示确切的本体路径、旧值、新值与理由。设计师对每一项单独点击应用或忽略。_
 
 ---
 
-## Memory Without Replay
+## 架构：编排，而非发明
 
-Nova remembers across sessions the way a good colleague does. Not by replaying every conversation verbatim, but by holding a mental model of the project: where it stands, how it got here, and what matters to you.
+Nova 的力量来自统一，而非新的 AI 能力。驱动 GameGrammar 按钮式界面的那些专家代理，同样驱动 Nova。差别在交互模型。
 
-Nova assembles four things: the current game state, recent version history, your last decisions, and your designer profile. That is enough to pick up where you left off.
+![Nova 架构：编排层]({{ site.baseurl }}/images/nova-the-ai-co-designer/Nova_Architecture.jpg)
 
-When the designer opens a new session, Nova generates a greeting that references the design's evolution:
+_图：Nova 作为对话式编排层架在六个专家代理之上。设计师用自然语言与 Nova 交谈。Nova 路由到相应的代理、收集结构化结果，并把它们综合为带变更提议与决策选项的对话式回应。_
 
-> "Welcome back. Your game is at v7. Last session we settled on worker placement + deck building as the core loop and tuned the hand limit from 7 to 6. The current balance parameters show combo probability at 28%. You mentioned wanting to explore adding player interaction. Want to pick up there?"
+Nova 使用意图能力来决定调用哪个代理。设计师的自然语言是输入。Nova 的系统提示词包含所有可用代理的工具定义：平衡分析、设计意图解析、一致性检查、区块重新生成、设计建议与参考游戏搜索。模型根据对话上下文决定调用哪些工具，与它在任何其他代理式工作流中决定使用哪些工具的方式相同。
 
-The designer does not re-explain anything. Nova already knows.
+这一架构有一个至关重要的属性：**AI 能力已在生产中验证。**BalanceCritic 已经分析游戏数月。DesignIntentResolver 一直在把平实语言的编辑翻译为本体补丁。Nova 不引入可能以新奇方式产生幻觉的新能力。它把值得信赖的代理包装进一个带记忆的对话式界面。
 
----
+这些代理作为工具调用运行在 Nova 的对话循环之内。当设计师说"让它在四人局里没那么惩罚性"时，Nova 不会从第一性原理出发去解题。它调用 BalanceCritic 分析具体的缩放问题，然后调用 DesignIntentResolver 把修复翻译为具体的本体补丁。结果扎根于按钮式界面所用的同一套结构分析，但以带推理的对话方式呈现。
 
-## Grounded in Your Design
-
-The trust between Nova and the designer rests on a shared source of truth: the game ontology [3]. Nova does not guess about your design. It reads the same structured data you see. This grounding produces four properties that make the partnership reliable.
-
-![Grounded in Your Design]({{ site.baseurl }}images/nova-the-ai-co-designer/Nova_Hallucination_Shield.jpg)
-
-_Figure. Four interlocking properties that keep Nova grounded: concrete ontology, verifiable proposals, transparent audit trail, and designer authority._
-
-**Grounded analysis.** When the designer asks "is my resource economy balanced?", Nova does not reason from general game design principles. It reads the actual ontology: the specific resource types, generation rates, consumption patterns, and player count scaling that exist in this design. The analysis is grounded in data, not conjecture.
-
-**Verifiable proposals.** Every change proposal includes the exact path, old value, and new value. `balance_parameters.focus_per_round: "2-3 tokens" → "3-4 tokens"` is immediately checkable against the current design state. The designer can verify at a glance that Nova is operating on real data.
-
-**Transparent audit trail.** When Nova invokes BalanceCritic, it passes the full current ontology. The reasoning chain traces from observable data to conclusions, creating version control for ideas. Every step is traceable.
-
-**Designer authority.** Nova suggests, you decide. Every change requires explicit approval. The version history preserves every previous state. Nothing changes without consent.
-
-The result is a system where the designer can trust Nova's analysis because it is grounded in the same data the designer sees, and can trust that nothing changes without their approval.
+**零写入原则依然成立。** Nova 提议变更，但未经设计师明确批准绝不写入数据库。每个变更提议都显示确切路径、旧值、新值与理由。设计师点击应用或忽略。被应用的变更走与手动编辑相同的版本历史系统，形成可追溯的记录。这不是安全网。这是一份价值声明：Nova 提议，但设计师始终是唯一的作者。
 
 ---
 
-## Concluding Remarks
+## 无需回放的记忆
 
-Nova transforms GameGrammar (Studio tier) from a design tool into a design partnership. The designer still provides the vision, the taste, the intention. The system still provides the structural analysis, the mechanism knowledge, the rapid iteration. But the interface between them is no longer a set of buttons and forms. It is a conversation that accumulates context, learns preferences, explains its reasoning, and improves with use.
+Nova 跨会话记忆的方式像一个好同事：不是逐字回放每段对话，而是持有项目的一个心智模型——它在哪里、如何走到这里、什么对你重要。
 
-The reinforcement learning loop is what makes this different from "we added a chatbot to our product." Every accept/reject decision shapes the profile. The profile shapes future proposals. Better proposals produce more informative signals. The cycle compounds. After 50 decisions, Nova knows things about your design taste that you might not have articulated yourself. After 100, it starts proposing mechanism combinations that you would not have considered but that fit your aesthetic perfectly.
+Nova 组装四样东西：当前游戏状态、最近的版本历史、你最近的决策、以及你的设计师画像。这足以从你上次停下的地方继续。
 
-This is the new era of design assistance that works alongside you, session after session, building a shared understanding of what you are trying to create and how to get there.
+设计师打开新会话时，Nova 生成一条提及设计演进的问候：
 
-The grammar does not write the poem [1]. But with Nova, the grammar remembers your voice.
+> "欢迎回来。你的游戏在 v7。上次我们把工人放置 + 牌库构筑定为核心循环，并把手牌上限从 7 调到 6。当前平衡参数显示连招概率为 28%。你说过想探索增加玩家交互。要从那里继续吗？"
 
----
-
-### Series
-
-* [Unlocking the Secrets of Tabletop Games Ontology (Part 4)]({{ site.baseurl }}unlocking-secrets-of-tabletop-games-ontology)
-* [Introducing GameGrammar: AI-Powered Board Game Design (Part 5)]({{ site.baseurl }}introducing-gamegrammar-ai-powered-board-game-design)
-* [GameGrammar: The Theory of Generative Board Game Design (Part 6)]({{ site.baseurl }}gamegrammar-the-theory-of-generative-board-game-design)
-* **>>** [Nova: The AI Co-Designer That Learns Your Taste (Part 7)]({{ site.baseurl }}nova-the-ai-co-designer-that-learns-your-taste)
+设计师不需要重新解释任何东西。Nova 已经知道了。
 
 ---
 
-## References
+## 扎根于你的设计
+
+Nova 与设计师之间的信任建立在一个共享的事实来源之上：游戏本体 [3]。Nova 不猜测你的设计。它读取你所见的同一份结构化数据。这种 grounding 产生了让伙伴关系可靠的四个性质。
+
+![扎根于你的设计]({{ site.baseurl }}/images/nova-the-ai-co-designer/Nova_Hallucination_Shield.jpg)
+
+_图：让 Nova 保持 grounded 的四个相互锁定的性质：具体本体、可验证的提议、透明的审计轨迹、设计师权威。_
+
+**扎根的分析。** 当设计师问"我的资源经济平衡吗？"，Nova 不从一般游戏设计原理出发推理。它读取实际本体：这个设计中真实存在的资源类型、生成速率、消耗模式与玩家人数缩放。分析扎根于数据，而非臆测。
+
+**可验证的提议。** 每个变更提议都包含确切路径、旧值与新值。`balance_parameters.focus_per_round: "2-3 tokens" → "3-4 tokens"` 可以立即对照当前设计状态核对。设计师一眼就能确认 Nova 在真实数据上操作。
+
+**透明的审计轨迹。** 当 Nova 调用 BalanceCritic 时，它传入完整的当前本体。推理链从可观察数据追踪到结论，为想法建立版本控制。每一步都可追溯。
+
+**设计师权威。** Nova 提议，你决定。每次变更都需要明确批准。版本历史保留每一个先前状态。未经同意，什么都不会改变。
+
+其结果是一个设计师可以信任 Nova 分析的系统——因为分析扎根于设计师所见的同一份数据——并且可以确信未经批准什么都不会改变。
+
+---
+
+## 结语
+
+Nova 把 GameGrammar（Studio 层）从一个设计工具转变为一种设计伙伴关系。设计师依然提供愿景、品味与意图。系统依然提供结构分析、机制知识与快速迭代。但两者之间的界面不再是一组按钮和表单。它是一场累积上下文、学习偏好、解释自身推理、并随使用而改进的对话。
+
+强化学习回路是它区别于"给产品加个聊天机器人"的地方。每个接受/拒绝决策都在塑造画像。画像塑造未来的提议。更好的提议产生更有信息量的信号。循环复利增长。50 个决策之后，Nova 知道一些关于你设计品味、而你自己可能都没说清楚的东西。100 个之后，它开始提议那些你不会想到、却完美契合你审美的机制组合。
+
+这就是设计辅助的新时代：它在你身边工作，一个会话接一个会话，建立对你想创造什么、以及如何到达那里的共同理解。
+
+语法写不出诗 [1]。但有了 Nova，语法的背后记得你的声音。
+
+---
+
+### 系列
+
+* [解锁桌游本体论的奥秘（第 4 部分）]({{ site.baseurl }}/unlocking-secrets-of-tabletop-games-ontology)
+* [GameGrammar 亮相：AI 驱动的桌游设计（第 5 部分）]({{ site.baseurl }}/introducing-gamegrammar-ai-powered-board-game-design)
+* [GameGrammar：生成式桌游设计理论（第 6 部分）]({{ site.baseurl }}/gamegrammar-the-theory-of-generative-board-game-design)
+* **>>** [Nova：学习你品味的 AI 联合设计师（第 7 部分）]({{ site.baseurl }}/nova-the-ai-co-designer-that-learns-your-taste)
+
+---
+
+## 参考文献
 
 [1] Alfred North Whitehead. [*Process and Reality*](https://archive.org/details/processreality00alfr). Free Press, 1929/1978.
 
-[2] Benny Cheung. [*GameGrammar: The Theory of Generative Board Game Design*]({{ site.baseurl }}gamegrammar-the-theory-of-generative-board-game-design). bennycheung.github.io, Feb 2026.
-  - The design theory that Nova builds upon: structured vocabulary, multi-agent generation, and the co-design partnership
+[2] Benny Cheung. [*GameGrammar: The Theory of Generative Board Game Design*]({{ site.baseurl }}/gamegrammar-the-theory-of-generative-board-game-design). bennycheung.github.io, Feb 2026.
+  - Nova 所建立的设计理论：结构化词汇、多代理生成与协同设计伙伴关系
 
 [3] Benny Cheung. [*Generative Ontology: When Structured Knowledge Learns to Create*](https://arxiv.org/abs/2602.05636). arXiv:2602.05636, Feb 2026.
-  - The formal paper describing GameGrammar's generative ontology framework
+  - 描述 GameGrammar 生成式本体框架的正式论文
 
 [4] [Dynamind Research](https://www.dynamindresearch.com). Research and product development studio.
-  - Creator of GameGrammar
+  - GameGrammar 的创造者
 
 [5] [GameGrammar](https://gamegrammar.dynamindresearch.com). Board game design platform.
-  - The product where Nova lives: structured ontology, multi-agent generation, and conversational co-design
+  - Nova 居住的产品：结构化本体、多代理生成与对话式协同设计
 
 [6] Ethan Mollick. [*Co-Intelligence: Living and Working with AI*](https://www.amazon.ca/Audible-Co-Intelligence-Living-Working-AI/dp/B0CNFDMSYV). Penguin, 2024.
-  - The framework for treating AI as a collaborative partner rather than a tool, central to Nova's design philosophy
-
+  - 把 AI 当作协作伙伴而非工具的框架，Nova 设计哲学的核心

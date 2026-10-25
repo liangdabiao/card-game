@@ -2,10 +2,10 @@
 title: Benny's Mind Hack
 email: btscheung@gmail.com
 description: >
-  Programming a computer to draw surely teaches us the most important lesson that creative spirit is in the details.
-baseurl: # the subpath of your site, e.g. /blog/
+  让计算机作画，必定教会我们最重要的一课：创意的精神蕴藏于细节之中。
+baseurl: "/card-game" # the subpath of your site, e.g. /blog/
 # paginate: 10
-url: "https://bennycheung.github.io" # the base hostname & protocol for your site
+url: "https://liangdabiao.github.io" # the base hostname & protocol for your site
 
 # Google Analytics
 google_analytics: UA-76691604-1
@@ -26,7 +26,7 @@ giscus:
   emit_metadata: 0
   input_position: bottom
   theme: preferred_color_scheme
-  lang: en
+  lang: zh-CN
 
 # Social settings
 avatar: /assets/avatar.jpg

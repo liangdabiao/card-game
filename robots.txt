@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://bennycheung.github.io/sitemap.xml
+Sitemap: https://liangdabiao.github.io/card-game/sitemap.xml
 
 # Disallow build directories
 Disallow: /_site/

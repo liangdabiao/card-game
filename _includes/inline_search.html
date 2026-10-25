@@ -16,7 +16,7 @@
   function initSearch() {
     if (searchIndex) return Promise.resolve();
 
-    return fetch('/search.json')
+    return fetch('{{ site.baseurl }}/search.json')
       .then(function(response) {
         return response.json();
       })
@@ -101,7 +101,7 @@
     searchResults.innerHTML = '';
 
     if (results.length === 0) {
-      searchResults.innerHTML = '<div class="search-no-result">No results found</div>';
+      searchResults.innerHTML = '<div class="search-no-result">未找到结果</div>';
       searchResults.classList.add('active');
       return;
     }
@@ -138,7 +138,7 @@
     var viewAll = document.createElement('a');
     viewAll.href = '/search/?q=' + encodeURIComponent(query);
     viewAll.className = 'search-view-all';
-    viewAll.innerHTML = 'View all results <i class="fa fa-arrow-right"></i>';
+    viewAll.innerHTML = '查看全部结果 <i class="fa fa-arrow-right"></i>';
     searchResults.appendChild(viewAll);
   }
 
@@ -187,7 +187,7 @@
     if (e.key === 'Enter') {
       var query = searchInput.value.trim();
       if (query.length >= 2) {
-        window.location.href = '/search/?q=' + encodeURIComponent(query);
+        window.location.href = '{{ site.baseurl }}/search/?q=' + encodeURIComponent(query);
       }
     }
     if (e.key === 'Escape') {

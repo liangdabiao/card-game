@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Existential Crisis with Microservices using Docker
+title: 用 Docker 玩微服务的存在主义危机
 date: 2018-10-08 00:00:00.000000000 -00:00
 permalink: existential-crisis-with-microservices-using-docker
 author: Benny Cheung
@@ -21,199 +21,180 @@ published: true
 ---
 
 <!--excerpt.start-->
-As software architects, we have no doubt that both Microservices architecture and Docker deployment help to bring
-flexibility and scalability in system design. However, the blurring existence of a system identity, due to
-distributed services and virtualized machines, has lead to the question of what makes the identity of
-this new form of design intention. 
-This article points to one of the design intension is rapid development of data-oriented services.
-After understanding the basic of Docker deployment, this article offers a [Starter Framework using Flask/PostgreSQL/Docker](https://github.com/bennycheung/Flask-DB-Docker)
-can be used to rapidly construct any data-oriented service with a database backend.
-From a larger background scheme, this article prepares the reader for a greater architectural composition of the future system.
+作为软件架构师，我们毫不怀疑微服务架构和 Docker 部署都有助于为系统设计带来
+灵活性与可扩展性。然而，由于分布式服务与虚拟机的存在，系统身份的存在变得模糊，
+由此引出一个问题：这种新形式设计意图的身份究竟由什么构成。
+本文指出设计意图之一是面向数据服务的快速开发。
+在理解 Docker 部署的基础之后，本文提供了一个 [Flask/PostgreSQL/Docker 起步框架](https://github.com/bennycheung/Flask-DB-Docker)，
+可用于快速构建任何带数据库后端的面向数据服务。
+放在更大的背景图景中，本文为读者未来构建更宏大的系统架构组合做好准备。
 <!--excerpt.end-->
 
-![Personal Identity]({{ site.baseurl }}images/existential-crisis-with-microservices-using-docker/Personal_Identity.jpg)
+![个人身份]({{ site.baseurl }}/images/existential-crisis-with-microservices-using-docker/Personal_Identity.jpg)
 
-*Figure. Is a personal Identity (1) a body (2) a brain or (3) an invisible soul? Comparing to a software system (1) machine (2) software or (3) intention to raise the system's existential question.*
+*图：个人身份是 (1) 一具身体，(2) 一个大脑，还是 (3) 一个无形的灵魂？对比软件系统的 (1) 机器，(2) 软件，(3) 意图，来引出系统的存在之问。*
 
-In this article, you can expect to learn:
+在本文中，你将学到：
 
-* Start with [Philosophical Musing on System Existence](#philosophy)
-* Follow by [Understanding Docker](#docker)
-* Then, construct a [Rapid Microservices using Docker](#rapid)
-    * Learn how to build the Microservices stack with [Docker Orchestration](#orchestration)
-    * Learn how to build [Persistent Volumes with Docker - Data-only Container Pattern](#persistence)
-    * Learn how to create [Postgres DB Image](#db)
-    * Learn how to create [API starter-api Image](#api)
-    * Learn how to use the API image to import [Sample (Medical Procedure Codes) into DB](#data)
-* Finally, conclude with [What's Next](#next)
+* 从[关于系统存在的哲学沉思](#philosophy)开始
+* 接着[理解 Docker](#docker)
+* 然后，构建[用 Docker 快速搭建微服务](#rapid)
+    * 学习如何用 [Docker 编排](#orchestration)构建微服务栈
+    * 学习如何用 Docker 构建[持久卷——纯数据容器模式](#persistence)
+    * 学习如何创建 [Postgres DB 镜像](#db)
+    * 学习如何创建 [API starter-api 镜像](#api)
+    * 学习如何使用 API 镜像把[样本（医疗程序代码）导入数据库](#data)
+* 最后，以[下一步](#next)作结
 
 ------------------
-## Philosophical Musing on System Existence
-The expression “this system is my baby”, is a common analogy that a software system creator ascribe to his invention.
-The emotional attachment is the creator's design and his creative spirit are manifested in the system.
-Imagine if the software is the brain of the system, the body is the physical machine to run the software.
-The soul of the system, where the creator's desire and intention are encoded, is displayed by the style of functionalities.
-The first experience of running a Docker container, with it's virtual and temporal existence,
-strangely invokes the philosophical amusment on "existence".
+## 关于系统存在的哲学沉思
+"这个系统是我的孩子"，是软件系统创造者常用来指称其发明的类比。
+这种情感依恋在于：创造者的设计与创造精神都显现在系统之中。
+设想软件是系统的大脑，身体则是运行软件的物理机器。
+系统的灵魂——创造者的欲望与意图编码于其中——通过功能风格展现出来。
+第一次运行 Docker 容器时，它那虚拟而短暂的存在，
+奇怪地唤起了关于"存在"的哲学趣味。
 
-Let's run the Docker <https://www.docker.com/> command,
+让我们运行 Docker <https://www.docker.com/> 命令，
 
 ```
 $ docker run ubuntu echo “hello world”
 ```
 
-The output displays on the terminal,
+输出显示在终端上，
 
 ```
 hello world
 ```
 
-The machine responsible to say "hello world" has gone through,
+负责说 "hello world" 的那台机器经历了，
 
-* Docker pull down an image of the lastest `ubuntu` os image from Docker registry
-* Docker start an instance of `ubuntu` image as a running container - the virtual machine
-* Docker execute the bash shell command `echo "hello world"`
-* Docker display the terminal output "hello world" to the host machine 
-* Docker exit the virtual machine and terminated
+* Docker 从 Docker registry 拉取最新的 `ubuntu` 操作系统镜像
+* Docker 启动一个 `ubuntu` 镜像的实例作为运行中的容器——虚拟机
+* Docker 执行 bash shell 命令 `echo "hello world"`
+* Docker 把终端输出 "hello world" 显示到宿主机
+* Docker 退出虚拟机并终止
 
-The most tenderizing thought is the virtual machine just existed for a brief moment to execute the command,
-and then it disappears back into the void. Both the machine body and the software brain are transient,
-only the soul of the `echo` program remains to show the trace of saying "hello world" to us. 
-Hence, the existential question - Is your software system really existed in the distributed and virtual world?
-or only the soul of the software system existed?
+最令人思绪万千的是：这台虚拟机只为执行命令而存在了短短一瞬，
+随后就消失回虚无之中。机器的身体与软件的大脑都是暂时的，
+只有 `echo` 程序的灵魂留存下来，向我们展示它说过 "hello world" 的痕迹。
+于是有了存在之问——你的软件系统真的存在于这个分布式、虚拟化的世界吗？
+还是只有软件系统的灵魂存在？
 
-Let's first seek to understand what Docker can offer, then we are prepared to answer the question of the
-new design form of rapid development.
+让我们先弄清 Docker 能提供什么，然后我们就有能力回答关于这种快速开发新设计形式的问题了。
 
 ----------------------
-## Understanding Docker
-In this section we shall define the basic Docker terminologies and learn how exactly a Docker image works.
+## 理解 Docker
+本节我们定义基本的 Docker 术语，并学习 Docker 镜像究竟如何工作。
 
-* *Docker image* -
-A Docker image is like a golden template. An image consists of OS (Ubuntu, centos etc.,)
-and applications installed on it. These images are called base images. A Docker base
-image is the building block of a Docker container from where a container can be created.
-An image can be built from scratch using Docker inbuilt tools. You can also use Docker
-images created by other users from Docker public registry (Docker hub) as a base image
-for your containers.
+* *Docker 镜像* -
+Docker 镜像就像一张黄金模板。一个镜像由操作系统（Ubuntu、centos 等）
+及其上安装的应用组成。这些镜像被称为基础镜像（base image）。Docker 基础镜像是 Docker 容器的构建基石，容器由它创建。
+镜像可以使用 Docker 内置工具从零构建。你也可以把其他用户创建的 Docker 镜像（来自
+Docker 公共仓库 Docker hub）作为你容器的基础镜像。
 
 * *Docker registry* - 
-Docker registry is a repository for Docker images. It can be public or private. The public
-Docker registry maintained by Docker is called Docker hub. Users can upload and
-download images from the Docker registry. The public Docker registry has a vast
-collection of official and user created images. To create a container, you can either use the
-public images created by another user or you can use your own images by uploading it to
-the public or private registry.
+Docker registry 是存放 Docker 镜像的仓库。它可以是公共的或私有的。由 Docker 维护的公共
+registry 称为 Docker hub。用户可以从 Docker registry 上传和
+下载镜像。公共 registry 收藏了大量官方和用户创建的镜像。要创建容器，你既可以使用其他用户创建的公共镜像，也可以上传自己的镜像到公共或私有 registry 再使用。
 
-* *Docker container* -
-A container is more of a directory and an execution environment for applications. It is
-created on top of a Docker image and it is completely isolated. Each container has its own
-user space, networking and security settings associated with it. A container holds all the
-necessary files and configurations for running an application. A container can be created,
-run, started, moved and deleted
+* *Docker 容器* -
+容器更像是一个目录加上应用程序的执行环境。它
+创建于 Docker 镜像之上，完全隔离。每个容器拥有自己的
+用户空间、网络和安全设置。容器持有运行应用程序所需的全部
+文件与配置。容器可以被创建、运行、启动、迁移和删除。
 
-![Docker Terminologies]({{ site.baseurl }}images/existential-crisis-with-microservices-using-docker/Docker_Terminologies.jpg)
+![Docker 术语]({{ site.baseurl }}/images/existential-crisis-with-microservices-using-docker/Docker_Terminologies.jpg)
 
-*Figure. An illustration of all Docker terminologies and how they are worked together in Docker environment.*
+*图：全部 Docker 术语的图示，以及它们在 Docker 环境中如何协同工作。*
 
-Each Docker image is an association of various layers. This layered approach provides a
-great way of abstraction for creating Docker images. These layers are combined in to a
-single unit using Uniform file system (AUFS). AUFS stores every layer as a normal
-directory, files with AUFS metadata. This ensures that all the files and directories are
-unique to the particular layer. AUFS creates a mount point by combining all the layers
-associated with the image. Any changes to the image will be written on the topmost layer.
+每个 Docker 镜像是多个层的组合。这种分层方式为创建 Docker 镜像提供了
+绝佳的抽象。这些层使用统一文件系统（AUFS）合并为
+单一单元。AUFS 把每一层存储为一个普通目录，文件带有 AUFS 元数据。这确保了所有文件和目录对特定层是唯一的。AUFS 通过合并镜像的所有层来创建一个挂载点。对镜像的任何更改都会写入最顶层。
 
-![Docker Image Layers Example]({{ site.baseurl }}images/existential-crisis-with-microservices-using-docker/Docker_Image_Layers.jpg)
+![Docker 镜像层示例]({{ site.baseurl }}/images/existential-crisis-with-microservices-using-docker/Docker_Image_Layers.jpg)
 
-*Figure. An illustration of all Docker image layers, the top layer is relying on the bottom layers building up.*
+*图：Docker 镜像各层的图示，顶层依赖底层逐层构建。*
 
-This is the reason why the Docker containers are very light weight.
-For example, when you make an update to an existing application, Docker either creates a
-layer on the existing image or updates the existing layer. The newly created layers will
-refer its previous layer. Docker does not rebuild the whole image again for the application
-like virtual machines. When you push the new updated image to the registry it will not
-redistribute the whole image, instead it updates just the layer on top of the existing base
-Docker registry is used for storing Docker images. Images can be pushed and pulled from
-Docker registry for launching containers. There are two types of Docker registries.
+这就是 Docker 容器非常轻量的原因。
+例如，当你更新一个现有应用时，Docker 要么在现有镜像上创建一个新层，要么更新现有层。新创建的层会引用它的前一层。Docker 不会像虚拟机那样为应用重建整个镜像。当你把更新后的新镜像推送到 registry 时，它不会重新分发整个镜像，而是只更新现有基础镜像之上的层。Docker registry 用于存储 Docker 镜像。镜像可以从 registry 推送和拉取，用于启动容器。Docker registry 有两类。
 
-* *Public registry* - (Docker hub <https://hub.docker.com/>) contains official Docker images and user created
-images.
-* *Private registry* - A registry created by a user for storing private Docker images in your datacenter. You can also create a private registry in Docker hub.
+* *公共 registry* -（Docker hub <https://hub.docker.com/>）包含官方 Docker 镜像和用户创建的
+镜像。
+* *私有 registry* - 用户创建的、用于在数据中心存储私有 Docker 镜像的 registry。你也可以在 Docker hub 中创建私有 registry。
 
-All the images in the registry can be searched using Docker client. The images can be
-pulled down to the Docker host for creating containers and new images.
+registry 中的所有镜像都可以用 Docker 客户端搜索。镜像可以
+拉取到 Docker 主机上，用于创建容器和新镜像。
 
-As we demonstrated earlier in the "hello world" example, a container is an execution environment for applications. It contains
-all the operating system files, files added by users and metadata. Basically a container is
-launched from an image, so the applications which are installed and configured on an
-image will run on the container created from it. As the images are in *read only* format,
-when a container is launched, a *read/write* layer will be added on top of the image for the
-container for the applications to run and make changes to it.
-The Docker client receives the command from the Docker binary or REST API to run a
-container.
+正如我们在前面的 "hello world" 示例中演示的，容器是应用程序的执行环境。它包含
+全部操作系统文件、用户添加的文件和元数据。从根本上说，容器从镜像启动，
+因此镜像上安装和配置的应用程序将在由它创建的容器上运行。由于镜像处于*只读*格式，
+容器启动时，会在镜像之上为容器添加一个*读写*层，供应用程序运行并做出更改。
+Docker 客户端从 Docker 二进制或 REST API 接收运行
+容器的命令。
 
-On successful execution of the Docker run command, comparing to the earlier "hello world" example,
-here is a more precise description of what Docker will do actions at the backend.
+成功执行 docker run 命令后，对比之前的 "hello world" 示例，
+这里更精确地描述 Docker 在后台会执行的动作。
 
-1. Docker checks if the specified Docker image in the command is present locally on
-the host. If it is present locally, Docker will use that image for creating a container. If
-not, it will download the image from the public or private registry (based on the
-Docker host configuration) on the host.
-2. The local or pulled image will be used for creating a new container.
-Once the image is set, Docker will create a read/write file system over the image.
-4. Then Docker creates the necessary network interfaces for the container to interact
-with the host machine.
-5. Docker checks for available IP address from the pool and allocates one to the
-container.
-6. Then it executes the command specified in the command e.g. /bin/bash shell
-7. Finally it logs all the input/output and errors for the user to find out the status of the
-container.
+1. Docker 检查命令中指定的 Docker 镜像是否已存在于
+宿主机本地。如果本地存在，Docker 将使用该镜像创建容器。如果
+不存在，它会（根据
+Docker 主机配置）从公共或私有 registry 把镜像下载到主机。
+2. 本地的或拉取的镜像将用于创建新容器。
+镜像就绪后，Docker 会在镜像之上创建一个读写文件系统。
+4. 然后 Docker 为容器创建必要的网络接口，
+以便与宿主机交互。
+5. Docker 从地址池中检查可用 IP 地址，并分配一个给
+容器。
+6. 然后它执行命令中指定的命令，例如 /bin/bash shell。
+7. 最后它记录全部输入/输出与错误，供用户了解容器的
+状态。
 
-Please remember a container is not a classic virtual machine, but "just" a group of process sharing a common Linux kernel namespace.
+请记住，容器不是经典虚拟机，而"只是"共享同一个 Linux 内核命名空间的一组进程。
 
-Since Docker offers us a rapid container (virtual machine) with a completely isolated execution environment,
-we can build the data-oriented Microservices with a database backend rapidly with this deployment technology.
+既然 Docker 为我们提供了具备完全隔离执行环境的快速容器（虚拟机），
+我们就能用这种部署技术快速构建带数据库后端的面向数据微服务。
 
 ----------------------
-## Rapid Microservices using Docker
+## 用 Docker 快速搭建微服务
 
-The quick starter framework, please checkout from <https://github.com/bennycheung/Flask-DB-Docker>,
-illustrates how to use Docker to deploy a data-oriented Microservices API with a database backend.
+快速起步框架请从 <https://github.com/bennycheung/Flask-DB-Docker> 检出，
+它演示了如何用 Docker 部署一个带数据库后端的面向数据微服务 API。
 
-The technologies used by the starter framework composed of,
-* Dockerize PostgreSQL <https://www.postgresql.org/> to run within a Docker container
-* Dockerize API service written in Python/Flask <http://flask.pocoo.org/> that can communicate with the PostgreSQL
-* Orchestrate the Dockerized containers by docker-compose <https://docs.docker.com/compose/> and established a link from the deployed service to the container running PostgreSQL
+起步框架使用的技术组合为，
+* 把 PostgreSQL <https://www.postgresql.org/> Docker 化，运行在 Docker 容器内
+* 把用 Python/Flask <http://flask.pocoo.org/> 编写的 API 服务 Docker 化，使之能与 PostgreSQL 通信
+* 用 docker-compose <https://docs.docker.com/compose/> 编排 Docker 化的容器，并在部署的服务与运行 PostgreSQL 的容器之间建立链接
 
-With this starter framework, we can easily built up a realistic Microservices architecture.
-I recommend to read the Martin Fowler and James Lewis's white paper on Microservice architecture.
-Their white paper goes much more in-depth for the drivers behind the [Microservice Architecture](http://martinfowler.com/articles/microservices.html)
+有了这个起步框架，我们可以轻松搭建出贴近现实的微服务架构。
+我推荐阅读 Martin Fowler 和 James Lewis 关于微服务架构的白皮书。
+他们的白皮书对[微服务架构](http://martinfowler.com/articles/microservices.html)背后的动因有深入得多的阐述。
 
 
-### Docker Orchestration
-We need to bring Docker up and running on the host, see <https://www.docker.com/get-started> for your host installation.
+### Docker 编排
+我们需要把 Docker 在主机上跑起来，参见 <https://www.docker.com/get-started> 了解你的主机安装方法。
 
-Here is the deployment diagram, which is using Docker containers to deploy all starter framework services.
+下面是部署图，它使用 Docker 容器部署起步框架的全部服务。
 
-![Starter Microservices Deployment]({{ site.baseurl }}images/existential-crisis-with-microservices-using-docker/Starter_Microservices_Deployment.jpg)
+![起步微服务部署]({{ site.baseurl }}/images/existential-crisis-with-microservices-using-docker/Starter_Microservices_Deployment.jpg)
 
-*Figure. Dockerized deployment of a Microservices stack orchestrated with a database backend.*
+*图：微服务栈的 Docker 化部署，由数据库后端协同编排。*
 
-Following these steps to build all required docker images and bring up the application stack,
-* Run `buildImages.sh` to build all required docker images
-* Run `startStack.sh` to bring up the application stack
-* If shutting down the application stack, run `stopStack.sh` will suspend the application stack
-* If removing the application stack, run `teardownStack.sh` will delete all the application containers
-* If removing all docker images, run `cleanupImages.sh` to leave no trace
+按照以下步骤构建全部所需的 docker 镜像并启动应用栈，
+* 运行 `buildImages.sh` 构建全部所需的 docker 镜像
+* 运行 `startStack.sh` 启动应用栈
+* 如果要关闭应用栈，运行 `stopStack.sh` 会挂起应用栈
+* 如果要移除应用栈，运行 `teardownStack.sh` 会删除全部应用容器
+* 如果要移除全部 docker 镜像，运行 `cleanupImages.sh` 以不留痕迹
 
-To start a fresh application stack, 
+启动一个全新的应用栈，
 
 ```
 ./buildImages.sh
 ./startStack.sh
 ```
 
-To shutdown and clear out the application stack,
+关闭并清空应用栈，
 
 ```
 ./stopStack.sh
@@ -221,18 +202,18 @@ To shutdown and clear out the application stack,
 ./cleanupImages.sh
 ```
 
-To achieve any in-between application state or retaining the built docker images,
-adjust the script running accordingly.
+要达到任何中间应用状态或保留已构建的 docker 镜像，
+请相应地调整运行的脚本。
 
-For curious readers desire to understand how the starter framework is built,
-the following sections provide detail instructions of how to build Docker images and
-how to create the starter Microservices and their dependencies.
+对于想了解起步框架如何构建的好奇读者，
+以下各节提供详细说明：如何构建 Docker 镜像，
+以及如何创建起步微服务及其依赖。
 
 ----------------
-### Persistent Volumes with Docker - Data-only Container Pattern
-The main purpose of data container is to retain the `/var/lib/postgresql/data` persistent volume.
-Since you may have multiple data container running on the same host, the method to overcome
-docker recognized the image uniqueness is to give it an unique `README.md` file in the image.
+### 用 Docker 做持久卷——纯数据容器模式
+数据容器的主要目的是保留 `/var/lib/postgresql/data` 持久卷。
+由于同一主机上可能运行多个数据容器，让 docker 识别镜像唯一性的方法
+是在镜像中放入一个唯一的 `README.md` 文件。
 
 -- Dockerfile --
 
@@ -248,30 +229,30 @@ ADD README.md /app/
 CMD /bin/sh
 ```
 
-To create the volume image:
+创建卷镜像：
 
 ```
 cd busybox
 docker build -t starter/postgres_datastore .
 ```
 
-To start the volume image container:
+启动卷镜像容器：
 
 ```
 docker run -i -t --name starter-postgres_data starter/postgres_datastore
 ```
 
-Since the `starter-postgres_data` container likely won't ever need to be updated, and if it does we can easily handle moving the data around as needed, we essentially work-around the issues of losing container data and we still have good portability.
+由于 `starter-postgres_data` 容器很可能永远不需要更新，即便需要，我们也可以轻松地按需迁移数据，所以我们从本质上规避了丢失容器数据的问题，同时保持了良好的可移植性。
 
-We can now create as many `starter/postgres_datastore` instances as we can handle and use volumes from as many `starter-postgres_data` style containers as we want as well (provided unique naming or use of container ID's). This can much more easily be scripted than mounting folders ourselves since we are letting docker do the heavy lifting.
+现在我们可以创建任意多的 `starter/postgres_datastore` 实例，并使用任意多的 `starter-postgres_data` 风格容器的卷（前提是命名唯一或使用容器 ID）。这比我们自己挂载文件夹更容易脚本化，因为我们让 docker 完成了繁重的工作。
 
-One thing that's really cool is that these data-only containers don't even need to be running, it just needs to exist.
+特别酷的一点是：这些纯数据容器甚至不需要处于运行状态，只需要存在即可。
 
 --------------------------
-### Create Postgres DB Image
-This is the creation of Posgres 10.2 docker images. Similar to the data-container image,
-we have copied an unique `README.md` into the image so that docker will recognize it's uniqueness.
-To prepare the image with `vim-tiny`, allows us to enter the container and perform some editing if needed.
+### 创建 Postgres DB 镜像
+这是创建 Postgres 10.2 docker 镜像。与数据容器镜像类似，
+我们也把一个唯一的 `README.md` 复制进镜像，让 docker 识别其唯一性。
+镜像中加入 `vim-tiny`，允许我们在需要时进入容器做些编辑。
 
 -- Dockerfile --
 
@@ -288,14 +269,14 @@ ADD README.md /app/
 EXPOSE 5432
 ```
 
-To create the DB image:
+创建 DB 镜像：
 
 ```bash
 cd db
 docker build -t starter/postgres .
 ```
 
-To start the DB image container:
+启动 DB 镜像容器：
 
 ```bash
 docker run -d \
@@ -307,17 +288,17 @@ docker run -d \
     -p 5432:5432 starter/postgres
 ```
 
-Try connect to starter-postgres container,
+尝试连接 starter-postgres 容器，
 
 ```bash
 psql -h localhost -U admin starter
 ```
 
 -----------------------
-### Create API starter-api Image
-You can read the starter API Microservices in [Starter API Documentation](https://github.com/bennycheung/Flask-DB-Docker/blob/master/starter-api/README.md).
-This is a Python/Flask RESTful API implementation, with connection to the Postgres backend
-to illustrate full CRUD operation on persistent data. Instead of automatically starting the Python application (see the commented out `ENTRYPOINT` and `CMD`), we shall start by the commandline.
+### 创建 API starter-api 镜像
+你可以在 [Starter API 文档](https://github.com/bennycheung/Flask-DB-Docker/blob/master/starter-api/README.md)中阅读起步 API 微服务。
+这是一个 Python/Flask RESTful API 实现，连接 Postgres 后端，
+演示对持久数据的完整 CRUD 操作。我们不自动启动 Python 应用（见注释掉的 `ENTRYPOINT` 与 `CMD`），而是从命令行启动。
 
 -- Dockerfile --
 
@@ -338,14 +319,14 @@ ADD . /app
 # CMD ["-t", "0.0.0.0", "-p", "5000"]
 ```
 
-To create the API image:
+创建 API 镜像：
 
 ```
 cd starter-api
 docker build -t starter/starter-api .
 ```
 
-To start the Starter API container:
+启动 Starter API 容器：
 
 ```bash
 docker run -d -t \
@@ -356,10 +337,10 @@ docker run -d -t \
 ```
 
 
-### Import Sample (Medical Procedure Codes) into DB
-For importing the sample medical procedure codes, we would like to start an `starter/starter-api` instance. However, this instance needs to be in the same Docker network as the current running network.
-When we started the stack, a network called `flask-db-docker_default` was created.
-To confirm this, we can run `docker network ls`.
+### 把样本（医疗程序代码）导入数据库
+导入样本医疗程序代码时，我们想启动一个 `starter/starter-api` 实例。不过，这个实例需要与当前运行的网络处于同一个 Docker 网络。
+启动栈时，会创建一个名为 `flask-db-docker_default` 的网络。
+可以运行 `docker network ls` 确认。
 
     $ docker network ls
 
@@ -370,7 +351,7 @@ To confirm this, we can run `docker network ls`.
     7749efcaa3dc        host                      host                local
     0c4c4f14a186        none                      null                local
 
-We should see the `starter-postgres` and `starter-api` are part of the `flask-db-docker_default` network,
+我们应该会看到 `starter-postgres` 和 `starter-api` 都属于 `flask-db-docker_default` 网络，
 
     $ docker network inspect flask-db-docker_default
 
@@ -392,25 +373,24 @@ We should see the `starter-postgres` and `starter-api` are part of the `flask-db
         }
     }
 
-Then we shall start an instance of `starter-api` container to join the `flask-db-docker_default` network,
-so that we can access to the same `starter-postgres` database connection.
-We shall start a interactive shell `-ti` /bin/sh. The container will be automatically
-destroyed after running by `--rm` remove container parameter.
+然后我们启动一个 `starter-api` 容器实例，加入 `flask-db-docker_default` 网络，
+以便访问同一个 `starter-postgres` 数据库连接。
+我们启动一个交互式 shell `-ti` /bin/sh。容器运行后会通过 `--rm` 删除容器参数自动
+销毁。
 
 ```bash
 docker run --rm -ti --network flask-db-docker_default starter/starter-api /bin/sh
 ```
 
-After we enter the container, we can execute the initial `starter` database creation
-by running the following commands in `starter-api/startup` folder.
+进入容器后，我们可以通过在 `starter-api/startup` 文件夹中运行以下命令来执行初始的 `starter` 数据库创建。
 
 ```bash
 python manage.py resetdb
 ```
 
-We create a new user `admin` with the password `admin` (of course this is not secure).
+我们创建用户 `admin`，密码 `admin`（当然这不安全）。
 
-After the database has been created, we can exercise the database by inserting all the medical procedure codes from the `tex-api/startup` folder.
+数据库创建好后，我们可以从 `tex-api/startup` 文件夹插入全部医疗程序代码来使用这个数据库。
 
 ```bash
 docker run --rm -t \
@@ -420,13 +400,13 @@ docker run --rm -t \
     "PGPASSWORD=admin psql -h starter-postgres -U admin starter < /app/startup/starter_pxcodes.sql"
 ```
 
-We can get the medical procedural data from the `starter-api` that we have loaded.
+我们可以从已加载的 `starter-api` 获取医疗程序数据。
 
 ```bash
 http --auth admin:admin GET http://localhost:5000/api/v1.0/pxcodes/
 ```
 
-You should see the paged JSON response of 100 medical procedure codes.
+你应该会看到 100 条医疗程序代码的分页 JSON 响应。
 
 ```
 HTTP/1.0 200 OK
@@ -464,9 +444,9 @@ Server: Werkzeug/0.9.6 Python/3.5.6
 
 ```
 
-## What's Next
-Even the machine's body and software's brain can only exist in a distributed and virtual form, the system identity
-is recognized as a new design form of rapid Microservices architectural style.
-We have exercised this new design style with the data-oriented API supported by a database backend,
-which can be constructed and deployed rapidly. With the presented starter framework <https://github.com/bennycheung/Flask-DB-Docker>,
-we are ready to construct a larger software system with the Microservices style composition.
+## 下一步
+即便机器的身体与软件的大脑只能以分布式、虚拟化的形式存在，系统身份
+已被承认为一种新的设计形式——快速微服务架构风格。
+我们用一个由数据库后端支持的面向数据 API 演练了这种新设计风格，
+它可以被快速构建与部署。有了展示的起步框架 <https://github.com/bennycheung/Flask-DB-Docker>，
+我们已准备好用微服务风格的组合来构建更大的软件系统。

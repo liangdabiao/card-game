@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Preparing Geospatial Data in PostGIS
+title: 在 PostGIS 中准备地理空间数据
 date: 2018-12-11 00:00:00.000000000 -00:00
 permalink: preparing-geospatial-data-in-postgis
 author: Benny Cheung
@@ -21,152 +21,148 @@ published: true
 ---
 
 <!--excerpt.start-->
-The **Spatial** is a popular extension to the traditional database systems.
-When the data has some spatial attributes, for example a street address or a phone number,
-we can use the spatial proximity to analyze and calculate their relationships in space.
-We are usually designating a finite geometric representation and operation on these spatial entities.
-If you are interested to use the public domain spatial data to solve your analysis problem,
-read on for a gentle introduction to geospatial data and how to load and use them in PostGIS.
+**空间**（Spatial）是传统数据库系统的流行扩展。
+当数据带有某些空间属性时，例如街道地址或电话号码，
+我们可以利用空间邻近性来分析和计算它们在空间中的关系。
+我们通常是在为这些空间实体指派有限的几何表示与运算。
+如果你有兴趣使用公共领域的空间数据来解决你的分析问题，
+请继续阅读这篇地理空间数据的入门介绍，了解如何在 PostGIS 中加载和使用它们。
 <!--excerpt.end-->
 
-## The World as Unified One?
-Let's begin with a curious map projection,
-[Dymaxion Map](https://en.wikipedia.org/wiki/Dymaxion_map) is a projection of a world map onto the surface of an icosahedron,
-which can be unfolded and flattened to two dimensions. The flat map is heavily interrupted in order to preserve shapes and sizes.
+## 世界作为统一的一体？
+让我们从一张奇特的地图投影说起，
+[Dymaxion Map](https://en.wikipedia.org/wiki/Dymaxion_map)（戴马克松地图）是把世界地图投影到二十面体表面的投影方式，
+它可以展开并压平成二维。这幅平面地图为了保持形状与尺寸而进行了大量中断。
 
-![Dymaxion Map Projection]({{ site.baseurl }}images/preparing-geospatial-data-in-postgis/Dymaxion_map_projection.jpg)
+![Dymaxion 地图投影]({{ site.baseurl }}/images/preparing-geospatial-data-in-postgis/Dymaxion_map_projection.jpg)
 
-*Figure. The Dymaxion map projection can be folded into a Platonic solid of Icosahedron (image credit: [Buckminster Fuller Institute](https://www.bfi.org/about-fuller/big-ideas/dymaxion-world/dymaxion-map) )*
+*图：Dymaxion 地图投影可以折叠成一个柏拉图立体——二十面体（图片来源：[Buckminster Fuller Institute](https://www.bfi.org/about-fuller/big-ideas/dymaxion-world/dymaxion-map)）*
 
-With this projection,
-it shows an almost contiguous land mass comprising all of earth's continents – not groups of continents divided by oceans.
-This version depicts the earth as "one island" is claiming to help unifying humanity better than other methods
-of how the map is projected. Another interesting result of using this projection to support analysis,
-the [Early Human Migrations](https://en.wikipedia.org/wiki/Early_human_migrations) according to mitochondrial population genetics can be explained (see the [picture](https://en.wikipedia.org/wiki/File:Map-of-human-migrations.jpg)).
-From this projected perspective, the migration pattern is almost a natural deduction from the spatial arrangement.
-We may not be able to immediately solve many humanity issues with Dymaxion map.
-But positively, the spatial perspective does help us to see.
+使用这种投影，
+它展示了几乎连续的一片大陆——涵盖地球全部大洲，而不是被海洋分割的大洲群。这一版本把地球描绘成"一座岛"，声称比其他地图投影方式更有助于凝聚人类。用这种投影支持分析还有一个有趣的结果：根据线粒体群体遗传学的[早期人类迁徙](https://en.wikipedia.org/wiki/Early_human_migrations)可以得到解释（见[图片](https://en.wikipedia.org/wiki/File:Map-of-human-migrations.jpg)）。
+从这一投影视角看，迁徙模式几乎是从空间排布自然推导出来的。
+我们或许无法立刻用 Dymaxion 地图解决人类的许多问题。
+但积极的一面是，空间视角确实帮助了我们去看。
 
-## Outlines
-In this article, you can expect to begin with the concepts of geospatial data.
-As always the concepts are supplimented by practical experimentations.
-Using Docker to quickly spin up a PostGIS instance, you can load the OpenStreetMap (OSM) data into the database. 
-Subsequently, using QGIS to connect with this PostGIS instance, the spatial data can be analyzed and visualized interactively.
-By the end, you are equipped with a firm perspective of how to prepare geospatial data for the future geospatial analysis.
+## 大纲
+本文中，你将首先接触地理空间数据的概念。
+一如既往，概念都配有实践实验作为补充。
+使用 Docker 快速启动一个 PostGIS 实例，你可以把 OpenStreetMap（OSM）数据载入数据库。
+随后，用 QGIS 连接这个 PostGIS 实例，就可以交互式地分析和可视化空间数据。
+读到最后，你将对如何为未来的地理空间分析准备数据形成坚实的认识。
 
 ------------------
-## 1. What is Geospatial?
-The definition of **Geospatial** consisted of 2 closely related concepts,
-*Geo* as in geographic information and *Spatial* as in representation of objects arranged in space.
-The relation of a set of spatial coordinates that is reference to a concrete place on earth,
-we shall say these spatial data are *georeferenced*; hence, the term geospatial is combined.
-The best known geospatial application, GIS (Geographic Information System)
-is recognized as a system of hardware and software used for the input,
-storage, retrieval, mapping, display and analysis of geospatial data.
+## 1. 什么是地理空间？
+**地理空间**（Geospatial）的定义由两个紧密相关的概念组成：
+*Geo* 即地理信息，*Spatial* 即对象在空间中排布的表示。
+当一组空间坐标参照地球上的具体地点时，
+我们称这些空间数据是*地理配准*的（georeferenced）；因此组合出了 geospatial 这个术语。
+最著名的地理空间应用是 GIS（地理信息系统），
+它被公认为一套软硬件系统，用于地理空间数据的输入、
+存储、检索、制图、展示与分析。
 
-Geospatial data come in layers, and each layer has two types of information:
-graphic and attributes. The former is also called *geometric data*, and the latter *thematic data*.
-Information in the layers can be represented in two forms: raster and vector.
+地理空间数据以图层形式存在，每个图层包含两类信息：
+图形与属性。前者也叫*几何数据*，后者叫*主题数据*。
+图层中的信息可以以两种形式表示：栅格与矢量。
 
-![Example of Map Layers]({{ site.baseurl }}images/preparing-geospatial-data-in-postgis/Map_Layers.jpg)
+![地图图层示例]({{ site.baseurl }}/images/preparing-geospatial-data-in-postgis/Map_Layers.jpg)
 
-*Figure. A typical example of map layers - composition of coastlines, borders and rivers*
+*图：典型的地图图层示例——海岸线、边界与河流的组合*
 
-###  1.1. Representations
-The raster and vector representations are two different geospatial conceptions, used to model the real world.
-Vector data are graphics, commonly represented by three geometric types: points, lines and polygons.
-As conformed to geospatial, these graphic objects are situated in georeferenced space according to their coordinates.
-In the case of raster data, the layer (or space) is considered a grid
-where each cell (also called a pixel) represents a basic element of information.
-The raster representation assumed the space exists beforehand, and the object is placed in it.
-This dichotomy between vector and raster representation left us with two different
-schools of thought concerning space: in the vector representation,
-*space exists because of the objects*, and without the object there is no space;
-in the raster representation, *space is an intuitive idea where objects are placed*.
+###  1.1. 表示方式
+栅格与矢量表示是两种不同的地理空间构思，用于为真实世界建模。
+矢量数据是图形，通常由三种几何类型表示：点、线和面（多边形）。
+为符合地理空间的要求，这些图形对象按其坐标位于地理配准空间中。
+而在栅格数据中，图层（或空间）被视为一个网格，
+每个单元格（也称像素）代表一个基本的信息元素。
+栅格表示假设空间预先存在，对象被放入其中。
+矢量与栅格表示之间的这种二分法，给我们留下了关于空间的两种不同
+思想流派：在矢量表示中，
+*空间因对象而存在*，没有对象就没有空间；
+在栅格表示中，*空间是放置对象的直观观念*。
 
-Vector data is composed of points, lines, and polygons.
-In a vector dataset, each point represents a value at a specific (X,Y) and (optionally) Z point in space.
-Vector data is best suited for representing discrete features:
-e.g., the point-of-interests represented by points, the roads represented by lines, and the city boundaries by polygons.
+矢量数据由点、线和多边形组成。
+在矢量数据集中，每个点表示空间中特定 (X,Y)（以及可选 Z）位置上的一个值。
+矢量数据最适合表示离散要素：
+例如，用点表示兴趣点（point-of-interests），用线表示道路，用多边形表示城市边界。
 
-In contrast, raster data is composed of pixels: small, uniformly-sized, grid cells.
+相比之下，栅格数据由像素组成：小而均匀的网格单元。
 
-![Raster Representation of an Area on Earth]({{ site.baseurl }}images/preparing-geospatial-data-in-postgis/Raster_Pixels.jpg)
+![地球某区域的栅格表示]({{ site.baseurl }}/images/preparing-geospatial-data-in-postgis/Raster_Pixels.jpg)
 
-*Figure. The raster representation of an area showing the color (red, green, blue) values of each cell (pixel). What does the color values mean requires intepretation.*
+*图：某区域的栅格表示，显示每个单元格（像素）的颜色（红、绿、蓝）值。颜色值意味着什么需要解释。*
 
-In a raster dataset, each pixel has a value. Pixels representing equivalent data have the same value:
-Rasters are well-suited for representing continuous data across a broad area: for example, elevation data or temperature measurements.
-Raster pixels may also be used to represent color values: satellite imagery is an example of this kind of data.
-Imagine zooming in on an area, allows you to see how each tiny square has a unique value;
-when put together these pixels make up an image.
+在栅格数据集中，每个像素都有一个值。表示等价数据的像素具有相同的值：
+栅格非常适合表示大范围内的连续数据：例如高程数据或温度测量值。
+栅格像素也可以用来表示颜色值：卫星影像就是这类数据的例子。
+想象放大某个区域，你可以看到每个小方块都有一个独特的值；
+这些像素拼在一起构成一幅图像。
 
-###  1.2. Coordinate Systems
-The geometric concept above also applies to geographic space:
-any point on earth can be described by its latitude, longitude, and (optionally) its elevation.
-The systems that are used to describe points on the earth's surface are called Geographic Coordinate Systems (GCS).
+###  1.2. 坐标系
+上述几何概念同样适用于地理空间：
+地球上的任何一点都可以用其纬度、经度和（可选）高程来描述。
+用于描述地球表面上点的系统称为地理坐标系（Geographic Coordinate Systems，GCS）。
 
-![Illustration of Geographic Coordinate System]({{ site.baseurl }}images/preparing-geospatial-data-in-postgis/Geographic_Coordinate_System.jpg)
+![地理坐标系图示]({{ site.baseurl }}/images/preparing-geospatial-data-in-postgis/Geographic_Coordinate_System.jpg)
 
-*Figure. Illustration of earth is not a perfect ellipsoid. Using WGS 84, the world comes to an agreement of how to address the geographic coordinate on the earth surface.*
+*图：图示地球并非完美的椭球体。借助 WGS 84，全世界就如何在地球表面定位地理坐标达成了一致。*
 
-A GCS uses a mathematically-defined surface called an ellipsoid to represent the earth's shape.
-Complex computations based on that ellipsoid define the coordinates that can be used to reference a unique point.
-There are many coordinate systems, some more common than others: WGS 84 is the one you will see used most often.
+GCS 使用一个数学定义的曲面——椭球体——来表示地球的形状。
+基于该椭球体的复杂计算定义了可用于引用唯一点的坐标。
+坐标系有很多种，有些比另一些更常用：WGS 84 是你最常见到的一个。
 
-###  1.3. Map Projections
-Map Projections allow us to translate locations from a 3D surface (like a globe) onto a flat surface (like a map).
-The popular imagination to understand a globe projection is like peeling an orange,
-and then attempting to flatten the peel on a table: it will never perfectly lie flat,
-and operations such as stretching, cutting, or squashing the peel must be perfored.
-Map projections must always distort the features they map in some way due to these flattening operations.
-Different projections might be chosen depending on the way they distort the earth surface.
+###  1.3. 地图投影
+地图投影让我们把位置从 3D 曲面（如地球仪）转换到平面（如地图）。
+通俗地理解球面投影，就像剥一个橙子，
+然后试图把橙皮在桌上压平：它永远不会完全平整，
+必须执行拉伸、切割或挤压橙皮之类的操作。
+由于这些压平操作，地图投影必然会在某些方面扭曲它所绘制的要素。
+可以根据扭曲地球表面的方式选择不同的投影。
 
-![Map Projection Concept]({{ site.baseurl }}images/preparing-geospatial-data-in-postgis/Map_Projection.jpg)
+![地图投影概念]({{ site.baseurl }}/images/preparing-geospatial-data-in-postgis/Map_Projection.jpg)
 
-*Figure. The concept of map projection - trying to flatten the elliptical earth surface onto a paper. It is necessary to distort in at least one of these metrics (1) Area (2) Direction and/or (3) Distance to the flattening operation.*
+*图：地图投影的概念——试图把椭球状的地球表面压平到一张纸上。压平操作至少要在这些指标之一上产生扭曲：(1) 面积，(2) 方向 和/或 (3) 距离。*
 
-Geospatial data that has been transformed in order to fit a flat surface is called projected data.
-The projection used for this transformation is part of the geospatial information (metadata) unique to your data file.
-Typically for the web mapping, the [EPSG 3857 projection](https://epsg.io/3857),
-also known as Spherical Mercator or Web Mercator is used for the projection.
-EPSG 3857 is a projected coordinate system used for rendering maps in OpenStreetMap, Google Maps, etc.
+为适应平面而被变换过的地理空间数据称为投影数据。
+用于这一变换的投影是你数据文件独有的地理空间信息（元数据）的一部分。
+在 Web 制图中，典型做法是使用 [EPSG 3857 投影](https://epsg.io/3857)，
+也称为 Spherical Mercator 或 Web Mercator。
+EPSG 3857 是一个投影坐标系，用于在 OpenStreetMap、Google Maps 等中渲染地图。
 
-![Web Mercator Tissot]({{ site.baseurl }}images/preparing-geospatial-data-in-postgis/Web_Mercator_Tissot.jpg)
+![Web Mercator Tissot]({{ site.baseurl }}/images/preparing-geospatial-data-in-postgis/Web_Mercator_Tissot.jpg)
 
-*Figure. Web Mercator (EPSG 3857) projection with Tissot‘s indicatrices showing the areal distortion: all disks are of equal area on the globe. (image credit: Wikimedia Commons. Author Stefan Kühn)*
+*图：Web Mercator (EPSG 3857) 投影，其 Tissot 指标线展示了面积扭曲：在地球仪上所有圆盘面积相等。（图片来源：Wikimedia Commons，作者 Stefan Kühn）*
 
-##  2. Running Dockerized PostGIS
-PostGIS is the spatial extension to PostgreSQL.
-Both free open source projects combined conforms to many industry standard (Thanks a millions!).
-PostgreSQL supports many of the newer ANSI SQL features. PostGIS supports Open
-Geospatial Consortium (OGC) standards and the new SQL Multimedia Spec (SQL/MM)
-spatial standard. Learning PostGIS means your knowledge will be useful to 
-other commercial and open source geospatial databases and mapping tools.
+##  2. 运行 Docker 化的 PostGIS
+PostGIS 是 PostgreSQL 的空间扩展。
+两个自由开源项目的组合符合许多行业标准（万分感谢！）。
+PostgreSQL 支持许多较新的 ANSI SQL 特性。PostGIS 支持 Open
+Geospatial Consortium（OGC）标准和新的 SQL Multimedia Spec（SQL/MM）
+空间标准。学会 PostGIS 意味着你的知识对
+其他商业与开源的地理空间数据库和制图工具同样有用。
 
-One of the big advantage of using Docker is the ability to rapidly build software environment for software system.
-To help quickly spin up a PostGIS database, we shall use by pre-built [PostGIS Docker Image by `kartoza/postgis`](https://hub.docker.com/r/kartoza/postgis/).
+使用 Docker 的一大优势是能够快速为软件系统构建软件环境。
+为了快速启动一个 PostGIS 数据库，我们将使用预构建的 [PostGIS Docker 镜像 `kartoza/postgis`](https://hub.docker.com/r/kartoza/postgis/)。
 
 * PostgreSQL 10.3
 * PostGIS 2.4
 
-The following sections summarized the essential steps of what we needs to run in this article. For further information,
-you can refer to the excellent tutorial by Alex Urquhart, [Setup PostGIS with Docker](https://alexurquhart.com/post/set-up-postgis-with-docker/).
+以下各节总结了本文所需运行的关键步骤。更多信息，
+可参考 Alex Urquhart 的优秀教程 [Setup PostGIS with Docker](https://alexurquhart.com/post/set-up-postgis-with-docker/)。
 
-###  2.1. Persisting Postgres Data
-Before we create the database we need to think about how our database info will be stored within Docker.
-Normally, we specify what’s called a volume in Docker so that database data will be saved outside of the container.
-With external persistent volume, we can perform backups or upgrades to the database software without losing all your data.
+###  2.1. 持久化 Postgres 数据
+在创建数据库之前，我们需要考虑数据库信息将如何存储在 Docker 中。
+通常，我们在 Docker 中指定所谓的数据卷（volume），让数据库数据保存在容器之外。
+有了外部持久卷，我们就可以在不丢失全部数据的情况下执行备份或升级数据库软件。
 
-We create a volume container that will be used to persist PostgreSQL database files
-outside of the the container that runs the database process:
+我们创建一个卷容器，用于在运行数据库进程的容器之外持久化 PostgreSQL 数据库文件：
 
 ```bash
 docker volume create pg_data
 ```
 
-###  2.2. Creating the Database Container
-Next we’ll use `docker run` to create the PostGIS container:
+###  2.2. 创建数据库容器
+接下来我们用 `docker run` 创建 PostGIS 容器：
 
 ```bash
 docker run --name=postgis -d \
@@ -180,39 +176,39 @@ docker run --name=postgis -d \
     kartoza/postgis:10.0-2.4
 ```
 
-Lets break down this command part-by-part. More examples of how you can run this container can be found on [Docker Hub](https://hub.docker.com/r/kartoza/postgis/)
+让我们逐段拆解这条命令。更多运行该容器的示例可在 [Docker Hub](https://hub.docker.com/r/kartoza/postgis/) 找到。
 
-* `docker run --name=postgis` tells Docker our new container will be named `postgis`
-* `-d` run the container in the background (detached mode)
-* `-e POSTGRES_USER=admin` the `-e` flag sets an environment variable inside the container. This one is used to configure name of a login role in PostgreSQL that will have superuser (admin) priviliges in the database. You can rename this to whatever you want.
-* `-e POSTGRES_PASS=admin` sets an environment variable that will set the password of the login role to `admin`. You can set this to whatever you want.
-* `-e POSTGRES_DBNAME=gis` much like you can guess, the environment variable tells the container to create a new database on the server with the name `gis`. After the database is created then the PostGIS extension will be enabled on it.
-* `-e ALLOW_IP_RANGE=0.0.0.0/0` tells the container to configure PostgreSQL to accept connections from anyone. If you did not set this then the database would only accept connections from addresses using the Docker networking subnet.
-* `-p 5432:5432` maps the port 5432 on the host VM to port 5432 on the container. This is required because the database server listens for connections on port 5432 by default.
-* `-v pg_data:/var/lib/postgresql` tells the container filesystem to mount the `pg_data` volume we just created to the path `/var/lib/postgresql`. This means that any data that the container saves or creates in that directory will instead be saved in the `pg_data` volume.
-* `--restart=always` creates a restart policy for your container. Now your container will start every time the Docker virtual machine starts. If this was not set, you would have to manually start the container every time the VM booted up with docker start postgis
-* `kartoza/postgis:10.0-2.4` tells Docker to pull the `kartoza/postgis` repository from Docker Hub, using PostgreSQL version 10.0 and PostGIS version 2.4. You can see other versions that are available on Docker Hub
+* `docker run --name=postgis` 告诉 Docker 我们的新容器将命名为 `postgis`
+* `-d` 在后台运行容器（detached 模式）
+* `-e POSTGRES_USER=admin` `-e` 标志在容器内设置环境变量。这个变量用于配置 PostgreSQL 中的登录角色名，该角色将在数据库中拥有超级用户（admin）权限。你可以随意改名。
+* `-e POSTGRES_PASS=admin` 设置一个环境变量，把登录角色的密码设为 `admin`。你可以随意设置。
+* `-e POSTGRES_DBNAME=gis` 顾名思义，这个环境变量告诉容器在服务器上创建一个名为 `gis` 的新数据库。数据库创建后，PostGIS 扩展会在其上启用。
+* `-e ALLOW_IP_RANGE=0.0.0.0/0` 告诉容器把 PostgreSQL 配置为接受任何人的连接。如果不设置，数据库将只接受来自 Docker 网络子网地址的连接。
+* `-p 5432:5432` 把宿主 VM 的 5432 端口映射到容器的 5432 端口。这是必需的，因为数据库服务器默认监听 5432 端口。
+* `-v pg_data:/var/lib/postgresql` 告诉容器文件系统把刚创建的 `pg_data` 卷挂载到 `/var/lib/postgresql` 路径。这意味着容器在该目录中保存或创建的任何数据都将保存到 `pg_data` 卷中。
+* `--restart=always` 为容器创建重启策略。现在每次 Docker 虚拟机启动时，容器都会启动。如果不设置，每次 VM 启动后你就得手动 `docker start postgis` 启动容器。
+* `kartoza/postgis:10.0-2.4` 告诉 Docker 从 Docker Hub 拉取 `kartoza/postgis` 仓库，使用 PostgreSQL 10.0 和 PostGIS 2.4 版本。其他可用版本可在 Docker Hub 上查看。
 
-Once the images have downloaded you should then see that the container has started by using `docker ps`:
+镜像下载完成后，用 `docker ps` 应该能看到容器已经启动：
 
 ```
 CONTAINER ID        IMAGE                      COMMAND                  CREATED             STATUS              PORTS                    NAMES
 50ab14716a91        kartoza/postgis:10.0-2.4   "/bin/sh -c /docker-…"   4 seconds ago       Up 3 seconds        0.0.0.0:5432->5432/tcp   postgis
 ```
 
-If you want to see log output from `postgis` container, you can do so by using `docker logs`.
+如果想查看 `postgis` 容器的日志输出，可以使用 `docker logs`。
 
 ```bash
 docker logs postgis
 ```
 
-Just for reference, please noted that PostGIS extensions are installed inside the container located at,
+供参考，请注意 PostGIS 扩展安装在容器内的以下位置，
 
 ```
 /usr/share/postgresql/10/contrib/postgis-2.4
 ```
 
-In case we need to execute PostGIS commands to spatially enable the new database (you need to be super user to do this)
+万一需要执行 PostGIS 命令为新数据库启用空间功能（你需要超级用户权限）
 
 ```
 createlang plpgsql <dbname>
@@ -221,11 +217,11 @@ psql -d <dbname> -f postgis.sql
 psql -d <dbname> -f spatial_ref_sys.sql
 ```
 
-In order to use `psql`, you have 2 options (1) use `psql` from localhost (2) use `psql` in the PostGIS container.
+要使用 `psql`，你有两个选择：(1) 从 localhost 使用 `psql`；(2) 在 PostGIS 容器内使用 `psql`。
 
-###  2.3. (1) Execute psql from localhost
-Once you spin up the `postgis` container, if you have `psql` client on your host, you can connect to `postgis` directly
-because we have exposed the default database port 5432 to the host's port 5432.
+###  2.3. (1) 从 localhost 执行 psql
+`postgis` 容器启动后，如果主机上有 `psql` 客户端，你可以直接连接 `postgis`，
+因为我们已把默认数据库端口 5432 暴露到了宿主机的 5432 端口。
 
 ```
 psql -h localhost -U admin gis
@@ -238,18 +234,18 @@ Type "help" for help.
 gis=#
 ```
 
-###  2.4. (2) Execute psql in the PostGIS Container
-To enter into the PostGIS container database, run the following command in the terminal.
-Make sure to replace the PASSWORD, DBNAME and USERNAME parameters with the ones you used when you created the container.
+###  2.4. (2) 在 PostGIS 容器内执行 psql
+要进入 PostGIS 容器的数据库，在终端运行以下命令。
+务必把 PASSWORD、DBNAME 和 USERNAME 参数替换为创建容器时使用的值。
 
 ```bash
 docker exec -it postgis /bin/bash \
     -c "PGPASSWORD=admin psql -d gis -U admin -h localhost"
 ```
 
-What this command does is create an instance of the `postgis` container. Then, it is executing the `psql` in the container.
+这条命令的作用是创建一个 `postgis` 容器实例，然后在容器内执行 `psql`。
 
-Upon successful connection, the `psql` prompt will be shown.
+连接成功后，将显示 `psql` 提示符。
 
 ```
 psql (10.3 (Debian 10.3-1.pgdg90+1))
@@ -259,47 +255,46 @@ Type "help" for help.
 gis=#
 ```
 
-##  3. Loading OSM Data into PostGIS
-[OpenStreetMap (OSM)](https://www.openstreetmap.org/) is a collaborative project to create a free editable geospatial data of the world.
-The OSM crowdsourced data is made available under the Open Database License, such that the data can be freely share, modify and use in a database. Thanks to this free data source, many social and humanitarian mapping projects are made possible.
-We shall use the OSM data in the following sections.
+##  3. 把 OSM 数据载入 PostGIS
+[OpenStreetMap (OSM)](https://www.openstreetmap.org/) 是一个协作项目，旨在创建免费可编辑的全球地理空间数据。
+OSM 众包数据以 Open Database License 提供，数据可以被自由地分享、修改并在数据库中使用。得益于这一免费数据源，许多社会与人道主义制图项目成为可能。
+我们将在后续章节使用 OSM 数据。
 
-###  3.1. Install Osm2pgsql
-We need the `osm2pgsql` program installed to load OSM data into PostGIS.
+###  3.1. 安装 Osm2pgsql
+我们需要安装 `osm2pgsql` 程序来把 OSM 数据载入 PostGIS。
 
-####  3.1.1. From source
-Prerequisite lists are listed in the osm2pgsql README
-The main dependencies to be aware of for old distributions are a C++11 compiler and Boost 1.50 or later.
+####  3.1.1. 从源码
+先决条件列表见 osm2pgsql 的 README。
+对老发行版需要注意的主要依赖是 C++11 编译器和 Boost 1.50 或更高版本。
 
-####  3.1.2. For Debian or Ubuntu
+####  3.1.2. Debian 或 Ubuntu
 
 ```
 apt-get install osm2pgsql
 ```
 
-####  3.1.3. For Mac OS X
-With Homebrew
+####  3.1.3. Mac OS X
+使用 Homebrew
 
 ```
 brew install osm2pgsql
 ```
 
-###  3.2. Loading Toronto OSM Data
-OSM data can be downloaded freely from [Geofabrik Download Server](http://download.geofabrik.de/).
-However, for our experiementation only to cover Toronto area, we take an easier (much smaller in size) route to
-only download the `Toronto.osm.pbf` file from [OSM extracts for Toronto](https://download.bbbike.org/osm/bbbike/Toronto/).
+###  3.2. 载入多伦多 OSM 数据
+OSM 数据可以从 [Geofabrik 下载服务器](http://download.geofabrik.de/)免费下载。
+不过，我们的实验只覆盖多伦多地区，所以走一条更省事（体积小得多）的路线：只从 [OSM extracts for Toronto](https://download.bbbike.org/osm/bbbike/Toronto/) 下载 `Toronto.osm.pbf` 文件。
 
-Then using `osm2pgsql`, we can load the Toronto OSM data into PostGIS
-(Note: the password is specified from the `PGPASSWORD`).
+然后使用 `osm2pgsql`，我们可以把多伦多 OSM 数据载入 PostGIS
+（注意：密码通过 `PGPASSWORD` 指定）。
 
-> There is an interesting post: http://weait.com/content/build-your-own-openstreetmap-server It says, 'you must use slim mode'.
+> 有一篇有趣的文章：http://weait.com/content/build-your-own-openstreetmap-server 它说，"你必须使用 slim 模式"。
 
 ```
 PGPASSWORD=admin osm2pgsql --slim -c -d gis --host localhost -U admin Toronto.osm.pbf
 ```
 
-It proceeds to convert OSM data to PostgreSQL statements for loading.
-As a note, we observed the OSM data is in `3857 (Spherical Mercator)` projection, as shown in the logs.
+它会把 OSM 数据转换为 PostgreSQL 语句进行载入。
+值得注意的是，我们从日志中观察到 OSM 数据使用的是 `3857 (Spherical Mercator)` 投影。
 
 ```
 osm2pgsql version 0.96.0 (64 bit id space)
@@ -316,36 +311,36 @@ Setting up table: planet_osm_roads
 Osm2pgsql took 67s overall
 ```
 
-After the OSM data loaded, we can use
-[pgAdmin](https://www.pgadmin.org/), which is the most popular administrative tool for PostreSQL or PostGIS.
-For example, we are using `pgAdmin4` to look into the `gis` database `public` schema `planet_osm_polygon` table here.
+OSM 数据载入后，我们可以使用
+[pgAdmin](https://www.pgadmin.org/)——PostgreSQL 或 PostGIS 最流行的管理工具。
+例如，我们在这里用 `pgAdmin4` 查看 `gis` 数据库 `public` schema 的 `planet_osm_polygon` 表。
 
-![Using pgAdmin4 to view PostGIS table data]({{ site.baseurl }}images/preparing-geospatial-data-in-postgis/PostGIS_pgAdmin4_SQL_ViewData.jpg)
+![用 pgAdmin4 查看 PostGIS 表数据]({{ site.baseurl }}/images/preparing-geospatial-data-in-postgis/PostGIS_pgAdmin4_SQL_ViewData.jpg)
 
-*Figure. Using pgAdmin4 to select from planet_osm_polygon table. We can see the planet_osm_polygon is a big collection of many types of polygons. We have noticed the `amenity` column can be used to select specific type of polygons, such as "parking".*
+*图：用 pgAdmin4 从 planet_osm_polygon 表查询。我们可以看到 planet_osm_polygon 是多种类型多边形的大集合。我们注意到 `amenity` 列可用于选择特定类型的多边形，例如 "parking"。*
 
 
-##  4. Displaying PostGIS Data with QGIS
-[QGIS](http://qgis.org/) is a free and open-source cross-platform desktop geographic information system (GIS) application that supports viewing, editing, and analysis of geospatial data. We shall use QGIS to display the Toronto OSM data loaded in PostGIS.
+##  4. 用 QGIS 展示 PostGIS 数据
+[QGIS](http://qgis.org/) 是一款免费开源的跨平台桌面地理信息系统（GIS）应用，支持查看、编辑和分析地理空间数据。我们将用 QGIS 展示载入 PostGIS 的多伦多 OSM 数据。
 
-We should be able to add the connection to PostGIS in the browser panel in QGIS. Right click the PostGIS icon and click “Create New Connection”, and enter the database connection parameters we used in the section 2 `docker run` command.
-If using Docker VM, the “Host” parameter will the the IP of the Docker VM (running `docker-machine ip` in the terminal window)
+我们应该能在 QGIS 的浏览器面板中添加到 PostGIS 的连接。右键点击 PostGIS 图标并点击"Create New Connection"，然后输入我们在第 2 节 `docker run` 命令中使用的数据库连接参数。
+如果使用 Docker VM，"Host" 参数将是 Docker VM 的 IP（在终端窗口运行 `docker-machine ip`）。
 
-![PostGIS QGIS Connection]({{ site.baseurl }}images/preparing-geospatial-data-in-postgis/PostGIS-qgis-connection.jpg)
+![PostGIS QGIS 连接]({{ site.baseurl }}/images/preparing-geospatial-data-in-postgis/PostGIS-qgis-connection.jpg)
 
-*Figure. Using QGIS to create a new PostGIS connection. We are using the database creation settings when we do `docker run` on the PostGIS container instance. The `admin` password is intentionally shown here for illustrative purpose.*
+*图：用 QGIS 创建新的 PostGIS 连接。我们使用对 PostGIS 容器实例执行 `docker run` 时的数据库创建设置。`admin` 密码在这里为演示目的特意显示。*
 
-In the screenshot below, it shows the loaded OSM data of Toronto area with `planet_osm_polygon` and `planet_osm_road` layers added.
+在下方的截屏中，可以看到已载入的多伦多地区 OSM 数据，并添加了 `planet_osm_polygon` 和 `planet_osm_road` 图层。
 
-![PostGIS QGIS Polygons and Roads]({{ site.baseurl }}images/preparing-geospatial-data-in-postgis/PostGIS-qgis-polygon-roads.jpg)
+![PostGIS QGIS 多边形与道路]({{ site.baseurl }}/images/preparing-geospatial-data-in-postgis/PostGIS-qgis-polygon-roads.jpg)
 
-*Figure. Simply right-click on a PostGIS table to be added as layer to display. After adding the layer, you can tune the layer by enhancing the various graphics display properties, such as colors, line wide, fill patterns etc.*
+*图：只需右键点击 PostGIS 表即可添加为展示图层。添加图层后，你可以通过调整各种图形显示属性来美化图层，例如颜色、线宽、填充图案等。*
 
-After some inspection on the `planet_osm_polygon` table,
-we would like to reduce the clutters of displaying too many polygon types,
-we can filter to select a subset of polygon types from the DB Manager query.
+对 `planet_osm_polygon` 表做了一些检查之后，
+为了减少展示过多多边形类型造成的杂乱，
+我们可以通过 DB Manager 查询过滤、选择多边形类型的子集。
 
-First, we select all the non empty `boundary` polygon by
+首先，我们选择所有非空的 `boundary` 多边形：
 
 ```
 SELECT osm_id, boundary, name, way_area, way
@@ -353,17 +348,17 @@ SELECT osm_id, boundary, name, way_area, way
     WHERE boundary is not NULL;
 ```
 
-Open the DB Manager -> Query Layer icon, and execute the selection to load the results into the `neighborhoods` layer.
+打开 DB Manager -> Query Layer 图标，执行选择，把结果加载到 `neighborhoods` 图层。
 
-![PostGIS QGIS Query Parking Polygons]({{ site.baseurl }}images/preparing-geospatial-data-in-postgis/PostGIS-qgis-DBManager-Add-Query-Layer-neighborhoods-annotate.jpg)
+![PostGIS QGIS 查询停车位多边形]({{ site.baseurl }}/images/preparing-geospatial-data-in-postgis/PostGIS-qgis-DBManager-Add-Query-Layer-neighborhoods-annotate.jpg)
 
-*Figure. Using the DB Manager->Query Layer dialog to use SQL statement to select a subset of polygons from planet_osm_polygon table. After the query, you can load the results as a display layer. In this illustration, we have selected the non-empty boundary polygons.*
+*图：使用 DB Manager->Query Layer 对话框，用 SQL 语句从 planet_osm_polygon 表选择多边形子集。查询之后，你可以把结果加载为展示图层。在这个图示中，我们选择了非空的 boundary 多边形。*
 
-We can see the `neighborhoods` layer display.
+我们可以看到 `neighborhoods` 图层的显示。
 
-![PostGIS QGIS Display Neighborhood Polygons]({{ site.baseurl }}images/preparing-geospatial-data-in-postgis/PostGIS-qgis-polygon-neighborhoods.jpg)
+![PostGIS QGIS 显示社区多边形]({{ site.baseurl }}/images/preparing-geospatial-data-in-postgis/PostGIS-qgis-polygon-neighborhoods.jpg)
 
-Continue with more selections, we select all `amenity='parking'` polygons by
+继续更多选择，我们用下面的语句选择所有 `amenity='parking'` 多边形：
 
 ```
 SELECT osm_id, amenity, way_area, way
@@ -371,18 +366,18 @@ SELECT osm_id, amenity, way_area, way
     WHERE amenity='parking';
 ```
 
-Once again, open the DB Manager -> Query Layer icon, and execute the selection to load the results into the `parking` layer.
+再次打开 DB Manager -> Query Layer 图标，执行选择，把结果加载到 `parking` 图层。
 
-![PostGIS QGIS Query Parking Polygons]({{ site.baseurl }}images/preparing-geospatial-data-in-postgis/PostGIS-qgis-DBManager-Add-Query-Layer-parking.jpg)
+![PostGIS QGIS 查询停车位多边形]({{ site.baseurl }}/images/preparing-geospatial-data-in-postgis/PostGIS-qgis-DBManager-Add-Query-Layer-parking.jpg)
 
-*Figure. Using the DB Manager->Query Layer dialog to use SQL statement to select a subset of polygons from planet_osm_polygon table. After the query, you can load the results as a display layer. In this illustration, we have selected the parking polygons.*
+*图：使用 DB Manager->Query Layer 对话框，用 SQL 语句从 planet_osm_polygon 表选择多边形子集。查询之后，你可以把结果加载为展示图层。在这个图示中，我们选择了停车位多边形。*
 
-Then, we can see the `parking` layer display on top of the `neighborhoods` layer.
+然后，我们可以看到 `parking` 图层显示在 `neighborhoods` 图层之上。
 
-![PostGIS QGIS Display Neighborhood Polygons]({{ site.baseurl }}images/preparing-geospatial-data-in-postgis/PostGIS-qgis-polygon-parking.jpg)
+![PostGIS QGIS 显示社区多边形]({{ site.baseurl }}/images/preparing-geospatial-data-in-postgis/PostGIS-qgis-polygon-parking.jpg)
 
-*Figure. After fine tuning the planet_osm_polygon selections to only display `neighborhoods` and `parking`, we get the clear visualization of the Toronto download parking areas.*
+*图：把 planet_osm_polygon 的选择微调为只展示 `neighborhoods` 和 `parking` 之后，我们得到了多伦多下载区域停车区的清晰可视化。*
 
-With the addition of geospatial data, we can ask deeper spatial analysis questions, for example, finding all the `parking` within 100 meters from `planet_osm_road` named "King Street" within the `neighborhoods` of "Toronto". But we shall expand the analysis topics until the next article.
+有了地理空间数据，我们就可以提出更深入的空间分析问题，例如：在"Toronto"的 `neighborhoods` 中，找出距名为 "King Street" 的 `planet_osm_road` 100 米以内的所有 `parking`。但分析话题的展开要留到下一篇文章了。
 
-Enjoy your totally open and free geospatial technology stack!
+尽情享受这套完全开放、免费的地理空间技术栈吧！

@@ -210,11 +210,11 @@ html.dark-mode .cat-history-user {
 </style>
 
 <div id="cat-hover-zone"></div>
-<div id="cat-speech-bubble" role="status" aria-live="polite" aria-label="Hijiki the cat says">
+<div id="cat-speech-bubble" role="status" aria-live="polite" aria-label="猫咪 Hijiki 说">
   <div id="cat-message"></div>
   <div id="cat-chat-input-container">
-    <input type="text" id="cat-chat-input" placeholder="Ask me anything..." maxlength="200" autocomplete="off">
-    <button id="cat-chat-send" aria-label="Send message">Ask</button>
+    <input type="text" id="cat-chat-input" placeholder="问我任何问题..." maxlength="200" autocomplete="off">
+    <button id="cat-chat-send" aria-label="发送消息">提问</button>
   </div>
 </div>
 
@@ -227,91 +227,91 @@ html.dark-mode .cat-history-user {
   // Static fallback messages
   var catMessages = [
     // Blog facts
-    "This blog explores AI, spatial reasoning, and knowledge systems since 2016! 🧠",
-    "Fun fact: Benny trained custom AI models using <a href='/personal-fine-tuning-with-flux'>FLUX fine-tuning</a>!",
-    "The <a href='/game-architecture-card-ai-1'>'Race for the Galaxy' AI</a> used neural networks back in 2009 - before AlphaGo! 🎮",
-    "This blog covers 115+ posts on AI, deep learning, and computer vision!",
-    "Benny's master's thesis was on AI expert systems and <a href='/spatial-reasoning-explained'>spatial reasoning</a>! 🎓",
-    "Explore topics from <a href='/using-prolog-to-solve-logic-puzzles'>Prolog logic programming</a> to <a href='/lean-ai-reduce-llm-cost'>GenAI cost optimization</a>!",
-    "The blog bridges theory and practice - philosophy to hands-on projects! 🔬",
-    "NEW! <a href='/rise-of-ai-powered-super-individual'>Rise of the Super-Individual</a> - AI amplifying human potential! 🚀",
-    "Learn about <a href='/identity-for-attribute-based-encryption'>Attribute-Based Encryption</a> for healthcare blockchains! 🏥",
-    "Explore the <a href='/intelligence-age-how-to-thrive'>Intelligence Age</a> - what comes after the information age! 💡",
-    "The <a href='/q-star-new-method-in-problem-solving'>Q* proposal</a> explores A* algorithm meets Q-learning! 🤖",
-    "<a href='/solving-puzzles-using-clp'>Constraint Logic Programming</a> with Prolog's clp(fd) module! 🧩",
-    "<a href='/bmad-v6-intellectual-ecosystem'>BMAD v6</a> - agent personas for structured software development! 🧙",
-    "<a href='/exploring-llms-on-universal-intelligence'>Marvin Minsky's 1985 insights</a> on universal intelligence explored here!",
+    "本博客自 2016 年起探索 AI、空间推理与知识系统！🧠",
+    "趣味知识：Benny 使用<a href='{{ site.baseurl }}/personal-fine-tuning-with-flux'>FLUX 微调</a>训练了定制 AI 模型！",
+    "<a href='{{ site.baseurl }}/game-architecture-card-ai-1'>《银河竞逐》的 AI</a> 早在 2009 年就使用了神经网络——比 AlphaGo 还早！🎮",
+    "本博客收录了 115+ 篇关于 AI、深度学习与计算机视觉的文章！",
+    "Benny 的硕士论文研究的是 AI 专家系统与<a href='{{ site.baseurl }}/spatial-reasoning-explained'>空间推理</a>！🎓",
+    "从<a href='{{ site.baseurl }}/using-prolog-to-solve-logic-puzzles'>Prolog 逻辑编程</a>到<a href='{{ site.baseurl }}/lean-ai-reduce-llm-cost'>GenAI 成本优化</a>，各类主题等你探索！",
+    "博客连接理论与实践——从哲学到动手项目！🔬",
+    "新文章！<a href='{{ site.baseurl }}/rise-of-ai-powered-super-individual'>超级个体的崛起</a>——AI 放大人类潜能！🚀",
+    "了解用于医疗区块链的<a href='{{ site.baseurl }}/identity-for-attribute-based-encryption'>基于属性的加密</a>！🏥",
+    "探索<a href='{{ site.baseurl }}/intelligence-age-how-to-thrive'>智能时代</a>——信息时代之后是什么！💡",
+    "<a href='{{ site.baseurl }}/q-star-new-method-in-problem-solving'>Q* 提案</a>探索 A* 算法与 Q-learning 的交汇！🤖",
+    "使用 Prolog 的 clp(fd) 模块进行<a href='{{ site.baseurl }}/solving-puzzles-using-clp'>约束逻辑编程</a>！🧩",
+    "<a href='{{ site.baseurl }}/bmad-v6-intellectual-ecosystem'>BMAD v6</a>——面向结构化软件开发的智能体角色！🧙",
+    "在这里深入解读 <a href='{{ site.baseurl }}/exploring-llms-on-universal-intelligence'>Marvin Minsky 1985 年</a>关于通用智能的洞见！",
 
     // Series highlights
-    "Explore the <a href='/series/'>post series</a> for deep-dive multi-part articles! 📚",
-    "NEW! The <a href='/from-yolo-v2-to-yolo11-food-detection-evolution'>FoodInsight</a> series - edge AI food monitoring in 3 parts! 🍕",
-    "The <a href='/bmad-reclaiming-control-in-ai-dev'>Applied BMAD</a> series covers AI-driven development in 4 parts!",
-    "Check out the <a href='/game-architecture-card-ai-1'>Game Architecture</a> series - 4 parts from neural networks to ontology! 🎮",
-    "The <a href='/using-prolog-to-solve-logic-puzzles'>Logic Puzzles</a> series spans 8 years of Prolog and visual logic! 🧩",
-    "Dive into <a href='/spatial-reasoning-explained'>Spatial Reasoning</a> - a 4-part journey to AGI foundations! 🧠",
-    "The <a href='/identity-for-attribute-based-encryption'>Blockchain Healthcare</a> series explores identity and encryption! 🏥",
-    "Love miniatures? The <a href='/journey-of-building-scale-model-dioramas'>Building Scale Model</a> series shows the process! 🎨",
-    "The <a href='/q-star-new-method-in-problem-solving'>Philosophy of AI</a> series - 5 parts on intelligence and the future! 🤔",
-    "9 curated series await you - visit the <a href='/series/'>Series page</a> to explore!",
+    "探索<a href='{{ site.baseurl }}/series/'>系列文章</a>，深入阅读多篇章专题！📚",
+    "新系列！<a href='{{ site.baseurl }}/from-yolo-v2-to-yolo11-food-detection-evolution'>FoodInsight</a> 系列——三篇讲透边缘 AI 食物监控！🍕",
+    "<a href='{{ site.baseurl }}/bmad-reclaiming-control-in-ai-dev'>Applied BMAD</a> 系列用四篇文章讲透 AI 驱动的开发！",
+    "看看<a href='{{ site.baseurl }}/game-architecture-card-ai-1'>游戏架构</a>系列——四篇从神经网络讲到本体论！🎮",
+    "<a href='{{ site.baseurl }}/using-prolog-to-solve-logic-puzzles'>逻辑谜题</a>系列跨越 8 年的 Prolog 与可视化逻辑！🧩",
+    "深入了解<a href='{{ site.baseurl }}/spatial-reasoning-explained'>空间推理</a>——通往 AGI 基础的四篇旅程！🧠",
+    "<a href='{{ site.baseurl }}/identity-for-attribute-based-encryption'>区块链医疗</a>系列探讨身份与加密！🏥",
+    "喜欢微缩模型？<a href='{{ site.baseurl }}/journey-of-building-scale-model-dioramas'>比例模型制作</a>系列展示全过程！🎨",
+    "<a href='{{ site.baseurl }}/q-star-new-method-in-problem-solving'>AI 哲学</a>系列——五篇谈论智能与未来！🤔",
+    "9 个精选系列等你来——访问<a href='{{ site.baseurl }}/series/'>系列页面</a>一探究竟！",
 
     // Navigation tips
-    "Try the dark mode toggle in the header! 🌙",
-    "Check out Related Posts at the end of each article!",
-    "Use the Table of Contents to jump to sections! 📑",
-    "Click any image to see it full-size! 🔍",
-    "Share posts easily with the Twitter and LinkedIn buttons!",
-    "Browse by tag to find related content! 🏷️",
-    "The Archives page shows all posts organized by year! 📅",
-    "Click the Previous/Next cards to navigate between posts!",
-    "Check out the <a href='/tags/'>interactive word cloud</a> on the Tags page! ☁️",
-    "The word cloud shows popular topics - bigger means more posts! 🏷️",
-    "Click any tag in the word cloud to explore related articles!",
-    "Popular Topics on the Home page shows what Benny writes about most! ✨",
+    "试试页头的深色模式切换吧！🌙",
+    "看看每篇文章末尾的相关文章！",
+    "使用目录可以跳转到各章节！📑",
+    "点击任意图片可查看大图！🔍",
+    "使用 Twitter 和 LinkedIn 按钮轻松分享文章！",
+    "按标签浏览，发现相关内容！🏷️",
+    "归档页面按年份展示全部文章！📅",
+    "点击上一篇/下一篇卡片，在文章之间切换！",
+    "看看标签页上的<a href='{{ site.baseurl }}/tags/'>交互式词云</a>！☁️",
+    "词云展示热门主题——字越大代表文章越多！🏷️",
+    "点击词云中的任意标签，探索相关文章！",
+    "首页的热门主题展示了 Benny 最常写作的内容！✨",
 
     // Newsletter
-    "NEW! Subscribe to the newsletter - never miss a post! 📬 Scroll down to sign up!",
-    "Want more AI insights? Join the newsletter at the bottom of the page! 💌",
-    "Psst! Subscribe below to get notified when Benny publishes new articles! 🐱",
-    "Discover the computational beauty of AI - subscribe to stay in the loop! ✨",
-    "Join fellow AI enthusiasts! Newsletter signup is at the bottom of every page! 📧",
-    "*whispers* The newsletter is free and spam-free! Check the footer! 😸",
+    "新功能！订阅邮件订阅——不再错过任何文章！📬 向下滚动即可订阅！",
+    "想要更多 AI 洞见？在页面底部订阅邮件吧！💌",
+    "嘘！在下方订阅，Benny 发布新文章时会第一时间通知你！🐱",
+    "发现 AI 的计算之美——订阅以获取最新动态！✨",
+    "加入 AI 爱好者的行列！每个页面底部都有订阅入口！📧",
+    "*悄悄话* 邮件订阅完全免费，绝不发垃圾邮件！看看页脚！😸",
 
     // Post teasers
-    "NEW! <a href='/foodinsight-edge-ai-food-monitoring'>FoodInsight</a> - edge AI food monitoring with YOLO11 on Raspberry Pi! 🍕",
-    "NEW! <a href='/journey-of-ai-led-foodinsight-development-with-bmad'>AI-Led Development</a> - BMAD agents built an entire system! 🤖",
-    "NEW! <a href='/from-yolo-v2-to-yolo11-food-detection-evolution'>YOLO Evolution</a> - from v2 to YOLO11 for food detection! 📈",
-    "NEW! <a href='/mindmap-digitization-workflow'>Mind Map Digitization</a> - transform hand-drawn maps with AI! 🧠",
-    "NEW! <a href='/process-philosophy-for-ai-agent-design'>Process Philosophy</a> meets AI agent design - Whitehead's insights! 🔮",
-    "<a href='/abstraction-of-thought-makes-ai-better-reasoners'>Abstraction of Thought</a> - how thinking about thinking improves AI! 💭",
-    "<a href='/harmonizing-two-ai-agent-systems'>Harmonizing AI Systems</a> - bridging PAI and BMAD frameworks! 🌉",
-    "<a href='/ontology-making-software-archaeology-has-a-brain'>Software Archaeology</a> gets a brain with ontology reasoning! 🏛️",
-    "Explore <a href='/spatial-reasoning-in-agi'>spatial reasoning</a> - the key to AGI beyond LLMs!",
-    "Discover the <a href='/dify-your-weekend-genai-magics'>Dify platform</a> for hands-on GenAI learning!",
-    "<a href='/lean-ai-reduce-llm-cost'>Lean AI</a> - managing LLM costs for GenAI startups! 💰",
-    "<a href='/seeing-logic-with-existential-graphs'>Existential Graphs</a> - visual logic from Peirce's brilliant mind! 🔵",
+    "新文章！<a href='{{ site.baseurl }}/foodinsight-edge-ai-food-monitoring'>FoodInsight</a>——用树莓派上的 YOLO11 实现边缘 AI 食物监控！🍕",
+    "新文章！<a href='{{ site.baseurl }}/journey-of-ai-led-foodinsight-development-with-bmad'>AI 主导开发</a>——BMAD 智能体构建了完整系统！🤖",
+    "新文章！<a href='{{ site.baseurl }}/from-yolo-v2-to-yolo11-food-detection-evolution'>YOLO 演进</a>——从 v2 到 YOLO11 的食物检测之旅！📈",
+    "新文章！<a href='{{ site.baseurl }}/mindmap-digitization-workflow'>思维导图数字化</a>——用 AI 转换手绘导图！🧠",
+    "新文章！<a href='{{ site.baseurl }}/process-philosophy-for-ai-agent-design'>过程哲学</a>邂逅 AI 智能体设计——Whitehead 的洞见！🔮",
+    "<a href='{{ site.baseurl }}/abstraction-of-thought-makes-ai-better-reasoners'>思维的抽象</a>——对思考的思考如何让 AI 更会推理！💭",
+    "<a href='{{ site.baseurl }}/harmonizing-two-ai-agent-systems'>协调 AI 系统</a>——连接 PAI 与 BMAD 框架！🌉",
+    "<a href='{{ site.baseurl }}/ontology-making-software-archaeology-has-a-brain'>软件考古学</a>借助本体推理拥有了大脑！🏛️",
+    "探索<a href='{{ site.baseurl }}/spatial-reasoning-in-agi'>空间推理</a>——超越 LLM、通往 AGI 的关键！",
+    "发现<a href='{{ site.baseurl }}/dify-your-weekend-genai-magics'>Dify 平台</a>，动手学习 GenAI！",
+    "<a href='{{ site.baseurl }}/lean-ai-reduce-llm-cost'>精益 AI</a>——为 GenAI 创业公司管理 LLM 成本！💰",
+    "<a href='{{ site.baseurl }}/seeing-logic-with-existential-graphs'>存在图</a>——来自 Peirce 天才头脑的可视化逻辑！🔵",
 
     // Consulting & GameGrammar
-    "Need AI consulting? Visit <a href='https://dynamindresearch.com' target='_blank'>Dynamind Research</a>! 💼",
-    "Benny offers AI strategy & software architecture consulting at <a href='https://dynamindresearch.com' target='_blank'>Dynamind Research</a>! 🚀",
-    "Try <a href='https://gamegrammar.dynamindresearch.com' target='_blank'>GameGrammar</a> - design board games with 6 AI agents in 60 seconds! 🎲",
-    "Building AI products? <a href='https://dynamindresearch.com/#contact' target='_blank'>Contact Benny</a> for consulting! 🤝",
-    "GameGrammar uses multi-agent AI to design complete board games! <a href='https://gamegrammar.dynamindresearch.com' target='_blank'>Try it free</a>! 🎮",
-    "From blog reader to client? <a href='https://dynamindresearch.com' target='_blank'>Dynamind Research</a> helps organizations navigate AI! 💡",
-    "NEW! <a href='/gamegrammar-the-theory-of-generative-board-game-design'>Theory of Generative Design</a> - the philosophy behind GameGrammar! 🎲",
-    "NEW! <a href='/nova-the-ai-co-designer-that-learns-your-taste'>Meet Nova</a> - an AI co-designer that learns your taste and remembers your decisions! 🤖",
-    "NEW! <a href='/generative-ontology-from-game-knowledge-to-game-creation'>Generative Ontology</a> - when game knowledge becomes a creative engine! 🧠",
-    "The GameGrammar series: 4 posts from <a href='/introducing-gamegrammar-ai-powered-board-game-design'>introduction</a> to <a href='/generative-ontology-from-game-knowledge-to-game-creation'>generative ontology</a>! 🎮",
+    "需要 AI 咨询？访问 <a href='https://dynamindresearch.com' target='_blank'>Dynamind Research</a>！💼",
+    "Benny 在 <a href='https://dynamindresearch.com' target='_blank'>Dynamind Research</a> 提供 AI 战略与软件架构咨询！🚀",
+    "试试 <a href='https://gamegrammar.dynamindresearch.com' target='_blank'>GameGrammar</a>——用 6 个 AI 智能体在 60 秒内设计桌游！🎲",
+    "在构建 AI 产品？<a href='https://dynamindresearch.com/#contact' target='_blank'>联系 Benny</a> 获取咨询！🤝",
+    "GameGrammar 使用多智能体 AI 设计完整的桌游！<a href='https://gamegrammar.dynamindresearch.com' target='_blank'>免费试用</a>！🎮",
+    "从博客读者变成客户？<a href='https://dynamindresearch.com' target='_blank'>Dynamind Research</a> 助力组织驾驭 AI！💡",
+    "新文章！<a href='{{ site.baseurl }}/gamegrammar-the-theory-of-generative-board-game-design'>生成式设计理论</a>——GameGrammar 背后的哲学！🎲",
+    "新文章！<a href='{{ site.baseurl }}/nova-the-ai-co-designer-that-learns-your-taste'>认识 Nova</a>——学习你的品味、记住你的决策的 AI 联合设计师！🤖",
+    "新文章！<a href='{{ site.baseurl }}/generative-ontology-from-game-knowledge-to-game-creation'>生成式本体</a>——当游戏知识成为创意引擎！🧠",
+    "GameGrammar 系列：四篇内容，从<a href='{{ site.baseurl }}/introducing-gamegrammar-ai-powered-board-game-design'>入门介绍</a>到<a href='{{ site.baseurl }}/generative-ontology-from-game-knowledge-to-game-creation'>生成式本体</a>！🎮",
 
     // Fun messages
-    "Meow! Welcome to Benny's Mind Hack! 🐱",
-    "*purrs* Thanks for visiting!",
-    "I'm Hijiki, your friendly blog guide! 😸",
-    "Hover over me anytime for tips and facts!",
-    "Happy reading! Let me know if you need anything! 📖",
-    "*stretches* Another curious reader! Welcome! 🐾",
-    "Did you know cats love AI too? Well, this one does! 😺",
-    "Click me again for another random fact!",
-    "You've discovered the secret cat assistant! 🎉"
+    "喵！欢迎来到 Benny's Mind Hack！🐱",
+    "*呼噜呼噜* 感谢你的到访！",
+    "我是 Hijiki，你友好的博客向导！😸",
+    "随时把鼠标悬停在我身上，获取提示和趣闻！",
+    "阅读愉快！有什么需要随时告诉我！📖",
+    "*伸懒腰* 又一位好奇的读者！欢迎！🐾",
+    "你知道吗，猫咪也爱 AI？至少这只爱！😺",
+    "再点我一下，换个趣闻！",
+    "你发现了秘密猫咪助手！🎉"
   ];
 
   // State
@@ -387,7 +387,7 @@ html.dark-mode .cat-history-user {
     isLoading = true;
     sendBtn.disabled = true;
     inputEl.disabled = true;
-    showMessage('<span class="cat-loading">Thinking</span>', true);
+    showMessage('<span class="cat-loading">思考中</span>', true);
   }
 
   function hideLoading() {
@@ -398,7 +398,7 @@ html.dark-mode .cat-history-user {
 
   function showFallbackTip() {
     var tip = getRandomMessage();
-    showMessage("😴 *yawns* Here's a tip instead:<br><br>" + tip, true);
+    showMessage("😴 *打哈欠* 给你一个小提示吧：<br><br>" + tip, true);
   }
 
   // Send question to AI API
@@ -432,7 +432,7 @@ html.dark-mode .cat-history-user {
       }
 
       // Success - show AI response
-      var aiResponse = data.response || "Meow? I didn't quite catch that! 😸";
+      var aiResponse = data.response || "喵？我没太听清！😸";
 
       // Update conversation history
       conversationHistory.push({ role: 'user', content: question.trim() });
@@ -508,7 +508,7 @@ html.dark-mode .cat-history-user {
   // Click on cat shows bubble and focuses input
   hoverZone.addEventListener('click', function() {
     chatMode = true;
-    showBubble("😸 Ask me anything about the blog!");
+    showBubble("😸 关于这个博客，问我任何问题吧！");
     setTimeout(function() { inputEl.focus(); }, 100);
   });
 
@@ -519,7 +519,7 @@ html.dark-mode .cat-history-user {
       hideBubble();
     } else {
       chatMode = true;
-      showBubble("😸 Ask me anything about the blog!");
+      showBubble("😸 关于这个博客，问我任何问题吧！");
       setTimeout(function() { inputEl.focus(); }, 100);
     }
   });
@@ -539,31 +539,31 @@ html.dark-mode .cat-history-user {
 
     if (hour >= 5 && hour < 12) {
       var morningGreetings = [
-        "Good morning! ☀️ Ready to explore some AI articles?",
-        "Rise and shine! 🌅 Fresh ideas await you today!",
-        "Morning! ☕ Grab your coffee and let's learn something new!"
+        "早上好！☀️ 准备好探索 AI 文章了吗？",
+        "起床啦！🌅 今天有新鲜的想法等着你！",
+        "早安！☕ 端上咖啡，一起学点新东西吧！"
       ];
       return morningGreetings[Math.floor(Math.random() * morningGreetings.length)];
     } else if (hour >= 12 && hour < 17) {
       var afternoonGreetings = [
-        "Good afternoon! 🌤️ Taking a break to read?",
-        "Hey there! 😸 Perfect time for some tech exploration!",
-        "Afternoon! 🐱 Need a brain snack? Try a blog post!"
+        "下午好！🌤️ 休息时来读点什么？",
+        "你好呀！😸 正是探索技术的好时光！",
+        "下午好！🐱 需要大脑零食吗？读篇文章吧！"
       ];
       return afternoonGreetings[Math.floor(Math.random() * afternoonGreetings.length)];
     } else if (hour >= 17 && hour < 21) {
       var eveningGreetings = [
-        "Good evening! 🌅 Winding down with some reading?",
-        "Evening! 🌆 Great time to dive into something interesting!",
-        "Hey! 😺 Relaxing with some AI and tech articles?"
+        "晚上好！🌅 用阅读放松一下？",
+        "傍晚好！🌆 正适合深入了解有趣的东西！",
+        "嗨！😺 来点 AI 和科技文章放松一下？"
       ];
       return eveningGreetings[Math.floor(Math.random() * eveningGreetings.length)];
     } else {
       var nightGreetings = [
-        "Late night browsing? 🌙 I'm a night owl too!",
-        "Burning the midnight oil? 🦉 Me too! Let's explore!",
-        "Can't sleep? 🌌 Perfect time for some deep reading!",
-        "Night owl mode! 🐱‍👤 The best ideas come after dark!"
+        "深夜冲浪？🌙 我也是夜猫子！",
+        "挑灯夜战？🦉 我也是！一起探索吧！",
+        "睡不着？🌌 正是深度阅读的好时光！",
+        "夜猫子模式！🐱‍👤 最好的想法总在夜幕之后！"
       ];
       return nightGreetings[Math.floor(Math.random() * nightGreetings.length)];
     }

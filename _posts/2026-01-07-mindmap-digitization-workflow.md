@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "From Hand-Drawn to AI-Enhanced: Building a Mind Map Digitization Workflow"
+title: "从手绘到 AI 增强：构建思维导图数字化工作流"
 date: 2026-01-07 12:00:00.000000000 -00:00
 permalink: mindmap-digitization-workflow
 author: Benny Cheung
@@ -23,238 +23,238 @@ published: true
 ---
 
 <!--excerpt.start-->
-Mind maps capture thought in a way linear notes cannot, but hand-drawn maps remain trapped on paper, unsearchable and hard to share. In this article, we explore a workflow that transforms hand-drawn mind maps into AI-enhanced digital visualizations while preserving their organic structure. Using Claude Code as orchestrator and Nano Banana Pro for image generation, we have digitized over 80 mind maps into a consistent illuminated manuscript style.
+思维导图能以线性笔记无法企及的方式捕捉思想，但手绘导图始终被困在纸面上——无法检索，也难以分享。在本文中，我们探索了一套工作流，可以把手绘思维导图转化为 AI 增强的数字可视化作品，同时保留其有机结构。以 Claude Code 作为编排器、Nano Banana Pro 负责图像生成，我们已将 80 多张思维导图数字化为统一的"泥金装饰手稿"（illuminated manuscript）风格。
 <!--excerpt.end-->
 
-![Mind Map Transformation]({{ site.baseurl }}images/mindmap-digitization-workflow/header.jpg)
+![思维导图转换]({{ site.baseurl }}/images/mindmap-digitization-workflow/header.jpg)
 
-_Figure. The transformation from hand-drawn sketch to illuminated manuscript style visualization._
+_图：从手绘草图到泥金装饰手稿风格可视化的转变。_
 
-## Why Mind Mapping Matters
+## 为什么思维导图很重要
 
-Visual thinking activates spatial reasoning in ways that linear note-taking cannot [1]. When we draw a mind map, we engage with ideas differently. The central concept sits at the heart, branches radiate outward, and relationships emerge through proximity and connection. This spatial arrangement mirrors how our minds actually work, making complex topics easier to grasp and remember.
+视觉思维能以线性笔记无法做到的方式激活空间推理 [1]。当我们绘制思维导图时，我们以不同的方式与想法互动：中心概念居于核心，分支向外辐射，关系通过邻近与连接而浮现。这种空间布局正是我们头脑实际运作方式的写照，让复杂主题更易理解和记忆。
 
-For years, we have accumulated hand-drawn mind maps, each one capturing a moment of learning or insight. Philosophy lectures, technical architectures, book summaries, project plans. Over 80 maps spanning topics from temporal logic to blockchain fundamentals. Each one represents genuine understanding, the kind that comes from actively processing information rather than passively recording it.
+多年来，我们积累了大量手绘思维导图，每一张都记录了一个学习或顿悟的瞬间：哲学讲座、技术架构、读书摘要、项目规划——80 多张导图，主题从时态逻辑到区块链基础。每一张都代表着真正的理解，即主动加工信息（而非被动记录）所带来的那种理解。
 
-But hand-drawn mind maps have limitations:
+但手绘思维导图有局限：
 
-*   **Illegible to others**: My handwriting and hand-drawn graphics are not readable to anyone but myself
-*   **Unsearchable**: Finding a specific concept means flipping through stacks of paper
-*   **Hard to share**: Physical artifacts do not travel well, and even scanned images remain cryptic
-*   **Static**: Once drawn, they cannot evolve without redrawing
-*   **Fragile**: Paper degrades, gets lost, or becomes damaged
+*   **他人难以辨认**：我的手写字和手绘图形只有我自己看得懂
+*   **无法检索**：找一个特定概念意味着翻遍成堆纸张
+*   **难以分享**：实物载体不便流转，扫描图像依然晦涩
+*   **静态**：一旦画成就无法演进，除非重画
+*   **脆弱**：纸张会老化、丢失或损坏
 
-The challenge was clear: how do we preserve the organic, creative nature of hand-drawn maps while gaining the benefits of digital storage, searchability, and shareability?
+挑战很明确：如何保留手绘导图有机的、创造性的一面，同时获得数字存储、可检索与可分享的好处？
 
-## The Vision: Illuminated Manuscripts Meet Modern AI
+## 愿景：泥金装饰手稿遇上现代 AI
 
-Rather than simply scanning mind maps into static images, we envisioned something more ambitious. What if AI could transform rough sketches into beautiful, consistent visualizations while preserving every concept and relationship from the original?
+我们没有简单地把思维导图扫描成静态图像，而是设想了一个更宏大的目标：如果 AI 能把粗糙的草图转化为精美、一致的可视化，同时保留原图的每一个概念和关系，会怎样？
 
-The result is what we call the "illuminated manuscript" style, a visual aesthetic that combines:
+其成果就是我们所说的"泥金装饰手稿"（illuminated manuscript）风格——一种融合了以下要素的视觉美学：
 
-*   **Aged parchment backgrounds** with warm beige tones
-*   **Color-coded organic branches** radiating from central concepts
-*   **Topical icons** at the center node (brains for AI topics, maps for spatial reasoning, etc.)
-*   **Clean typography** replacing handwriting while maintaining readability
-*   **Rich illustrative elements** throughout (symbols, diagrams, visual metaphors)
+*   **做旧羊皮纸背景**，带有温暖的米色调
+*   **色彩编码的有机分支**，自中心概念向外辐射
+*   **中心节点上的主题图标**（AI 主题用大脑图标、空间推理用地图图标等）
+*   **清晰的排版**取代手写字，同时保持可读性
+*   **贯穿全图的丰富插图元素**（符号、图表、视觉隐喻）
 
-This style balances classical elegance with modern clarity. The mind maps become not just functional reference documents but genuinely beautiful artifacts.
+这种风格在古典雅致与现代清晰之间取得平衡。思维导图不再只是功能性的参考文档，而是真正美观的作品。
 
-## Two Workflows for Different Needs
+## 面向不同需求的两种工作流
 
-We developed two complementary workflows within our Personal AI Infrastructure (PAI) [3], each addressing a different starting point.
+我们在个人 AI 基础设施（Personal AI Infrastructure，PAI）[3] 中开发了两种互补的工作流，分别面向不同的起点。
 
-### TranslateMindMap: From Hand-Drawn to Digital
+### TranslateMindMap：从手绘到数字化
 
-This workflow takes an existing hand-drawn mind map image and transforms it into a structured digital note with an AI-enhanced visualization.
+这个工作流接收一张已有的手绘思维导图图像，将其转化为结构化的数字笔记，并附带 AI 增强的可视化。
 
-**The process:**
+**流程：**
 
 ```
 Original Image → Copy to images/ → Generate Nano → Analyze Nano → Create Note
 ```
 
-![TranslateMindMap Process]({{ site.baseurl }}images/mindmap-digitization-workflow/TranslateMindMap_Process.jpg)
+![TranslateMindMap 流程]({{ site.baseurl }}/images/mindmap-digitization-workflow/TranslateMindMap_Process.jpg)
 
-_Figure. The TranslateMindMap workflow transforms hand-drawn mind maps into structured digital notes with AI-enhanced visualizations._
+_图：TranslateMindMap 工作流将手绘思维导图转化为带 AI 增强可视化的结构化数字笔记。_
 
-The key insight came during development: we analyze the AI-generated "Nano" version rather than the original. Why? The enhanced version has cleaner lines, standardized typography, and better contrast, making it easier for AI to extract the semantic structure accurately.
+开发过程中的关键洞见是：我们分析 AI 生成的"Nano"版本，而不是原图。为什么？增强版本线条更干净、排版更标准、对比度更好，AI 更容易准确地提取语义结构。
 
-**Technical components:**
+**技术组件：**
 
-| Component | Role |
+| 组件 | 角色 |
 |-----------|------|
-| Claude Code [2] | Orchestrates the entire workflow |
-| Nano Banana Pro [4] | Advanced image generation model |
-| Style Reference | Existing Nano image ensures visual consistency |
-| Obsidian [5] | Final destination for structured markdown notes |
+| Claude Code [2] | 编排整个工作流 |
+| Nano Banana Pro [4] | 先进的图像生成模型 |
+| 风格参考 | 已有的 Nano 图像确保视觉一致性 |
+| Obsidian [5] | 结构化 markdown 笔记的最终归宿 |
 
-### GenerateMindMap: From Content to Visual
+### GenerateMindMap：从内容到视觉
 
-Sometimes we want to create a new mind map from existing content rather than digitizing a hand-drawn one. This workflow accepts text, URLs, files, or structured outlines and generates both a visualization and a structured note.
+有时我们想从已有内容创建新的思维导图，而不是数字化手绘导图。这个工作流接受文本、URL、文件或结构化大纲，同时生成可视化和结构化笔记。
 
-**Input types supported:**
+**支持的输入类型：**
 
-*   **Text**: Paste content directly for quick transformation
-*   **URL**: Fetch and analyze web articles
-*   **File**: Process existing markdown or text documents
-*   **Outline**: Provide explicit structure for precise control
+*   **文本**：直接粘贴内容以快速转换
+*   **URL**：抓取并分析网页文章
+*   **文件**：处理已有的 markdown 或文本文档
+*   **大纲**：提供明确结构以精确控制
 
-**The process:**
+**流程：**
 
 ```
 Content → Extract Structure → Build Prompt → Generate Nano → Create Note
 ```
 
-![GenerateMindMap Process]({{ site.baseurl }}images/mindmap-digitization-workflow/GenerateMindMap_Process.jpg)
+![GenerateMindMap 流程]({{ site.baseurl }}/images/mindmap-digitization-workflow/GenerateMindMap_Process.jpg)
 
-_Figure. The GenerateMindMap workflow creates new mind maps from text, URLs, files, or structured outlines._
+_图：GenerateMindMap 工作流从文本、URL、文件或结构化大纲创建新的思维导图。_
 
-This workflow is particularly useful for synthesizing research, planning projects, or creating visual summaries of dense material.
+这个工作流对于综合研究、规划项目或为艰深材料创建视觉摘要尤其有用。
 
-## The Art of Prompt Engineering
+## 提示词工程的艺术
 
-Generating consistent, high-quality mind map visualizations requires careful prompt engineering. Through experimentation, we developed a template that reliably produces the illuminated manuscript aesthetic.
+要生成一致、高质量的思维导图可视化，需要精心的提示词工程。通过反复实验，我们开发出一个能稳定产出泥金装饰手稿美学的模板。
 
-**Critical constraints:**
+**关键约束：**
 
-1. **Layout Preservation**: The AI must maintain the exact spatial arrangement of branches from the original
-2. **Content Fidelity**: Every term, formula, and relationship must appear in the output
-3. **Visual Consistency**: New generations must match the established style
+1. **布局保留**：AI 必须保持原作中分支的精确空间排布
+2. **内容忠实**：每个术语、公式和关系都必须出现在输出中
+3. **视觉一致**：新生成的图像必须匹配既定风格
 
-**Color coding by theme:**
+**按主题进行的颜色编码：**
 
-| Branch Theme | Color Palette |
+| 分支主题 | 色板 |
 |--------------|---------------|
-| Logic/Math | Blue gradients |
-| Philosophy | Purple/Violet |
-| Technical/Code | Teal/Cyan |
-| Business/Process | Coral/Orange |
-| Data/Hierarchy | Green, rainbow levels |
+| 逻辑/数学 | 蓝色渐变 |
+| 哲学 | 紫色/紫罗兰 |
+| 技术/代码 | 蓝绿/青色 |
+| 商业/流程 | 珊瑚/橙色 |
+| 数据/层级 | 绿色，彩虹分级 |
 
-The style reference system ensures consistency across all 80+ mind maps. By providing a canonical example alongside each generation request, the AI produces visually coherent results that feel part of a unified collection.
+风格参考系统确保了 80 多张导图的一致性。每次生成请求都附上一个规范样例，AI 就能产出视觉连贯的结果，让人感觉它们属于一个统一的合集。
 
-## Showcase: Before and After
+## 展示：转换前后
 
-The best way to understand the transformation is to see it. Here are four examples from our collection, showing original hand-drawn maps alongside their AI-enhanced versions.
+理解这种转换最好的方式就是亲眼看。以下是我们收藏中的四个例子，展示原始手绘导图与 AI 增强版本的对照。
 
-### Example 1: Temporal Logic
+### 示例 1：时态逻辑
 
-This mind map captures concepts from a lecture on temporal logic, including operators for past and future, temporal frames, and the semantics of how truth values change over time.
+这张思维导图捕捉了时态逻辑讲座中的概念，包括过去与未来算子、时态框架，以及真值随时间演变的语义。
 
-**Original (Hand-drawn):**
+**原图（手绘）：**
 
-![Temporal Logic Original]({{ site.baseurl }}images/mindmap-digitization-workflow/MM_TemporalLogic.jpeg)
+![时态逻辑原图]({{ site.baseurl }}/images/mindmap-digitization-workflow/MM_TemporalLogic.jpeg)
 
-_Figure. Hand-drawn mind map from a temporal logic lecture, 2013._
+_图：2013 年时态逻辑讲座的手绘思维导图。_
 
-**AI-Enhanced (Nano):**
+**AI 增强（Nano）：**
 
-![Temporal Logic Nano]({{ site.baseurl }}images/mindmap-digitization-workflow/MM_TemporalLogic_Nano.jpeg)
+![时态逻辑 Nano]({{ site.baseurl }}/images/mindmap-digitization-workflow/MM_TemporalLogic_Nano.jpeg)
 
-_Figure. AI-enhanced version with illuminated manuscript style. Note the preserved mathematical notation and branch structure._
+_图：泥金装饰手稿风格的 AI 增强版本。注意保留下来的数学记号和分支结构。_
 
-The transformation preserves the complex relationships between temporal operators while making the content significantly more readable. Mathematical formulas like `(M, Si) |= Φ` remain accurate, and the color coding helps distinguish between past logic (one branch) and future logic (another).
+这种转换在显著提升内容可读性的同时，保留了时态算子之间的复杂关系。`(M, Si) |= Φ` 这样的数学公式保持准确，颜色编码则帮助区分过去逻辑（一个分支）与未来逻辑（另一分支）。
 
-### Example 2: Expert Systems
+### 示例 2：专家系统
 
-A technical mind map covering rule-based expert systems, inference engines, and knowledge representation.
+一张涵盖基于规则的专家系统、推理机和知识表示的技术思维导图。
 
-**Original (Hand-drawn):**
+**原图（手绘）：**
 
-![Expert System Original]({{ site.baseurl }}images/mindmap-digitization-workflow/MM_ExpertSystem.jpeg)
+![专家系统原图]({{ site.baseurl }}/images/mindmap-digitization-workflow/MM_ExpertSystem.jpeg)
 
-_Figure. Expert system architecture captured during study._
+_图：学习期间记录的专家系统架构。_
 
-**AI-Enhanced (Nano):**
+**AI 增强（Nano）：**
 
-![Expert System Nano]({{ site.baseurl }}images/mindmap-digitization-workflow/MM_ExpertSystem_Nano.jpeg)
+![专家系统 Nano]({{ site.baseurl }}/images/mindmap-digitization-workflow/MM_ExpertSystem_Nano.jpeg)
 
-_Figure. Enhanced version showing inference engine components, rule structures, and knowledge base relationships._
+_图：增强版本展示推理机组件、规则结构和知识库关系。_
 
-This example demonstrates how the workflow handles technical content. The Rete network diagram, production rules, and forward/backward chaining concepts all survive the transformation with improved clarity.
+这个例子展示了工作流如何处理技术内容。Rete 网络图、产生式规则、前向/后向链推理等概念都在转换中保留下来，且清晰度更佳。
 
-### Example 3: Blockchain - The Truth Machine
+### 示例 3：区块链——真相机器
 
-A mind map summarizing key concepts from blockchain technology, focusing on trust, decentralization, and consensus mechanisms.
+一张总结区块链关键概念的思维导图，聚焦信任、去中心化与共识机制。
 
-**Original (Hand-drawn):**
+**原图（手绘）：**
 
-![Blockchain Original]({{ site.baseurl }}images/mindmap-digitization-workflow/MM_Blockchain_The_Truth_Machine.jpeg)
+![区块链原图]({{ site.baseurl }}/images/mindmap-digitization-workflow/MM_Blockchain_The_Truth_Machine.jpeg)
 
-_Figure. Mind map from studying blockchain fundamentals._
+_图：学习区块链基础时的思维导图。_
 
-**AI-Enhanced (Nano):**
+**AI 增强（Nano）：**
 
-![Blockchain Nano]({{ site.baseurl }}images/mindmap-digitization-workflow/MM_Blockchain_The_Truth_Machine_Nano.jpeg)
+![区块链 Nano]({{ site.baseurl }}/images/mindmap-digitization-workflow/MM_Blockchain_The_Truth_Machine_Nano.jpeg)
 
-_Figure. The enhanced version brings out the interconnected nature of blockchain concepts with vibrant visual hierarchy._
+_图：增强版本以鲜明的视觉层级凸显了区块链概念之间的相互关联。_
 
-The blockchain mind map shows how the illuminated manuscript style handles business and technical hybrid content. Concepts like "trustless systems," "immutable ledger," and "smart contracts" gain visual prominence through thoughtful color coding and iconography.
+这张区块链导图展示了泥金装饰手稿风格如何处理商业与技术混合的内容。"去信任系统""不可变账本""智能合约"等概念，通过用心的颜色编码和图标设计获得了视觉上的突出地位。
 
-### Example 4: First Mind Map
+### 示例 4：第一张思维导图
 
-This holds special significance as one of the earliest mind maps in the collection, capturing the initial exploration of mind mapping as a technique.
+这张图具有特殊意义——它是收藏中最早的思维导图之一，记录了对思维导图这一技术的最初探索。
 
-**Original (Hand-drawn):**
+**原图（手绘）：**
 
-![First Mind Map Original]({{ site.baseurl }}images/mindmap-digitization-workflow/MM_Benny_First_MindMap.jpeg)
+![第一张思维导图原图]({{ site.baseurl }}/images/mindmap-digitization-workflow/MM_Benny_First_MindMap.jpeg)
 
-_Figure. One of the first hand-drawn mind maps, exploring the technique itself._
+_图：最早的手绘思维导图之一，探索的正是这项技术本身。_
 
-**AI-Enhanced (Nano):**
+**AI 增强（Nano）：**
 
-![First Mind Map Nano]({{ site.baseurl }}images/mindmap-digitization-workflow/MM_Benny_First_MindMap_Nano.jpeg)
+![第一张思维导图 Nano]({{ site.baseurl }}/images/mindmap-digitization-workflow/MM_Benny_First_MindMap_Nano.jpeg)
 
-_Figure. The transformation brings new life to an early exploration while preserving its original spirit._
+_图：转换让早期的探索焕发新生，同时保留了它的原有精神。_
 
-Seeing early work transformed alongside recent maps creates a sense of continuity. The collection becomes a living archive of intellectual development.
+看到早期作品与近期导图一起被转换，会让人感到一种延续性。这个收藏成为智力成长的鲜活档案。
 
-## The Structured Output
+## 结构化输出
 
-Each mind map generates not just an image but a complete Obsidian note with:
+每张思维导图生成的不只是一张图像，而是一份完整的 Obsidian 笔记，包含：
 
-*   **YAML frontmatter** with tags, creation date, and metadata
-*   **Both images embedded** (original and Nano for TranslateMindMap; Nano only for GenerateMindMap)
-*   **Numbered sections** corresponding to major branches
-*   **Key terms in bold** with explanations
-*   **Related notes** linking to connected topics
+*   **YAML frontmatter**，带标签、创建日期和元数据
+*   **两张嵌入图像**（TranslateMindMap 含原图和 Nano；GenerateMindMap 仅含 Nano）
+*   **编号章节**，对应主要分支
+*   **加粗的关键术语**，附解释
+*   **相关笔记链接**，连接到相关主题
 
-This structure makes the mind maps searchable, linkable, and integrated with the broader knowledge base. A search for "temporal operators" now surfaces not just the note but the specific section discussing that concept.
+这种结构让思维导图可检索、可链接，并与更广泛的知识库融为一体。现在搜索"temporal operators"，浮出的不仅是那条笔记，还有讨论该概念的具体章节。
 
-## Lessons Learned
+## 经验教训
 
-Building this workflow taught us several valuable lessons:
+构建这套工作流教会了我们几条宝贵的经验：
 
-**1. Analyze the enhanced version, not the original**
+**1. 分析增强版本，而非原图**
 
-Counter-intuitively, the AI-generated Nano image is easier to analyze than the hand-drawn original. Clean lines and standardized typography make semantic extraction more reliable.
+与直觉相反，AI 生成的 Nano 图像比手绘原图更容易分析。干净的线条和标准化的排版让语义提取更可靠。
 
-**2. Aspect ratio matters**
+**2. 宽高比很重要**
 
-We initially generated square (1:1) images, but mind maps naturally expand horizontally. Switching to 16:9 dramatically improved the visual balance and made branches more readable.
+我们最初生成正方形（1:1）图像，但思维导图天然向横向延展。切换到 16:9 后，视觉平衡显著改善，分支也更易读。
 
-**3. Style references create consistency**
+**3. 风格参考创造一致性**
 
-Without a reference image, each generation produced a different visual style. By providing a canonical example, we achieved remarkable consistency across 80+ maps.
+没有参考图像时，每次生成都会产生不同的视觉风格。提供一个规范样例后，我们在 80 多张导图上实现了一致性。
 
-**4. The workflow is the product**
+**4. 工作流本身就是产品**
 
-The individual commands matter less than the orchestrated flow. Claude Code acts as conductor, coordinating image generation, content analysis, and note creation into a seamless experience.
+单条命令不如编排后的流程重要。Claude Code 扮演指挥，协调图像生成、内容分析与笔记创建，形成无缝体验。
 
-## Concluding Remarks
+## 结语
 
-What began as a simple desire to digitize old notes evolved into a comprehensive system for transforming hand-drawn mind maps into beautiful, searchable, shareable knowledge artifacts. The illuminated manuscript style brings genuine aesthetic pleasure to what could be purely utilitarian documents.
+最初只是数字化旧笔记的简单愿望，最终演化为一个完整的系统——把手绘思维导图转化为精美、可检索、可分享的知识作品。泥金装饰手稿风格为本可以纯粹功利的文档带来了真正的审美愉悦。
 
-More than 80 mind maps now live in our Obsidian vault, each one a fusion of original hand-drawn insight and AI-enhanced presentation. They span a decade of learning, from philosophy lectures to technical architectures, and they are finally accessible in ways paper never allowed.
+现在，80 多张思维导图居住在我们的 Obsidian 库中，每一张都是原始手绘洞见与 AI 增强呈现的融合。它们跨越十年的学习历程，从哲学讲座到技术架构，终于能够以纸张从未允许的方式被访问。
 
-The workflow continues to evolve. Recent additions include generating mind maps directly from web articles and creating visual summaries of dense technical papers. Each enhancement makes the system more useful while maintaining the core vision: preserving organic thought in digital form.
+工作流仍在演进。近期的新增功能包括直接从网页文章生成思维导图，以及为艰深的技术论文创建视觉摘要。每一项增强都让系统更加有用，同时坚持核心愿景：以数字形式保存有机的思想。
 
-For those interested in building similar workflows, the key is starting with clear intentions. What do you want to preserve? What do you want to enhance? The answers shape every technical decision that follows.
+对于想构建类似工作流的读者，关键在于从清晰的意图出发：你想保留什么？你想增强什么？这些答案决定了之后每一个技术决策。
 
-Mind mapping itself remains a powerful technique for learning and thinking [1]. Now, with AI assistance, those maps can transcend their paper origins and become living parts of a connected knowledge system.
+思维导图本身仍是学习与思考的强大技术 [1]。如今，在 AI 的辅助下，这些导图可以超越纸面出身，成为互联知识系统中有生命的一部分。
 
-## References
+## 参考文献
 
 [1] Tony Buzan, [The Mind Map Book](https://www.amazon.com/Mind-Map-Book-Thinking-Potential/dp/0452273226), BBC Active, 1991.
 

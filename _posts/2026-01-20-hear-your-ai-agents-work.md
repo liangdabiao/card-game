@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Hear Your AI Agents Work in Claude Code"
+title: "在 Claude Code 中听你的 AI 代理干活"
 date: 2026-01-25 12:00:00.000000000 -00:00
 permalink: hear-your-ai-agents-work
 author: Benny Cheung
@@ -24,138 +24,138 @@ published: true
 ---
 
 <!--excerpt.start-->
-When running five AI agents in parallel, how do you know what's happening without watching five terminals? The answer is surprisingly low-tech: you listen. By adding voice notifications to Claude Code, we transformed silent terminal output into an ambient, audio-aware experience. This article shows how to build a voice notification system for any Claude Code agent using hooks, a local server, and the ElevenLabs API. Whether you're running BMAD workflow agents, custom research agents, or your own multi-agent system, you can hear "Research complete" in one voice while "Build succeeded" arrives in another.
+当五个 AI 代理并行运行时，如果不盯着五个终端，你怎么知道发生了什么？答案出人意料地"低技术"：你用听的。通过为 Claude Code 添加语音通知，我们把无声的终端输出变成了环境化的、听觉感知的体验。本文展示如何用 hooks、一个本地服务器和 ElevenLabs API，为任何 Claude Code 代理构建语音通知系统。无论你运行的是 BMAD 工作流代理、自定义研究代理，还是你自己的多代理系统，你都能听到"研究完成"是一个声音，而"构建成功"是另一个声音。
 <!--excerpt.end-->
 
 ----
 
-![Sound waves emanating from a terminal]({{ site.baseurl }}images/hear-your-ai-agents-work/Voice_System_Cover.png)
+![从终端散发出的声波]({{ site.baseurl }}/images/hear-your-ai-agents-work/Voice_System_Cover.png)
 
-*Figure. The future of AI interaction might be more human than we expected. Sometimes the best interface is sound.*
+*图：AI 交互的未来，可能比我们预想的更"人"。有时最好的界面是声音。*
 
-## The Problem with Silent Agents
+## 无声代理的问题
 
-Modern AI development has given us something remarkable: the ability to delegate complex tasks to multiple AI agents working in parallel [4]. Claude Code's Task tool lets us spawn specialized agents: researchers who dig through documentation, engineers who write code, architects who design systems. Agent frameworks like BMAD [6] add even more specialized personas: Mary the analyst who breaks down requirements, Winston the architect who designs solutions.
+现代 AI 开发给了我们一件了不起的东西：把复杂任务委托给多个并行工作的 AI 代理的能力 [4]。Claude Code 的 Task 工具让我们可以孵化专门化的代理：翻文档的研究员、写代码的工程师、设计系统的架构师。BMAD [6] 这样的代理框架又增添了更多专门化 persona：拆解需求的分析师 Mary、设计方案的架构师 Winston。
 
-But there's a problem. All these agents work silently.
+但有个问题。所有这些代理都在无声地工作。
 
-Picture the scene: you've asked Claude Code to research three companies, analyze a codebase for security issues, and draft a technical specification, all in parallel. Three agents spin up and get to work. You switch to another task, check email, or grab coffee. When you return, you have no idea which agents finished, which are still working, or if any encountered problems. Your only option is to check each terminal, read through outputs, and piece together the current state.
+想象这个场景：你让 Claude Code 研究 3 家公司、分析一个代码库的安全问题、起草一份技术规格——全部并行。三个代理启动并开工。你切换去做别的任务、查邮件、泡咖啡。等你回来，你完全不知道哪些代理完成了、哪些还在工作、有没有谁遇到了问题。你唯一的选择是逐个检查终端、通读输出、拼凑当前状态。
 
-![Safety First: The Danger of Silence]({{ site.baseurl }}images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_02.png)
+![安全第一：沉默的危险]({{ site.baseurl }}/images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_02.png)
 
-*Figure. The blind spot of silent agents: chaos and disconnection versus calm audio awareness.*
+*图：无声代理的盲区：混乱与失联，对比平静的听觉感知。*
 
 
-Running parallel AI agents without voice notifications is like having five people working in separate rooms with no way to know when they finish except by checking each room repeatedly.
+不带语音通知地运行并行 AI 代理，就像让五个人在五个房间里干活，除了反复挨个查看，没有任何办法知道他们何时完成。
 
-The insight that changed everything for us was simple: we have ears. Why not use them?
+改变一切的洞见很简单：我们有耳朵。为什么不用？
 
-## The Solution: Ambient Voice Notifications
+## 解法：环境化的语音通知
 
-![Level Up: Ambient Audio Awareness]({{ site.baseurl }}images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_03.png)
+![升级：环境音频感知]({{ site.baseurl }}/images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_03.png)
 
-*Figure. Transform Claude Code from visual-only to audio-aware. Different sounds for different agents enable passive monitoring.*
+*图：把 Claude Code 从纯视觉界面变为听觉感知。不同代理不同声音，实现被动监控。*
 
-The solution we built transforms Claude Code from a visual-only interface into an ambient, audio-aware experience [3]. When an agent completes its task, you hear about it, literally. Different agents speak with different voices, so you know who finished without looking at the screen.
+我们构建的解法把 Claude Code 从纯视觉界面变成环境化的、听觉感知的体验 [3]。当代理完成任务时，你会"听到"——字面意义上的。不同代理用不同声音说话，所以不用看屏幕你就知道谁完成了。
 
-The researcher announces in Domi's analytical tone: "Found 5 papers on AI reasoning techniques."
+研究员用 Domi 分析性的音色宣布："Found 5 papers on AI reasoning techniques."
 
-The engineer reports in Bella's steady voice: "Refactored authentication module successfully."
+工程师用 Bella 平稳的声音报告："Refactored authentication module successfully."
 
-The architect summarizes in Antoni's strategic cadence: "Designed microservices architecture with 4 services."
+架构师用 Antoni 战略性的节奏总结："Designed microservices architecture with 4 services."
 
-This works with any Claude Code agent system:
-- **Built-in agents**: researcher, engineer, architect (via the Task tool)
-- **BMAD agents** [6]: Mary, Winston, and other workflow personas
-- **Custom agents**: Any agent you build that follows a simple convention
+这适用于任何 Claude Code 代理系统：
+- **内置代理**：researcher、engineer、architect（经 Task 工具）
+- **BMAD 代理** [6]：Mary、Winston 及其他工作流 persona
+- **自定义代理**：任何遵循简单约定的、你自建的代理
 
-Let's explore how to build this system.
+让我们看看如何构建这个系统。
 
-## System Architecture Overview
+## 系统架构总览
 
-The voice notification system consists of four components working together:
+语音通知系统由四个组件协同组成：
 
-| Component | Role | Technology |
+| 组件 | 角色 | 技术 |
 |-----------|------|------------|
-| **COMPLETED Line Convention** | Agents summarize their work in 12 words | Prompt engineering |
-| **Hook System** | Detects agent completion, extracts message | Claude Code hooks (TypeScript) |
-| **Voice Server** | Receives notifications, calls TTS API | Local HTTP server (Bun) |
-| **ElevenLabs API** | Converts text to natural speech | External TTS service |
+| **COMPLETED 行约定** | 代理用 12 个词总结工作 | 提示词工程 |
+| **Hook 系统** | 检测代理完成，提取消息 | Claude Code hooks（TypeScript） |
+| **语音服务器** | 接收通知，调用 TTS API | 本地 HTTP 服务器（Bun） |
+| **ElevenLabs API** | 把文本转换为自然语音 | 外部 TTS 服务 |
 
-![PAI Voice System Architecture]({{ site.baseurl }}images/hear-your-ai-agents-work/pai-voice-system-flowchart.png)
+![PAI 语音系统架构]({{ site.baseurl }}/images/hear-your-ai-agents-work/pai-voice-system-flowchart.png)
 
-*Figure. The four-component architecture inspired by the PAI framework [3]: agents produce COMPLETED lines, hooks detect and parse them [1], the voice server calls ElevenLabs [2], and audio plays through system speakers.*
+*图：受 PAI 框架启发的四组件架构 [3]：代理产出 COMPLETED 行，hooks 检测并解析它们 [1]，语音服务器调用 ElevenLabs [2]，音频通过系统扬声器播放。*
 
-The key design decision is using different voices per agent type. This enables:
-- **Identification without looking**: Know who finished by ear alone
-- **Cognitive offloading**: Your brain processes audio passively while you focus elsewhere
-- **Parallel awareness**: Multiple completions don't collide; each has a distinct voice
+关键设计决策是为每种代理类型使用不同的声音。这带来：
+- **不用看的识别**：仅凭耳朵就知道谁完成了
+- **认知卸载**：你专注于别处时，大脑被动处理音频
+- **并行感知**：多个完成不会互相冲撞；每个都有独特的声音
 
-## The COMPLETED Line Convention
+## COMPLETED 行约定
 
-The entire system is driven by a remarkably simple convention: agents include a `COMPLETED:` line in their responses that summarizes what they accomplished.
+整个系统由一个极其简单的约定驱动：代理在其响应中包含一行 `COMPLETED:`，总结它完成了什么。
 
 ```markdown
 COMPLETED: Successfully analyzed the codebase and found 3 security issues.
 ```
 
-This single line becomes spoken aloud through your speakers.
+这一行会被朗读出来，通过你的扬声器。
 
-![The Code: COMPLETED Line Convention]({{ site.baseurl }}images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_05.png)
+![代码：COMPLETED 行约定]({{ site.baseurl }}/images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_05.png)
 
-*Figure. The COMPLETED line convention: 12 words max, outcome-focused, natural language that sounds good when spoken aloud.*
+*图：COMPLETED 行约定：最多 12 个词、聚焦结果、朗读起来自然的语言。*
 
-### Rules for COMPLETED Lines
+### COMPLETED 行的规则
 
-| Rule | Reason |
+| 规则 | 原因 |
 |------|--------|
-| Maximum 12 words | Keeps voice output brief and natural |
-| Past tense | Describes what was accomplished |
-| Outcome-focused | "Found 3 issues" not "Searched for issues" |
-| No technical jargon | Must sound natural when spoken aloud |
+| 最多 12 个词 | 保持语音输出简短自然 |
+| 过去时 | 描述已完成之事 |
+| 聚焦结果 | "Found 3 issues" 而非 "Searched for issues" |
+| 无技术行话 | 朗读时必须自然 |
 
-### Adding to Your Agent Prompts
+### 加入你的代理提示词
 
-Any agent system can adopt this convention. Simply add to your agent's instructions:
+任何代理系统都可以采用这个约定。只需在代理的指令中加入：
 
 ```markdown
 Always end your response with a COMPLETED line summarizing what you accomplished:
 COMPLETED: [12 words max describing the outcome]
 ```
 
-This works for Claude Code Task tool agents, BMAD workflow agents [6], custom skill-based agents, or any Claude Code subagent that can follow instructions.
+这适用于 Claude Code Task 工具代理、BMAD 工作流代理 [6]、自定义的 skill 代理，或任何能遵循指令的 Claude Code 子代理。
 
-### Why a Convention, Not Structured Data?
+### 为什么用约定，而不用结构化数据？
 
-We chose a simple text convention over structured JSON for several reasons:
+我们选择简单的文本约定而非结构化 JSON，理由如下：
 
-- **Simplicity**: No complex parsing required
-- **Robustness**: Regex extraction is reliable
-- **Human-readable**: Works in logs and voice equally well
-- **Universal**: Any agent can follow this pattern
+- **简单**：无需复杂解析
+- **健壮**：正则提取可靠
+- **人类可读**：在日志与语音中同样有效
+- **通用**：任何代理都能遵循这个模式
 
-Consider the difference:
-- **Good**: "Found 5 papers on AI reasoning techniques."
-- **Bad**: "Task research_papers completed with status SUCCESS and result_count 5."
+比较一下差别：
+- **好**："Found 5 papers on AI reasoning techniques."
+- **坏**："Task research_papers completed with status SUCCESS and result_count 5."
 
-The first sounds natural when spoken. The second sounds robotic. Since this text will be read aloud, natural language wins.
+第一种朗读起来自然。第二种听起来像机器人。既然这段文字要被读出来，自然语言胜出。
 
-## The Hook System
+## Hook 系统
 
-Claude Code hooks are scripts that run automatically in response to events [1]. Think of them as triggers: "When X happens, automatically do Y."
+Claude Code hooks 是响应事件自动运行的脚本 [1]。把它们想象成触发器："当 X 发生时，自动做 Y。"
 
-![The Trigger: Claude Code Hooks]({{ site.baseurl }}images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_06.png)
+![触发器：Claude Code Hooks]({{ site.baseurl }}/images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_06.png)
 
-*Figure. Hooks trigger on agent completion: read output, extract COMPLETED line, identify agent type, fire to voice server.*
+*图：Hooks 在代理完成时触发：读取输出、提取 COMPLETED 行、识别代理类型、发往语音服务器。*
 
-### Relevant Hook Events
+### 相关的 Hook 事件
 
-| Hook | Trigger | Purpose |
+| Hook | 触发条件 | 用途 |
 |------|---------|---------|
-| `stop` | Main agent completes | Parse main response |
-| `subagent_stop` | Sub-agent completes | Parse researcher, engineer, BMAD agents, etc. |
+| `stop` | 主代理完成 | 解析主响应 |
+| `subagent_stop` | 子代理完成 | 解析研究员、工程师、BMAD 代理等 |
 
-The hooks live in `~/.claude/hooks/` and must be configured in `~/.claude/settings.json` [1]:
+Hooks 位于 `~/.claude/hooks/`，必须在 `~/.claude/settings.json` 中配置 [1]：
 
 ```json
 {
@@ -176,9 +176,9 @@ The hooks live in `~/.claude/hooks/` and must be configured in `~/.claude/settin
 }
 ```
 
-### What the Hooks Do
+### Hooks 做了什么
 
-The subagent-stop-hook handles most voice notifications. Here's the logic flow:
+subagent-stop-hook 处理大部分语音通知。逻辑流程如下：
 
 ```typescript
 // Pseudocode for subagent-stop-hook.ts
@@ -189,9 +189,9 @@ The subagent-stop-hook handles most voice notifications. Here's the logic flow:
 5. POST to http://localhost:8888/notify
 ```
 
-### Agent Type Detection
+### 代理类型检测
 
-The hook identifies agent types from the Task tool's `subagent_type` parameter or from patterns in the output. You can extend this for custom agents:
+Hook 从 Task 工具的 `subagent_type` 参数或输出中的模式识别代理类型。你可以为自定义代理扩展它：
 
 ```typescript
 // Example: Detecting BMAD agents
@@ -204,15 +204,15 @@ if (output.includes('Mary') || subagentType === 'mary') {
 }
 ```
 
-The detection logic can be as simple or sophisticated as your agent system requires.
+检测逻辑可以简单也可以精巧，取决于你的代理系统的需要。
 
-## Voice Configuration
+## 语音配置
 
-![Choose Your Roster: Voice Mapping]({{ site.baseurl }}images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_08.png)
+![选择你的阵容：声音映射]({{ site.baseurl }}/images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_08.png)
 
-*Figure. Assign distinct voices to agent roles for instant auditory identification. Configuration managed in voices.json.*
+*图：为代理角色分配独特声音，实现即时的听觉识别。配置在 voices.json 中管理。*
 
-Each agent type maps to a distinct voice, configured in `~/.claude/agent-voices/voices.json`:
+每种代理类型映射到一个独特的声音，配置在 `~/.claude/agent-voices/voices.json`：
 
 ```json
 {
@@ -233,56 +233,56 @@ Each agent type maps to a distinct voice, configured in `~/.claude/agent-voices/
 }
 ```
 
-### Default Voice Mappings
+### 默认声音映射
 
-The AgentVoices repository [5] includes default mappings for common agent types:
+AgentVoices 仓库 [5] 包含常见代理类型的默认映射：
 
-| Agent | Voice | Characteristics |
+| 代理 | 声音 | 特点 |
 |-------|-------|-----------------|
-| **Main** | Rachel | Warm, Professional |
-| **Researcher** | Domi | Clear, Analytical |
-| **Engineer** | Bella | Steady, Technical |
-| **Architect** | Antoni | Confident, Strategic |
-| **Designer** | Elli | Creative, Expressive |
-| **Writer** | Josh | Articulate, Smooth |
-| **Pentester** | Arnold | Deep, Technical |
+| **Main** | Rachel | 温暖、专业 |
+| **Researcher** | Domi | 清晰、分析性 |
+| **Engineer** | Bella | 平稳、技术感 |
+| **Architect** | Antoni | 自信、战略性 |
+| **Designer** | Elli | 创意、表现力 |
+| **Writer** | Josh | 健谈、流畅 |
+| **Pentester** | Arnold | 低沉、技术感 |
 
-**BMAD Agents (example customization):**
+**BMAD 代理（自定义示例）：**
 
-| Agent | Voice | Characteristics |
+| 代理 | 声音 | 特点 |
 |-------|-------|-----------------|
-| **Mary (Analyst)** | Domi | Clear, Analytical |
-| **Winston (Architect)** | Antoni | Confident, Strategic |
-| **Party Mode** | Rachel | Warm, Coordinator |
+| **Mary (Analyst)** | Domi | 清晰、分析性 |
+| **Winston (Architect)** | Antoni | 自信、战略性 |
+| **Party Mode** | Rachel | 温暖、协调者 |
 
-### Voice Selection Philosophy
+### 声音选择哲学
 
-Choose voices that:
-- Are **distinct** enough to identify the agent type by ear
-- Match the **persona** (analytical voice for analyst, creative for designer)
-- Have appropriate **pacing** for the content type
-- Don't fatigue the ear over extended use
+选择的声音应当：
+- **独特**到足以凭耳朵识别代理类型
+- 匹配 **persona**（分析师配分析性的声音、设计师配创意的声音）
+- 对内容类型有合适的**节奏**
+- 长时间使用不让耳朵疲劳
 
-After a few days of use, you'll recognize agents by voice alone, like knowing which coworker is talking in another room without looking.
+使用几天后，你就能只凭声音认出代理——就像不用看就知道隔壁房间哪位同事在说话。
 
-## The Voice Server
+## 语音服务器
 
-The voice server is a local HTTP service that bridges hooks to the ElevenLabs TTS API [2].
+语音服务器是一个本地 HTTP 服务，连接 hooks 与 ElevenLabs TTS API [2]。
 
-![The Relay: Local Voice Server]({{ site.baseurl }}images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_07.png)
+![中继：本地语音服务器]({{ site.baseurl }}/images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_07.png)
 
-*Figure. Built on Bun for speed. Bridges hooks to cloud API, manages queues and rate limiting, enables isolated testing.*
+*图：基于 Bun 构建，追求速度。连接 hooks 与云 API，管理队列与限流，支持隔离测试。*
 
-### Why a Local Server?
+### 为什么需要本地服务器？
 
-- **Decoupling**: Hooks stay simple; server handles complexity
-- **State management**: Can queue notifications, manage rate limits
-- **Configuration**: Voice settings in one place
-- **Testability**: Can test voice independently of hooks
+- **解耦**：hooks 保持简单；服务器处理复杂度
+- **状态管理**：可以排队通知、管理限流
+- **配置**：语音设置集中在一处
+- **可测试性**：可以脱离 hooks 独立测试语音
 
-### Repository Structure
+### 仓库结构
 
-The [AgentVoices](https://github.com/bennycheung/AgentVoices) repository [5] is organized as follows:
+[AgentVoices](https://github.com/bennycheung/AgentVoices) 仓库 [5] 的组织如下：
 
 ```
 AgentVoices/
@@ -302,13 +302,13 @@ AgentVoices/
 └── README.md
 ```
 
-The installer deploys the server to `~/.claude/agent-voices/` and hooks to `~/.claude/hooks/`. Logs are written to `~/Library/Logs/agent-voices.log`.
+安装器把服务器部署到 `~/.claude/agent-voices/`，hooks 复制到 `~/.claude/hooks/`。日志写入 `~/Library/Logs/agent-voices.log`。
 
-### The API Endpoints
+### API 端点
 
-The server exposes two endpoints:
+服务器暴露两个端点：
 
-**POST /notify** - Trigger a voice notification:
+**POST /notify** —— 触发语音通知：
 
 ```bash
 curl -X POST http://localhost:8888/notify \
@@ -316,43 +316,43 @@ curl -X POST http://localhost:8888/notify \
   -d '{"message": "Task completed", "voice_id": "21m00Tcm4TlvDq8ikWAM"}'
 ```
 
-Parameters:
-- `message` (required): The text to speak
-- `voice_id` (optional): ElevenLabs voice ID (uses default if omitted)
-- `voice_enabled` (optional): Set to `false` to skip voice output
-- `title` (optional): Notification title for logging
+参数：
+- `message`（必填）：要朗读的文本
+- `voice_id`（可选）：ElevenLabs voice ID（省略则用默认）
+- `voice_enabled`（可选）：设为 `false` 跳过语音输出
+- `title`（可选）：用于日志的通知标题
 
-**GET /health** - Check server status:
+**GET /health** —— 检查服务器状态：
 
 ```bash
 curl http://localhost:8888/health
 ```
 
-When the server receives a notify request, it calls ElevenLabs, receives an audio stream, and plays it through your speakers.
+服务器收到 notify 请求后，调用 ElevenLabs，接收音频流，并通过你的扬声器播放。
 
-### Running as a macOS Service
+### 作为 macOS 服务运行
 
-The server starts automatically on login via a macOS LaunchAgent:
-- No manual startup required
-- Restarts automatically if it crashes
-- Logs captured for debugging
+服务器通过 macOS LaunchAgent 在登录时自动启动：
+- 无需手动启动
+- 崩溃后自动重启
+- 记录日志便于调试
 
-This means voice notifications are always available whenever you're logged in.
+这意味着只要你登录着，语音通知就始终可用。
 
-## ElevenLabs Integration
+## ElevenLabs 集成
 
-ElevenLabs provides the text-to-speech engine that makes voices sound natural rather than robotic [2].
+ElevenLabs 提供文本转语音引擎，让声音听起来自然而非机械 [2]。
 
-### Why ElevenLabs?
+### 为什么选 ElevenLabs？
 
-- **Quality**: Near-human voice synthesis
-- **Voice variety**: Hundreds of voices to choose from
-- **Simple API**: Single endpoint for text-to-speech
-- **Reasonable pricing**: Free tier for light usage
+- **质量**：接近真人的语音合成
+- **声音多样**：数百种声音可选
+- **API 简单**：文本转语音只需一个端点
+- **定价合理**：轻度使用有免费层
 
-### API Call Structure
+### API 调用结构
 
-The ElevenLabs text-to-speech API [2] uses a simple endpoint structure:
+ElevenLabs 文本转语音 API [2] 使用简单的端点结构：
 
 ```typescript
 const response = await fetch(
@@ -372,35 +372,35 @@ const response = await fetch(
 // Returns audio stream (MP3)
 ```
 
-The server receives an MP3 audio stream and plays it immediately.
+服务器接收 MP3 音频流并立即播放。
 
-### Cost Management
+### 成本管理
 
-| Tier | Characters/Month | Cost |
+| 层级 | 字符/月 | 费用 |
 |------|------------------|------|
 | Free | 10,000 | $0 |
 | Starter | 30,000 | $5/mo |
 | Creator | 100,000 | $22/mo |
 
-**Usage math:**
-- Average COMPLETED message: ~50 characters
-- 200 notifications/day = 10,000 chars/day
-- Free tier covers approximately 1 day of heavy use
+**用量估算：**
+- 平均 COMPLETED 消息：约 50 字符
+- 每天 200 条通知 = 每天 10,000 字符
+- 免费层大约够重度使用一天
 
-**Tips for managing costs:**
-- Keep messages short (the 12-word rule helps)
-- Disable voice for routine or bulk tasks
-- Use voice selectively for important notifications
+**控制成本的技巧：**
+- 消息保持简短（12 词规则有帮助）
+- 日常或批量任务禁用语音
+- 只对重要通知使用语音
 
-## Putting It All Together
+## 组装起来
 
-Let's trace through complete examples showing how the system works in practice.
+让我们用完整的例子过一遍系统在实践中的运作。
 
-### Example: Claude Code Researcher Agent
+### 示例：Claude Code 研究员代理
 
-![Battle Scenario: The Researcher]({{ site.baseurl }}images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_10.png)
+![战斗场景：研究员]({{ site.baseurl }}/images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_10.png)
 
-*Figure. The researcher scenario: command issued, user steps away, completion announced audibly. Information delivered without screen time.*
+*图：研究员场景：下达命令，用户离开，完成时以声音宣告。无需盯着屏幕即获知信息。*
 
 ```
 1. USER: "Research the latest AI papers on reasoning"
@@ -420,7 +420,7 @@ Let's trace through complete examples showing how the system works in practice.
    "Found 5 papers on AI reasoning techniques."
 ```
 
-### Example: BMAD Workflow Agent
+### 示例：BMAD 工作流代理
 
 ```
 1. USER: "Use Mary to analyze the requirements"
@@ -440,32 +440,32 @@ Let's trace through complete examples showing how the system works in practice.
    "Analyzed requirements and created 12 user stories."
 ```
 
-### Example: Parallel Agents
+### 示例：并行代理
 
-When you launch multiple agents simultaneously, the voice system handles them naturally:
+同时启动多个代理时，语音系统从容处理：
 
-![Ultimate Combo: Parallel Agents]({{ site.baseurl }}images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_11.png)
+![终极组合：并行代理]({{ site.baseurl }}/images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_11.png)
 
-*Figure. Three researcher agents working in parallel announce their completions at 8s, 10s, and 12s respectively, giving real-time audio awareness of progress.*
+*图：三个研究员代理并行工作，分别在 8 秒、10 秒和 12 秒宣告完成，提供实时的进度听觉感知。*
 
-Each completion is announced as it happens, giving you real-time awareness of progress without watching terminals.
+每次完成都在发生时宣告，让你不用盯着终端就实时掌握进度。
 
-## Setup Guide
+## 搭建指南
 
-Ready to build your own? Here's how to get started.
+想构建你自己的？从这里开始。
 
-### Prerequisites
+### 前置要求
 
-- macOS (tested on 11+)
-- Claude Code installed
-- Bun runtime
-- ElevenLabs account (free tier works)
+- macOS（在 11+ 上测试）
+- 已安装 Claude Code
+- Bun 运行时
+- ElevenLabs 账户（免费层即可）
 
-### Quick Start
+### 快速开始
 
-![Initiate Sequence: Setup Guide]({{ site.baseurl }}images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_12.png)
+![启动序列：搭建指南]({{ site.baseurl }}/images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_12.png)
 
-*Figure. One install script handles dependencies, hook placement, and service creation. Prerequisites: macOS, Claude Code, Bun, ElevenLabs API key.*
+*图：一个安装脚本搞定依赖、hook 放置和服务创建。前置要求：macOS、Claude Code、Bun、ElevenLabs API key。*
 
 
 ```bash
@@ -484,14 +484,14 @@ cd AgentVoices
 ./scripts/install.sh
 ```
 
-The installer will:
-- Install dependencies
-- Deploy server to `~/.claude/agent-voices/`
-- Copy hooks to `~/.claude/hooks/`
-- Register as a macOS service (auto-start on login)
-- Start the voice server
+安装器会：
+- 安装依赖
+- 部署服务器到 `~/.claude/agent-voices/`
+- 复制 hooks 到 `~/.claude/hooks/`
+- 注册为 macOS 服务（登录时自动启动）
+- 启动语音服务器
 
-**Verify installation:**
+**验证安装：**
 
 ```bash
 # Check server status
@@ -503,19 +503,19 @@ curl -X POST http://localhost:8888/notify \
   -d '{"message":"Voice system ready"}'
 ```
 
-You should hear "Voice system ready" through your speakers.
+你应该会通过扬声器听到 "Voice system ready"。
 
-### Adding Your Custom Agents
+### 添加你的自定义代理
 
-![Extend the Squad: Custom Agents]({{ site.baseurl }}images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_13.png)
+![扩充队伍：自定义代理]({{ site.baseurl }}/images/hear-your-ai-agents-work/Hear_Your_AI_Agents_Work_frame_13.png)
 
-*Figure. Three steps to add custom agents: register in voices.json, update hook detection logic, add COMPLETED convention to prompts.*
+*图：添加自定义代理的三步：在 voices.json 中注册、更新 hook 检测逻辑、在提示词中加入 COMPLETED 约定。*
 
-1. Add agent type to `~/.claude/agent-voices/voices.json` with your chosen voice ID
-2. Update hook logic in `~/.claude/hooks/subagent-stop-hook.ts` to detect your agent type
-3. Add COMPLETED convention to your agent's prompt
+1. 在 `~/.claude/agent-voices/voices.json` 中添加代理类型和你选定的 voice ID
+2. 更新 `~/.claude/hooks/subagent-stop-hook.ts` 中的 hook 逻辑以检测你的代理类型
+3. 在代理的提示词中加入 COMPLETED 约定
 
-### Server Management
+### 服务器管理
 
 ```bash
 ./scripts/status.sh    # Check if running
@@ -525,80 +525,80 @@ You should hear "Voice system ready" through your speakers.
 ./scripts/uninstall.sh # Remove installation
 ```
 
-### Troubleshooting Quick Reference
+### 故障排查速查表
 
-| Symptom | Check | Fix |
+| 症状 | 检查 | 修复 |
 |---------|-------|-----|
-| No sound | Server running? | `./scripts/status.sh` |
-| 401 error | API key valid? | `grep ELEVENLABS_API_KEY ~/.env` |
-| Port busy | Something on 8888? | `lsof -ti:8888 \| xargs kill -9` |
-| View logs | Check errors | `tail -f ~/Library/Logs/agent-voices.log` |
-| Bun missing | Runtime installed? | `which bun` |
+| 没有声音 | 服务器在运行吗？ | `./scripts/status.sh` |
+| 401 错误 | API key 有效吗？ | `grep ELEVENLABS_API_KEY ~/.env` |
+| 端口被占 | 8888 上有东西？ | `lsof -ti:8888 \| xargs kill -9` |
+| 查看日志 | 检查错误 | `tail -f ~/Library/Logs/agent-voices.log` |
+| 缺少 Bun | 运行时装了吗？ | `which bun` |
 
-## Extensions and Variations
+## 扩展与变体
 
-The basic system can be extended in several directions.
+基础系统可以向多个方向扩展。
 
-### Alternative TTS Services
+### 替代 TTS 服务
 
-| Service | Pros | Cons |
+| 服务 | 优点 | 缺点 |
 |---------|------|------|
-| ElevenLabs | Best quality | Cost at scale |
-| OpenAI TTS | Simple API | Fewer voices |
-| macOS `say` | Free, offline | Robotic quality |
-| Bark | Open source | Requires GPU |
+| ElevenLabs | 质量最好 | 规模化后成本高 |
+| OpenAI TTS | API 简单 | 声音较少 |
+| macOS `say` | 免费、离线 | 质量机械 |
+| Bark | 开源 | 需要 GPU |
 
-If cost is a concern, you could use macOS's built-in `say` command for routine notifications and reserve ElevenLabs for important ones.
+如果成本是顾虑，可以用 macOS 内置的 `say` 命令处理日常通知，把 ElevenLabs 留给重要的通知。
 
-### Beyond Completion Notifications
+### 完成通知之外
 
-The same architecture supports other notification types:
-- **Error alerts**: Different voice/tone for failures
-- **Progress updates**: "Starting phase 2 of 5"
-- **Interactive prompts**: "Should I continue with the refactor?"
-- **System status**: "Memory usage high" warnings
+同一架构支持其他通知类型：
+- **错误告警**：失败时用不同的声音/语调
+- **进度更新**："Starting phase 2 of 5"
+- **交互式提示**："Should I continue with the refactor?"
+- **系统状态**："Memory usage high" 警告
 
-### Cross-Platform Considerations
+### 跨平台考量
 
-- **Linux**: Use `paplay` or `aplay` instead of macOS audio
-- **Windows**: Use PowerShell audio APIs
-- **Remote servers**: Stream audio to local machine via WebSocket
+- **Linux**：用 `paplay` 或 `aplay` 代替 macOS 音频
+- **Windows**：用 PowerShell 音频 API
+- **远程服务器**：通过 WebSocket 把音频串流到本地机器
 
-## Concluding Remarks
+## 结语
 
-We set out to solve a simple problem: how do you stay aware of multiple AI agents without staring at multiple terminals? The answer turned out to be surprisingly low-tech.
+我们着手解决一个简单的问题：如何在不盯着多个终端的情况下掌握多个 AI 代理的状态？答案出人意料地"低技术"。
 
-Voice notifications transform Claude Code from a visual-only interface into an ambient, audio-aware experience. The architecture is deliberately simple:
-1. A text convention (COMPLETED lines)
-2. Hook scripts that detect and parse
-3. A local server that bridges to TTS
-4. An API that generates natural speech
+语音通知把 Claude Code 从纯视觉界面变成环境化的、听觉感知的体验。架构刻意保持简单：
+1. 一个文本约定（COMPLETED 行）
+2. 检测并解析的 hook 脚本
+3. 一个桥接 TTS 的本地服务器
+4. 一个生成自然语音的 API
 
-Different voices per agent type means you can identify who finished by ear alone. The researcher speaks differently than the engineer, and both are distinct from the architect. After a few days, this becomes second nature. You hear Domi's voice and know the research is done without looking up from your other work.
+每种代理类型不同的声音意味着你可以只凭耳朵识别谁完成了。研究员说话的方式与工程师不同，两者又都与架构师不同。几天之后，这就成了第二天性。你听到 Domi 的声音，就知道研究做完了，无需从手头的工作中抬头。
 
-The meta-insight is worth noting: we built sophisticated multi-agent AI systems [4], then realized we needed the most ancient notification mechanism of all, someone calling out "I'm done!" The future of AI interaction might be more human than we expected.
+这个元洞见值得一提：我们构建了精密的多代理 AI 系统 [4]，然后发现我们需要的竟是最古老的通告机制——有人喊一声"我搞定了！"AI 交互的未来，可能比我们预想的更"人"。
 
-Try adding voice to one agent completion. The first time you hear your AI assistant announce "Task complete" while you're making coffee, you'll wonder why every AI system doesn't do this.
+试着给一个代理完成事件加上语音。当你第一次在泡咖啡时听到 AI 助手宣告"Task complete"，你会纳闷为什么不是每个 AI 系统都这么做。
 
 ----
 
-## References
+## 参考文献
 
 [1] Anthropic. [*Claude Code Hooks Documentation*](https://docs.anthropic.com/en/docs/claude-code/hooks). Anthropic Docs, 2025.
-  - Official documentation for configuring Claude Code hooks
+  - 配置 Claude Code hooks 的官方文档
 
 [2] ElevenLabs. [*Text to Speech API Documentation*](https://docs.elevenlabs.io/). ElevenLabs Docs, 2025.
-  - API reference for voice synthesis
+  - 语音合成的 API 参考
 
 [3] Daniel Miessler. [*Building a Personal AI Infrastructure (PAI)*](https://danielmiessler.com/blog/personal-ai-infrastructure). danielmiessler.com, Jul 2025.
-  - The PAI architecture that inspired this voice system approach
+  - 启发了这一语音系统方案的 PAI 架构
 
-[4] Benny Cheung. [*Process Philosophy for AI Agent Design*]({{ site.baseurl }}process-philosophy-for-ai-agent-design). Benny's Mind Hack, Jan 2026.
-  - Related: Whiteheadian framework for multi-agent systems
+[4] Benny Cheung. [*Process Philosophy for AI Agent Design*]({{ site.baseurl }}/process-philosophy-for-ai-agent-design). Benny's Mind Hack, Jan 2026.
+  - 相关阅读：面向多代理系统的怀特海式框架
 
 [5] Benny Cheung. [*AgentVoices*](https://github.com/bennycheung/AgentVoices). GitHub, Jan 2026.
-  - Reference implementation: Voice notification system for Claude Code agents
+  - 参考实现：面向 Claude Code 代理的语音通知系统
 
 [6] BMad Code Organization. [*BMAD Method*](https://github.com/bmad-code-org/BMAD-METHOD/tree/main). GitHub, 2025.
-  - Foundations in Agentic Agile Driven Development, known as the Breakthrough Method of Agile AI-Driven Development
-  - See also: [*BMAD Method User Guide*](https://github.com/bmad-code-org/BMAD-METHOD/blob/main/docs/user-guide.md)
+  - Agentic Agile Driven Development 的基础，即敏捷 AI 驱动开发的突破性方法（Breakthrough Method of Agile AI-Driven Development）
+  - 另见：[*BMAD Method 用户指南*](https://github.com/bmad-code-org/BMAD-METHOD/blob/main/docs/user-guide.md)

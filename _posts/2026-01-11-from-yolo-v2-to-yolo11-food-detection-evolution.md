@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "You Only Look Once: 8 Years of Food Detection Evolution"
+title: "You Only Look Once：八年食物检测演进"
 date: 2026-01-11 12:00:00.000000000 -05:00
 permalink: from-yolo-v2-to-yolo11-food-detection-evolution
 author: Benny Cheung
@@ -25,44 +25,44 @@ series_order: 1
 ---
 
 <!--excerpt.start-->
-Eight years ago, we trained a YOLO v2 model to detect 100 types of Japanese food in real-time. It required compiling C code, writing custom Python scripts, and carefully tuning configuration files. Today, the same task takes three commands and an afternoon. This is the story of how food detection, and deep learning tooling more broadly, has evolved from 2018 to 2026.
+八年前，我们训练了一个 YOLO v2 模型来实时检测 100 种日本食物。它需要编译 C 代码、编写定制 Python 脚本、小心地调配置文件。今天，同样的任务只需三条命令和一个下午。这就是食物检测——以及更广义的深度学习工具链——从 2018 到 2026 的演进故事。
 <!--excerpt.end-->
 
-In 2018, we wrote about [YOLO for Real-Time Food Detection]({{ site.baseurl }}yolo-for-real-time-food-detection) [6], documenting our journey to build a "Food Watcher" using Joseph Redmon's Darknet framework [1] and the UEC FOOD 100 dataset [2]. The result was impressive for its time: 70 fps food detection on a GTX TitanX, recognizing everything from sushi to hamburgers.
+2018 年，我们写过 [YOLO for Real-Time Food Detection]({{ site.baseurl }}/yolo-for-real-time-food-detection) [6]，记录了我们用 Joseph Redmon 的 Darknet 框架 [1] 和 UEC FOOD 100 数据集 [2] 构建"Food Watcher"的历程。就当时而言，结果令人印象深刻：GTX TitanX 上 70 fps 的食物检测，从寿司到汉堡无所不识。
 
-> "The obsession of recognizing snacks and foods has been a fun theme for experimenting with the latest machine learning techniques."
+> "对识别零食与食物的痴迷一直是试验最新机器学习技术的有趣主题。"
 
-That obsession hasn't faded. But the landscape has transformed dramatically. What once required a dedicated NVIDIA GPU, manual C compilation, and hours of configuration now runs on a MacBook with Apple Silicon, installs via pip, and trains while you sleep.
+那份痴迷从未消退。但整个图景已天翻地覆。曾经需要专用 NVIDIA GPU、手工编译 C、数小时配置的工作，如今在一台 Apple Silicon 的 MacBook 上运行，pip 一装即用，睡觉时就能训练。
 
-This post revisits food detection through the lens of YOLO11 [3] and the FoodInsight project [4], showing what's changed, what's stayed the same, and why 2026 is the best time ever to train your own object detection models.
+本文以 YOLO11 [3] 和 FoodInsight 项目 [4] 为镜重访食物检测：什么变了，什么没变，以及为什么 2026 年是训练你自己的目标检测模型的最佳时机。
 
-![YOLO Food Detection Pipeline]({{ site.baseurl }}images/from-yolo-v2-to-yolo11-food-detection-evolution/YOLO_Food_Detection_Hero.png)
+![YOLO 食物检测流水线]({{ site.baseurl }}/images/from-yolo-v2-to-yolo11-food-detection-evolution/YOLO_Food_Detection_Hero.png)
 
-_Figure. YOLO11 food detection pipeline: Input images from the UEC FOOD 100 dataset [2] flow through convolutional layers and a detection head, outputting bounding boxes with class labels and confidence scores for diverse Japanese dishes._
-
----
-
-## The Evolution of YOLO
-
-Before diving into the technical details, it's worth appreciating how far YOLO has come. The original "You Only Look Once" paper from 2015 [5] introduced a radical idea: instead of scanning an image thousands of times looking for objects, process the entire image in a single neural network pass.
-
-![The Evolution of YOLO]({{ site.baseurl }}images/from-yolo-v2-to-yolo11-food-detection-evolution/YOLO_Evolution_Timeline.png)
-
-_Figure. The evolution of YOLO from 2015 to 2024: From Joseph Redmon's revolutionary single-pass detection concept through Ultralytics' democratization of object detection, to today's efficiency-focused YOLO11. Orange highlights mark key breakthroughs (v1, v5, v11), while cyan accents indicate major architectural innovations._
-
-The story arc is remarkable. Joseph Redmon's original Darknet implementation was written in pure C, fast but requiring careful compilation and platform-specific tweaks [1]. After Redmon stepped away from computer vision research in 2020, the community forked and evolved the codebase. Ultralytics emerged as the de facto standard, wrapping everything in a clean Python API that just works [3].
-
-From research code to production-ready library. From C compilation to `pip install`. From NVIDIA-only to Apple Silicon, Intel, and edge devices.
+_图：YOLO11 食物检测流水线：来自 UEC FOOD 100 数据集 [2] 的输入图像流经卷积层和检测头，为多样的日式菜肴输出带类别标签和置信度分数的边界框。_
 
 ---
 
-## Then vs Now: The Setup Comparison
+## YOLO 的演进
 
-The most striking difference between 2018 and 2026 is not the model architecture. It is the developer experience.
+在深入技术细节之前，值得先体味 YOLO 走过了多远。2015 年的原始论文 "You Only Look Once" [5] 引入了一个激进的想法：不再把图像扫描数千遍来寻找物体，而是让整幅图像在单次神经网络前向中处理完毕。
 
-### 2018: The Darknet Way
+![YOLO 的演进]({{ site.baseurl }}/images/from-yolo-v2-to-yolo11-food-detection-evolution/YOLO_Evolution_Timeline.png)
 
-Here's what training YOLO v2 required in 2018:
+_图：YOLO 从 2015 到 2024 的演进：从 Joseph Redmon 革命性的单次前向检测概念，经 Ultralytics 对目标检测的民主化，到今天以效率为重的 YOLO11。橙色高亮标记关键突破（v1、v5、v11），青色标注重大架构创新。_
+
+这个故事的发展弧线引人注目。Joseph Redmon 的原始 Darknet 实现用纯 C 编写，快，但需要仔细编译和平台特定的调整 [1]。2020 年 Redmon 退出计算机视觉研究后，社区分叉并演进着这套代码。Ultralytics 成为了事实标准，把一切封装进一个干净、"开箱即用"的 Python API [3]。
+
+从研究代码到生产就绪库。从 C 编译到 `pip install`。从 NVIDIA 专属到 Apple Silicon、Intel 和边缘设备。
+
+---
+
+## 昔与今：环境搭建对比
+
+2018 与 2026 之间最 striking 的差别不是模型架构，而是开发者体验。
+
+### 2018：Darknet 之路
+
+2018 年训练 YOLO v2 需要：
 
 ```
 1. Download and compile Darknet (C code, Makefile tweaks for GPU)
@@ -75,7 +75,7 @@ Here's what training YOLO v2 required in 2018:
 8. Edit config again for testing (batch=1, subdivisions=1)
 ```
 
-The configuration file alone required calculating filter counts manually:
+光配置文件就要求手工计算 filter 数量：
 
 ```
 # number of filters calculated by (#-of-classes + 5)*5
@@ -84,11 +84,11 @@ filters=525
 classes=100
 ```
 
-Get this wrong? Silent failures or garbage predictions.
+算错了呢？静默失败，或输出垃圾预测。
 
-### 2026: The Ultralytics Way
+### 2026：Ultralytics 之路
 
-Here's the modern equivalent:
+现代等价流程：
 
 ```bash
 # Install (once)
@@ -101,7 +101,7 @@ python convert_uec_to_yolo.py datasets/UECFOOD100 --output datasets/UECFOOD100_y
 yolo detect train data=data.yaml model=yolo11s.pt epochs=150 device=mps
 ```
 
-That's it. The conversion script generates a `data.yaml` file automatically:
+就这些。转换脚本自动生成 `data.yaml` 文件：
 
 ```yaml
 path: /path/to/UECFOOD100_yolo
@@ -112,26 +112,26 @@ nc: 100
 names: ['rice', 'eels on rice', 'pilaf', ...]
 ```
 
-No manual filter calculations. No separate train/test configs. No C compilation. The framework handles everything.
+不用手工计算 filter。不用分开的训练/测试配置。不用编译 C。框架搞定一切。
 
-### Pain Points Eliminated
+### 被消除的痛点
 
-| 2018 Pain Point | 2026 Solution |
+| 2018 痛点 | 2026 解法 |
 |-----------------|---------------|
-| C compilation across platforms | Pure Python, pip install |
-| Manual filter calculation | Automatic architecture |
-| Separate train/test configs | Single model object |
-| No built-in visualization | Integrated plots, metrics |
-| NVIDIA GPU required | Apple Silicon, CPU, Intel |
-| Manual weight downloads | Auto-download from hub |
+| 跨平台 C 编译 | 纯 Python，pip install |
+| 手工计算 filter | 自动架构 |
+| 分开的训练/测试配置 | 单一模型对象 |
+| 无内置可视化 | 集成图表、指标 |
+| 必须 NVIDIA GPU | Apple Silicon、CPU、Intel |
+| 手工下载权重 | 从 hub 自动下载 |
 
 ---
 
-## Training on Apple Silicon
+## 在 Apple Silicon 上训练
 
-Perhaps the most surprising change: you no longer need an NVIDIA GPU.
+也许最令人惊讶的变化：你不再需要 NVIDIA GPU。
 
-In 2018, CUDA was the only path to reasonable training speeds. A GTX TitanX was a $1,200 investment, plus a workstation to house it. Today, Apple's Metal Performance Shaders (MPS) backend enables GPU-accelerated training on any M-series Mac.
+2018 年，CUDA 是获得合理训练速度的唯一途径。一块 GTX TitanX 是 1200 美元的投资，还得配一台主机。今天，Apple 的 Metal Performance Shaders（MPS）后端让任何 M 系列的 Mac 都能进行 GPU 加速训练。
 
 ```bash
 python datasets/train.py \
@@ -143,41 +143,41 @@ python datasets/train.py \
     --name food100_best
 ```
 
-The `--device mps` flag is the only change needed. Everything else works identically.
+只需改动 `--device mps` 标志。其余完全一样。
 
-### Hardware Comparison
+### 硬件对比
 
-| Metric | 2018 (GTX TitanX) | 2026 (M4 Pro) |
+| 指标 | 2018 (GTX TitanX) | 2026 (M4 Pro) |
 |--------|-------------------|---------------|
-| Memory | 12GB VRAM (dedicated) | 48GB unified |
-| Power | 250W | 40W |
-| Setup | CUDA, cuDNN, driver hell | Just works |
-| Cost | ~$1200 GPU alone | Integrated |
-| Noise | Jet engine | Silent |
-| Form factor | Desktop tower | Laptop |
+| 内存 | 12GB VRAM（独占） | 48GB 统一内存 |
+| 功耗 | 250W | 40W |
+| 搭建 | CUDA、cuDNN、驱动地狱 | 开箱即用 |
+| 成本 | 单 GPU 约 $1200 | 集成 |
+| 噪音 | 喷气发动机 | 静音 |
+| 形态 | 台式塔式机 | 笔记本 |
 
-Training YOLO11s on UEC FOOD 100 [2] takes approximately 15-18 minutes per epoch on the M4 Pro. Our 80-epoch run completed in about 22 hours, with early stopping available when the model converges.
+在 M4 Pro 上，在 UEC FOOD 100 [2] 上训练 YOLO11s 每个 epoch 约需 15-18 分钟。我们 80 epoch 的训练约 22 小时完成，模型收敛后可提前停止。
 
 ---
 
-## The Dataset: UEC FOOD 100 (Still the Standard)
+## 数据集：UEC FOOD 100（依旧是标杆）
 
-Some things don't change. The UEC FOOD 100 dataset from the University of Electro-Communications in Tokyo remains the gold standard for food detection research [2].
+有些东西不变。东京电气通信大学的 UEC FOOD 100 数据集依然是食物检测研究的黄金标准 [2]。
 
-| Property | Value |
+| 属性 | 值 |
 |----------|-------|
-| Images | 14,361 |
-| Classes | 100 Japanese food categories |
-| Annotations | Bounding boxes per food item |
-| License | Non-commercial research |
+| 图像 | 14,361 |
+| 类别 | 100 个日本食物类别 |
+| 标注 | 每个食物条目的边界框 |
+| 许可 | 非商业研究 |
 
-The dataset's strength is its real-world nature: photos taken in actual dining settings, not studio shots. Multiple foods appear in single frames. Lighting varies. Presentations differ.
+这个数据集的长处在于它的真实世界属性：照片摄于真实的用餐场景，不是棚拍。单帧中常出现多种食物。光照多变。摆盘各异。
 
-There's now also UEC FOOD 256 [2] with 31,395 images across 256 classes, adding international foods. However, the original 100-class version trains faster and achieves higher per-class accuracy, so it remains the best starting point.
+现在还有 UEC FOOD 256 [2]，含 31,395 张图像、256 个类别，加入了国际食物。不过，原始的 100 类版本训练更快，且单类别准确率更高，所以它仍是最佳起点。
 
-### Dataset Conversion
+### 数据集转换
 
-The original UEC format stores bounding boxes in a `bb_info.txt` file per class directory:
+原始 UEC 格式把边界框存在每个类别目录的 `bb_info.txt` 文件中：
 
 ```
 img x1 y1 x2 y2
@@ -185,14 +185,14 @@ img x1 y1 x2 y2
 2 20 208 582 559
 ```
 
-YOLO expects normalized center coordinates in per-image label files:
+YOLO 期望每张图像的标签文件中是归一化的中心坐标：
 
 ```
 class_id x_center y_center width height
 0 0.231250 0.524167 0.462500 0.571667
 ```
 
-In 2018, we wrote three separate Python scripts to handle this conversion. Today, a single unified script handles everything, including automatic train/val/test splits:
+2018 年，我们写了三个独立的 Python 脚本来处理这个转换。今天，一个统一脚本搞定一切，包括自动划分 train/val/test：
 
 ```bash
 python convert_uec_to_yolo.py datasets/UECFOOD100 \
@@ -204,22 +204,22 @@ python convert_uec_to_yolo.py datasets/UECFOOD100 \
 
 ---
 
-## Understanding the Training Output
+## 看懂训练输出
 
-One area where 2026 dramatically outshines 2018: metrics and observability.
+2026 大幅超越 2018 的一个方面：指标与可观测性。
 
-### What We Saw in 2018
+### 2018 年我们看到的
 
 ```
 Region Avg IOU: 0.767684, Class: 0.285230, Obj: 0.376508
 9998: 5.413931, 5.206974 avg, 0.000010 rate, 2.222207 seconds
 ```
 
-The guidance was simple: "Stop when average loss stops decreasing." No precision/recall breakdown. No per-class analysis. Just watch a number go down and hope.
+指引很简单："平均损失不再下降时停止。"没有 precision/recall 拆解。没有逐类分析。只是盯着一个数字往下走，然后祈祷。
 
-### What We See in 2026
+### 2026 年我们看到的
 
-Every epoch produces comprehensive metrics:
+每个 epoch 产出全面的指标：
 
 ```csv
 epoch,mAP50,mAP50-95,precision,recall,box_loss,cls_loss,dfl_loss
@@ -228,113 +228,113 @@ epoch,mAP50,mAP50-95,precision,recall,box_loss,cls_loss,dfl_loss
 50,0.787,0.598,0.762,0.697,0.820,1.359,1.335
 ```
 
-Let us break down what these mean:
+让我们拆解这些指标的含义：
 
-![Understanding Detection Metrics]({{ site.baseurl }}images/from-yolo-v2-to-yolo11-food-detection-evolution/Detection_Metrics_Explained.png)
+![理解检测指标]({{ site.baseurl }}/images/from-yolo-v2-to-yolo11-food-detection-evolution/Detection_Metrics_Explained.png)
 
-_Figure. Visual explanation of object detection metrics: IoU measures bounding box overlap, Precision tracks false positives, Recall tracks missed detections, and mAP averages precision across IoU thresholds (lenient at 0.50, strict at 0.50-0.95)._
+_图：目标检测指标的可视化解释：IoU 度量边界框重叠，Precision 追踪误报，Recall 追踪漏检，mAP 是跨 IoU 阈值的平均精度（0.50 为宽松，0.50-0.95 为严格）。_
 
-**mAP50-95 (Primary Metric)**: Mean Average Precision averaged across IoU thresholds from 0.50 to 0.95. This is the strictest measure, as high scores require both correct classification AND precise bounding boxes.
+**mAP50-95（主指标）**：跨 0.50 至 0.95 IoU 阈值的平均精度均值。这是最严格的度量，因为高分同时要求分类正确**且**边界框精准。
 
-**mAP50 (Lenient Metric)**: Precision at IoU=0.50. A detection counts as correct if there's at least 50% overlap with ground truth. Always higher than mAP50-95.
+**mAP50（宽松指标）**：IoU=0.50 时的精度。检测与真值至少 50% 重叠即算正确。总是高于 mAP50-95。
 
-**Precision**: Of all detections made, what fraction were correct? High precision means few false positives.
+**Precision（查准率）**：所有检测中，正确的比例是多少？高 precision 意味着误报少。
 
-**Recall**: Of all actual foods in the images, what fraction did we detect? High recall means few missed foods.
+**Recall（查全率）**：图像中所有真实食物中，我们检测到的比例是多少？高 recall 意味着漏检少。
 
-**IoU (Intersection over Union)**: Measures bounding box accuracy:
+**IoU（交并比）**：度量边界框的准确性：
 
 ```
 IoU = Area of Overlap / Area of Union
 ```
 
-An IoU of 0.50 means the predicted box overlaps 50% with the ground truth. An IoU of 0.95 requires near-perfect alignment.
+IoU 0.50 意味着预测框与真值重叠 50%。IoU 0.95 则要求近乎完美的对齐。
 
-### Current Training Results
+### 当前训练结果
 
-Our YOLO11s model on UEC FOOD 100 [2] achieved the following metrics after 80 epochs of training:
+我们的 YOLO11s 模型在 UEC FOOD 100 [2] 上训练 80 epoch 后达到以下指标：
 
-| Metric | Value | Interpretation |
+| 指标 | 值 | 解读 |
 |--------|-------|----------------|
-| mAP50-95 | 0.60 | Good overall detection accuracy |
-| mAP50 | 0.79 | Strong detection at IoU 0.50 |
-| Precision | 0.75 | Few false positives |
-| Recall | 0.71 | Finds most foods in images |
+| mAP50-95 | 0.60 | 整体检测准确率良好 |
+| mAP50 | 0.79 | IoU 0.50 下检测强劲 |
+| Precision | 0.75 | 误报少 |
+| Recall | 0.71 | 能找到图像中的大多数食物 |
 
-For a 100-class food detection problem with visually similar categories such as multiple noodle types and rice dishes, these numbers represent solid performance. The model was trained using transfer learning from COCO pretrained weights [9], which helped achieve good results even with the relatively small UEC FOOD 100 dataset.
-
----
-
-## The Classic Tests: Revisited
-
-In the 2018 post, we highlighted several memorable test cases. Let's revisit them with YOLO11.
-
-### Test 1: The Hot Dog Test
-
-> "Ever since the HBO show Silicon Valley released a real AI app that identifies 'hot dogs, and not hot dogs', recognizing hot dog is the golden test standard for any food detection."
-
-![Hot Dog Detection]({{ site.baseurl }}images/from-yolo-v2-to-yolo11-food-detection-evolution/hot_dog_collage.jpg)
-
-_Figure. YOLO11 detecting hot dogs across various styles: classic with mustard (0.89), sesame bun pair (0.93), loaded with toppings (0.83), and ketchup drizzle (0.95). The Silicon Valley "not hot dog" test? Passed with flying colors._
-
-### Test 2: The Hamburger Challenge
-
-From fast food classics to gourmet creations, hamburgers vary wildly in presentation. Can the model handle Big Macs, homemade burgers, and everything in between?
-
-![Hamburger Detection]({{ site.baseurl }}images/from-yolo-v2-to-yolo11-food-detection-evolution/hamburger_collage.jpg)
-
-_Figure. YOLO11 detecting hamburgers across the spectrum: classic patty (0.84), stacked Big Mac style (0.88), gourmet with fresh tomato (0.72), and McDonald's meal with fries (0.56). Note the multi-class detection catching french fries (0.41) in the same frame._
-
-### Test 3: Soupy Things
-
-Noodles in broth pose a unique challenge: the food is partially submerged and obscured.
-
-![Ramen Detection]({{ site.baseurl }}images/from-yolo-v2-to-yolo11-food-detection-evolution/ramen_noodle_collage.jpg)
-
-_Figure. YOLO11 detecting ramen noodle dishes with confidence scores from 0.51 to 0.95, successfully handling partially obscured food items in broth._
-
-### Test 4: Eggs in Many Forms
-
-Eggs appear in countless preparations: fried, rolled, wrapped, or folded into omelets. Can the model distinguish between visually distinct egg dishes?
-
-![Egg Detection]({{ site.baseurl }}images/from-yolo-v2-to-yolo11-food-detection-evolution/egg_collage.jpg)
-
-_Figure. YOLO11 detecting diverse egg preparations: omurice-style omelet (0.81), Japanese tamagoyaki rolled omelet (0.77), crispy egg roll (0.85), and classic egg sunny-side up (0.56)._
-
-### Test 5: Pizza in Every Style
-
-From single slices to whole pies, takeout boxes to restaurant plates. Can the model recognize pizza across varied presentations and toppings?
-
-![Pizza Detection]({{ site.baseurl }}images/from-yolo-v2-to-yolo11-food-detection-evolution/pizza_collage.jpg)
-
-_Figure. YOLO11 detecting pizza across diverse styles: slice on paper plate (0.88), margherita in delivery box (0.87), mushroom pizza (0.62), and shrimp pizza (0.80)._
+对一个包含多种面条和米饭料理等视觉相似类别的 100 类食物检测问题，这些数字代表扎实的性能。模型使用了从 COCO 预训练权重 [9] 出发的迁移学习，这帮助我们在相对较小的 UEC FOOD 100 数据集上也取得了好结果。
 
 ---
 
-## Deployment: Beyond the Desktop
+## 经典测试：重访
 
-In 2018, deployment meant running Darknet [1] on a machine with an NVIDIA GPU. Period.
+在 2018 年的文章中，我们突出过几个令人难忘的测试用例。现在用 YOLO11 重访它们。
+
+### 测试 1：热狗测试
+
+> "自从 HBO 剧集《硅谷》发布了一个识别'热狗与非热狗'的真实 AI 应用以来，识别热狗就成了任何食物检测的黄金测试标准。"
+
+![热狗检测]({{ site.baseurl }}/images/from-yolo-v2-to-yolo11-food-detection-evolution/hot_dog_collage.jpg)
+
+_图：YOLO11 检测各种风格的热狗：经典芥末款（0.89）、芝麻面包成对款（0.93）、堆料款（0.83）、淋番茄酱款（0.95）。《硅谷》的"非热狗"测试？漂亮通过。_
+
+### 测试 2：汉堡挑战
+
+从快餐经典到美食创作，汉堡的呈现千变万化。模型能应付巨无霸、自制汉堡以及介于其间的一切吗？
+
+![汉堡检测]({{ site.baseurl }}/images/from-yolo-v2-to-yolo11-food-detection-evolution/hamburger_collage.jpg)
+
+_图：YOLO11 检测形形色色的汉堡：经典肉饼（0.84）、巨无霸式堆叠（0.88）、配新鲜番茄的 gourmet 款（0.72），以及麦当劳配薯条套餐（0.56）。注意同帧中多类别检测抓到了炸薯条（0.41）。_
+
+### 测试 3：带汤的食物
+
+汤面带来独特挑战：食物部分浸没、被遮挡。
+
+![拉面检测]({{ site.baseurl }}/images/from-yolo-v2-to-yolo11-food-detection-evolution/ramen_noodle_collage.jpg)
+
+_图：YOLO11 检测拉面菜肴，置信度从 0.51 到 0.95，成功处理汤中部分被遮挡的食物。_
+
+### 测试 4：百变鸡蛋
+
+鸡蛋以无数形态出现：煎的、卷的、包的、折进蛋包饭的。模型能区分视觉差异明显的蛋类菜肴吗？
+
+![鸡蛋检测]({{ site.baseurl }}/images/from-yolo-v2-to-yolo11-food-detection-evolution/egg_collage.jpg)
+
+_图：YOLO11 检测多样的蛋类料理：蛋包饭式煎蛋卷（0.81）、日式厚蛋烧 tamagoyaki（0.77）、酥脆蛋卷（0.85）、经典单面煎蛋（0.56）。_
+
+### 测试 5：万般披萨
+
+从单片到整张，从外卖盒到餐厅餐盘。模型能识别各种呈现与配料下的披萨吗？
+
+![披萨检测]({{ site.baseurl }}/images/from-yolo-v2-to-yolo11-food-detection-evolution/pizza_collage.jpg)
+
+_图：YOLO11 检测多样风格的披萨：纸盘上的一片（0.88）、外卖盒里的玛格丽特（0.87）、蘑菇披萨（0.62）、鲜虾披萨（0.80）。_
+
+---
+
+## 部署：超越桌面
+
+2018 年，部署意味着在一台带 NVIDIA GPU 的机器上运行 Darknet [1]。仅此而已。
 
 ```bash
 ./darknet detector demo data/food100.data cfg/yolov2-food100.cfg weights/final.weights
 ```
 
-No GPU? No detection.
+没 GPU？没检测。
 
-### 2026: Deploy Everywhere
+### 2026：部署到一切
 
-YOLO11 exports to virtually any runtime [3]:
+YOLO11 可以导出到几乎任何运行时 [3]：
 
-| Target | Format | Command |
+| 目标 | 格式 | 命令 |
 |--------|--------|---------|
 | Raspberry Pi | NCNN [8] | `yolo export model=best.pt format=ncnn` |
 | iOS | CoreML | `yolo export model=best.pt format=coreml` |
 | Android | TFLite | `yolo export model=best.pt format=tflite` |
 | Web | ONNX.js | `yolo export model=best.pt format=onnx` |
 | Intel CPUs | OpenVINO | `yolo export model=best.pt format=openvino` |
-| Any platform | ONNX | `yolo export model=best.pt format=onnx` |
+| 任意平台 | ONNX | `yolo export model=best.pt format=onnx` |
 
-The FoodInsight project targets Raspberry Pi deployment, enabling a $50 computer to run food detection at the edge [4]:
+FoodInsight 项目瞄准树莓派部署，让一台 50 美元的电脑在边缘运行食物检测 [4]：
 
 ```bash
 # Export for Raspberry Pi (NCNN format) [8]
@@ -344,100 +344,100 @@ yolo export model=runs/detect/food100_best/weights/best.pt format=ncnn
 # Run inference on-device, no cloud required
 ```
 
-Privacy-preserving, always-available food detection for about the cost of a restaurant meal.
+隐私保护、随时可用的食物检测，成本约等于一顿餐厅晚餐。
 
 ---
 
-## Performance Comparison
+## 性能对比
 
-Let's put numbers to the progress:
+给这些进步配上数字：
 
-| Metric | YOLO v2 (2018) [1] | YOLO11 (2026) [3] |
+| 指标 | YOLO v2 (2018) [1] | YOLO11 (2026) [3] |
 |--------|----------------|---------------|
-| Framework | Darknet (C) | Ultralytics (Python) |
-| Base model size | ~200MB | 22MB (yolo11s) |
-| Inference speed | ~70 fps (TitanX) | 120+ fps (M4 Pro) |
-| mAP50 | ~0.65-0.70 (estimated) | 0.79 |
-| Setup time | Hours | Minutes |
-| Config lines | 50+ | <10 |
-| Deployment targets | NVIDIA GPU only | Everything |
+| 框架 | Darknet (C) | Ultralytics (Python) |
+| 基础模型大小 | ~200MB | 22MB (yolo11s) |
+| 推理速度 | ~70 fps (TitanX) | 120+ fps (M4 Pro) |
+| mAP50 | ~0.65-0.70（估计） | 0.79 |
+| 搭建时间 | 数小时 | 数分钟 |
+| 配置行数 | 50+ | <10 |
+| 部署目标 | 仅 NVIDIA GPU | 一切设备 |
 
-The model is smaller, faster, more accurate, and infinitely easier to use.
-
----
-
-## What's Next: The FoodInsight Vision
-
-Food detection is a means to an end. We are building **FoodInsight**, a platform that demonstrates two practical applications of YOLO11 food detection.
-
-### Snack Watching: FoodInsight
-
-The first application is a smart snack inventory monitoring system for office break rooms. Picture a Raspberry Pi with a camera mounted above the snack shelf:
-
-![FoodInsight Deployment Scene]({{ site.baseurl }}images/from-yolo-v2-to-yolo11-food-detection-evolution/FoodInsight_Deployment_Scene.png)
-
-_Figure. FoodInsight deployment concept: A Raspberry Pi with camera monitors the snack shelf, detecting items taken or added in real-time. Bounding boxes show detected items with counts, while warning indicators flag low stock._
-
-**The FoodInsight Architecture:**
-
-- **Edge AI detection**: YOLO11n runs directly on the Raspberry Pi using NCNN format [8], achieving 4-6 FPS with no cloud dependency
-- **Privacy-by-design**: Only inventory counts are stored, never images. ROI masking ensures only the snack shelf is processed
-- **Real-time tracking**: ByteTrack [7] maintains object persistence across frames, detecting when items are taken or restocked
-- **Consumer access**: A lightweight PWA lets anyone check current snack availability from their phone
-- **Zero cloud cost**: SQLite database runs locally, making the entire system self-contained
-
-The complete solution costs under $140 in hardware (Raspberry Pi 5 + Camera Module 3) and demonstrates how edge AI transforms simple object detection into practical workplace automation. What once required expensive cloud infrastructure now runs entirely on a credit-card-sized computer.
-
-### Nutrition Tracking Pipeline: FoodInsight
-
-The second application extends food detection toward automated nutrition tracking: snap a photo of your meal, get calorie and macro estimates, log it to your health app.
-
-![FoodInsight Pipeline]({{ site.baseurl }}images/from-yolo-v2-to-yolo11-food-detection-evolution/FoodInsight_Pipeline_Diagram.png)
-
-_Figure. The FoodInsight nutrition tracking pipeline: from camera capture through YOLO11 detection, portion estimation, nutrition lookup, to health dashboard visualization._
-
-YOLO11 handles the first step beautifully. The remaining pieces:
-
-1. **Portion estimation**: Either through depth sensing, reference objects, or learned size estimation
-2. **Nutrition database**: Mapping detected classes to nutritional information
-3. **User interface**: Mobile app or kitchen-mounted display
-
-The hardware exists. The models work. The snack watching application is complete, and the nutrition tracking pipeline is the next frontier.
+模型更小、更快、更准确，而且好用无穷倍。
 
 ---
 
-## Concluding Remarks
+## 下一步：FoodInsight 愿景
 
-Eight years is a long time in deep learning. What required a dedicated GPU workstation, C compilation expertise, and careful manual configuration now runs on a laptop with three commands.
+食物检测是达到目的的手段。我们正在构建 **FoodInsight**，一个展示 YOLO11 食物检测两类实际应用的平台。
 
-**Key takeaways:**
+### 零食监视：FoodInsight
 
-1. **Simplification**: The Ultralytics ecosystem has made YOLO accessible to everyone
-2. **Democratization**: Apple Silicon and CPU-based training remove the NVIDIA barrier
-3. **Better results**: Modern architectures achieve higher accuracy with less effort
-4. **New deployment targets**: Edge devices, mobile, and web are now first-class citizens
-5. **Same great data**: UEC FOOD 100 remains the gold standard for food detection
+第一个应用是面向办公室茶水间的智能零食库存监测系统。想象一台装有摄像头的树莓派，架在零食架上方：
 
-The original 2018 post concluded:
+![FoodInsight 部署场景]({{ site.baseurl }}/images/from-yolo-v2-to-yolo11-food-detection-evolution/FoodInsight_Deployment_Scene.png)
 
-> "AI does enjoy the food watching!"
+_图：FoodInsight 部署构想：一台带摄像头的树莓派监视零食架，实时检测被取走或添加的物品。边界框显示检测到的物品及数量，警告指示器标记低库存。_
 
-Eight years later, AI is better at it than ever, and now anyone can train their own food detector in an afternoon.
+**FoodInsight 架构：**
 
-The obsession continues.
+- **边缘 AI 检测**：YOLO11n 以 NCNN 格式 [8] 直接运行在树莓派上，达到 4-6 FPS，零云依赖
+- **隐私内建**：只存储库存计数，永不存储图像。ROI 蒙版确保只处理零食架区域
+- **实时追踪**：ByteTrack [7] 跨帧维持目标持续存在，检测物品被取走或补货
+- **消费端访问**：轻量级 PWA 让任何人用手机查询当前零食可用性
+- **零云成本**：SQLite 数据库本地运行，整个系统自给自足
+
+完整方案的硬件成本不到 140 美元（树莓派 5 + Camera Module 3），展示了边缘 AI 如何把简单的目标检测变成实用的职场自动化。曾经需要昂贵云基础设施的工作，如今完全跑在一台信用卡大小的电脑上。
+
+### 营养追踪流水线：FoodInsight
+
+第二个应用把食物检测延伸到自动化营养追踪：给你的餐食拍张照，获取热量与宏量营养估算，记录到你的健康应用。
+
+![FoodInsight 流水线]({{ site.baseurl }}/images/from-yolo-v2-to-yolo11-food-detection-evolution/FoodInsight_Pipeline_Diagram.png)
+
+_图：FoodInsight 营养追踪流水线：从相机拍摄，经 YOLO11 检测、分量估算、营养查询，到健康仪表盘可视化。_
+
+YOLO11 漂亮地完成了第一步。剩余的部分：
+
+1. **分量估算**：通过深度传感、参照物，或学习到的大小估算
+2. **营养数据库**：把检测到的类别映射到营养信息
+3. **用户界面**：移动应用或挂在厨房的显示屏
+
+硬件已经有了。模型已经能用了。零食监视应用已经完成，营养追踪流水线是下一个前沿。
 
 ---
 
-## Appendix: Quick Start Guide
+## 结语
 
-Want to train your own food detection model? Here's the minimal path:
+八年，对深度学习而言是一段漫长的时间。曾经需要专用 GPU 工作站、C 编译专长和精心手工配置的工作，如今在一台笔记本上三条命令搞定。
 
-### Prerequisites
+**关键收获：**
+
+1. **简化**：Ultralytics 生态让 YOLO 触手可及
+2. **民主化**：Apple Silicon 与 CPU 训练移除了 NVIDIA 壁垒
+3. **更好的结果**：现代架构以更少的努力获得更高的准确率
+4. **新的部署目标**：边缘设备、移动与 Web 现在都是一等公民
+5. **同样出色的数据**：UEC FOOD 100 依然是食物检测的黄金标准
+
+2018 年的原文如此作结：
+
+> "AI 确实享受看食物！"
+
+八年后，AI 比以往任何时候都更擅长这件事，而且现在任何人都能在一个下午训练出自己的食物检测器。
+
+痴迷仍在继续。
+
+---
+
+## 附录：快速上手指南
+
+想训练你自己的食物检测模型？这是最短路径：
+
+### 前置要求
 
 - Python 3.10+
-- macOS with Apple Silicon, or Linux with NVIDIA GPU
+- Apple Silicon 的 macOS，或带 NVIDIA GPU 的 Linux
 
-### Steps
+### 步骤
 
 ```bash
 # 1. Install Ultralytics
@@ -464,35 +464,35 @@ yolo detect predict \
     source=your_food_photo.jpg
 ```
 
-That's all. Welcome to 2026.
+就这些。欢迎来到 2026。
 
 ---
 
-## References
+## 参考文献
 
 [1] Joseph Redmon. [*Darknet: Open Source Neural Networks in C*](https://pjreddie.com/darknet/). PJReddie.com, 2016.
-  - The original YOLO implementation framework written in C, providing the foundation for real-time object detection research.
+  - 用 C 编写的原始 YOLO 实现框架，为实时目标检测研究奠定基础。
 
 [2] Matsuda, Y., Hoashi, H., and Yanai, K. [*Recognition of Multiple-Food Images by Detecting Candidate Regions*](http://foodcam.mobi/dataset100.html). IEEE ICME, 2012.
-  - The UEC FOOD 100 dataset from the University of Electro-Communications, containing 14,361 images across 100 Japanese food categories.
+  - 电气通信大学的 UEC FOOD 100 数据集，含 100 个日本食物类别、14,361 张图像。
 
 [3] Ultralytics. [*YOLO11 Documentation*](https://docs.ultralytics.com/). Ultralytics, 2024.
-  - The modern Python-based YOLO implementation providing state-of-the-art object detection with simple APIs and extensive deployment options.
+  - 现代 Python 实现的 YOLO，以简单 API 和丰富的部署选择提供最先进的目标检测。
 
 [4] Benny Cheung. [*FoodInsight Project*](https://github.com/bennycheung/FoodInsight). GitHub, 2026.
-  - The FoodInsight project repository containing dataset conversion scripts, training pipelines, and deployment configurations for food detection.
+  - FoodInsight 项目仓库，含数据集转换脚本、训练流水线和食物检测的部署配置。
 
 [5] Redmon, J., Divvala, S., Girshick, R., and Farhadi, A. [*You Only Look Once: Unified, Real-Time Object Detection*](https://arxiv.org/abs/1506.02640). CVPR, 2016.
-  - The seminal paper introducing the YOLO approach to object detection, enabling real-time processing by treating detection as a single regression problem.
+  - 引入 YOLO 目标检测方法的开山论文，把检测当作单一回归问题处理，实现实时处理。
 
-[6] Benny Cheung. [*YOLO for Real-Time Food Detection*](https://bennycheung.github.io/yolo-for-real-time-food-detection). Benny's Mind Hack, 2018.
-  - The original blog post documenting food detection using YOLO v2 and Darknet, serving as the baseline for this 8-year retrospective.
+[6] Benny Cheung. [*YOLO for Real-Time Food Detection*]({{ site.baseurl }}/yolo-for-real-time-food-detection). Benny's Mind Hack, 2018.
+  - 记录用 YOLO v2 和 Darknet 做食物检测的原始博文，是这篇八年回顾的基线。
 
 [7] Zhang, Y., Sun, P., Jiang, Y., et al. [*ByteTrack: Multi-Object Tracking by Associating Every Detection Box*](https://arxiv.org/abs/2110.06864). ECCV, 2022.
-  - High-performance multi-object tracking algorithm that associates detection boxes across frames, enabling persistent object identification in video streams.
+  - 高性能多目标跟踪算法，跨帧关联检测框，实现视频流中的持续目标识别。
 
 [8] Tencent. [*NCNN: High-Performance Neural Network Inference Framework*](https://github.com/Tencent/ncnn). GitHub, 2017.
-  - Optimized neural network inference framework for mobile and embedded platforms, enabling efficient CPU-based inference on ARM devices like Raspberry Pi.
+  - 面向移动与嵌入式平台优化的神经网络推理框架，让树莓派等 ARM 设备能高效进行基于 CPU 的推理。
 
 [9] Lin, T.Y., Maire, M., Belongie, S., et al. [*Microsoft COCO: Common Objects in Context*](https://arxiv.org/abs/1405.0312). ECCV, 2014.
-  - Large-scale object detection dataset used for pre-training YOLO models, providing transfer learning benefits for domain-specific applications like food detection.
+  - 用于预训练 YOLO 模型的大规模目标检测数据集，为食物检测等领域特定应用提供迁移学习收益。

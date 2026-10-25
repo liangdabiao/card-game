@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Beyond the Context Window - The Architecture of a Trustworthy AI Co-Designer"
+title: "超越上下文窗口——可信赖 AI 联合设计师的架构"
 date: 2026-07-23 00:00:00.000000000 -00:00
 permalink: beyond-the-context-window-architecture-of-a-trustworthy-ai-co-designer
 author: Benny Cheung
@@ -28,235 +28,235 @@ featured_order: 1
 ---
 
 <!--excerpt.start-->
-The industry talks about long-context AI as a capacity problem: bigger windows, stuff everything in, let the model sort it out. Building Nova, a persistent AI co-designer that works alongside board game designers across months of sessions, taught us the opposite. The bottleneck of a long-running collaborator is not how much context you can hold. It is the architecture around it: what to leave out, how to make the work survive an interruption, how to see what it costs, and how to stay correct when your own agent's output decays over time. This is the field report from that plumbing: the incidents that broke it, loud and quiet, and the disciplines they forced on us.
+业界谈论长上下文 AI 时，总把它当成一个容量问题：更大的窗口、把一切都塞进去、让模型自己理清头绪。而构建 Nova——一个与桌游设计师并肩工作、跨越数月会话的持久化 AI 联合设计师——的经历，教会我们的恰恰相反。长期运行的协作伙伴，其瓶颈不在于你能容纳多少上下文，而在于围绕它的架构：该省略什么、如何让工作在中断后存活、如何看清它付出的代价，以及当自己的智能体输出随时间劣化时如何保持正确。本文就是关于这套底层管道的实地报告：那些把它击穿的事故——喧闹的与无声的——以及它们迫使我们养成的纪律。
 <!--excerpt.end-->
 
-![Beyond the Context Window]({{ site.baseurl }}images/beyond-the-context-window/Beyond_Context_Window_Theme.jpg)
+![超越上下文窗口]({{ site.baseurl }}/images/beyond-the-context-window/Beyond_Context_Window_Theme.jpg)
 
-_Figure. A co-designer is not a bigger memory. It is a spine: the durable structure that lets a conversation survive interruptions, stay affordable, and keep its footing when the ground shifts._
+_图示。联合设计师不是更大的记忆，而是一根脊柱：一种持久的结构，让对话经受住中断、保持成本可控，并在地面移动时依然站稳。_
 
-## Where We Left Off
+## 上次讲到哪里
 
-Back in [Nova: The AI Co-Designer That Learns Your Taste]({{ site.baseurl }}nova-the-ai-co-designer-that-learns-your-taste) [1], we described the dream: a conversational partner that remembers your decisions, learns your taste, explains its reasoning, and gets better the more you work together. The morning-standup collaborator that solo designers never had. We showed the reinforcement loop, the grounded proposals, the zero-write principle.
+在之前的 [Nova：学习你品味的 AI 联合设计师]({{ site.baseurl }}/nova-the-ai-co-designer-that-learns-your-taste) [1] 一文中，我们描绘了那个梦想：一个能记住你的决策、学习你的品味、解释自身推理、并且越合作越出色的对话伙伴——独立设计师从未拥有过的每日站会式协作者。我们展示了强化循环、有据可依的提案，以及零写入原则。
 
-That post was about what the partnership *feels* like. This one is about what it *costs* to keep that promise once real designers start leaning on it, day after day, on designs that grow past a hundred kilobytes, across app deploys and dropped connections and a shared budget that can hit zero.
+那篇文章讲的是这种合作关系*感觉*起来如何。这一篇要讲的，是当真实的设计师开始日复一日地依赖它——在体积增长到超过一百 KB 的设计上，历经一次次应用部署、一次次断线，还有那份可能归零的共享预算——兑现那个承诺需要付出*什么代价*。
 
-We shipped the co-designer. Then production happened. What follows is the honest sequel: the gap between an AI collaborator that demos well and one you can actually rely on, and why closing that gap has almost nothing to do with the size of the context window.
-
----
-
-## The Myth of the Bigger Window
-
-Open any discussion of "context engineering" right now and you will find the same reflex: the frontier is *capacity*. Million-token windows. Retrieval that stuffs more documents into the prompt. The implicit promise is that if you can just hold enough context, the hard problems dissolve.
-
-For a one-shot chat, that reflex is fine. For a *persistent* collaborator, it is the wrong instinct, and an expensive one.
-
-The reason is simple and easy to miss in a demo. In a real partnership, the same context is not sent once. It is re-sent thousands of times, on every turn of a months-long relationship, and each of those turns is a multi-minute operation running against infrastructure that was never built to wait multiple minutes. Capacity is the property you notice first and the constraint that matters least. What decides whether the partnership holds up is a set of much less glamorous questions:
-
-- What can I *leave out* of this call without breaking it?
-- What happens to the work when the connection drops, the process restarts, or the user walks away mid-run?
-- Can I *see* what this collaboration is costing before the bill arrives?
-- What happens to my data after the AI has been writing into it, imperfectly, for three months?
-
-None of those are answered by a bigger window. Every one of them nearly took Nova down. Here is how.
+联合设计师上线了。然后，生产环境登场。接下来是诚实的续篇：演示时表现出色的 AI 协作者，与真正可以依靠的 AI 协作者之间的差距，以及为什么弥合这道差距与上下文窗口的大小几乎毫无关系。
 
 ---
 
-## Three Ways a Co-Designer Breaks in Production
+## 更大窗口的迷思
 
-Nova is a conversational layer over a multi-agent pipeline: specialist agents, a structured game ontology, a reference library, and a persistent memory of your decisions. The AI capabilities were proven. The *durability* of the collaboration was not, and it failed in three distinct ways within a few weeks of heavy real use.
+打开如今任何一场关于"上下文工程（context engineering）"的讨论，你都会看到同一种条件反射：前沿是*容量*。百万 token 的窗口。往提示词里塞进更多文档的检索。其隐含的承诺是：只要装得下足够多的上下文，难题就会自行消解。
 
-![Three production incidents, one shared shape]({{ site.baseurl }}images/beyond-the-context-window/Three_Incidents_One_Shape.jpg)
+对于一次性聊天，这种反射没什么问题。但对于一个*持久*的协作者来说，这是错误的直觉，而且代价高昂。
 
-_Figure. Three incidents that look unrelated on the surface — playtests dying, generation failing, an account draining overnight — and share one root shape: a multi-minute AI operation coupled to something that was never built to live for multiple minutes, priced by something that could not see what it cost._
+原因很简单，却在演示中很容易被忽略。在真实的合作关系中，同样的上下文不是发送一次，而是随着数月关系中的每一轮对话被重新发送成千上万次，而其中每一轮都是耗时数分钟的操作，却运行在从未为"等待数分钟"而设计的基础设施上。容量是你最先注意到的属性，却是最不要紧的约束。真正决定这段合作关系能否维持的，是一组远没有那么光鲜的问题：
 
-| Incident | Surface | What actually happened |
+- 这次调用里我可以*省去*什么而不弄坏它？
+- 当连接断开、进程重启，或用户中途离开时，正在进行的工作会怎样？
+- 在账单到来之前，我能*看清*这场协作花了多少钱吗？
+- 在 AI 以不完美的方式往我的数据里写了三个月之后，这些数据会变成什么样？
+
+这些问题，更大的窗口一个也回答不了。而其中每一个都曾几乎把 Nova 拖垮。下面就是经过。
+
+---
+
+## 联合设计师在生产环境中崩溃的三种方式
+
+Nova 是多智能体流水线之上的一层对话界面：专业智能体、结构化的游戏本体、参考库，以及对你决策的持久记忆。AI 能力已被证明，协作的*持久性*却没有；而且在几周的高强度真实使用中，它以三种截然不同的方式失效了。
+
+![三起生产事故，同一个共同形态]({{ site.baseurl }}/images/beyond-the-context-window/Three_Incidents_One_Shape.jpg)
+
+_图示。三起表面上毫不相关的事故——游戏测试悄然死去、生成持续失败、账户一夜耗尽——却共享同一个根本形态：一个耗时数分钟的 AI 操作，被耦合到一个从未为存活数分钟而设计的东西上，再由一个根本看不见代价的机制来计价。_
+
+| 事故 | 表象 | 实际发生了什么 |
 |---|---|---|
-| Playtests "just die" | Simulation streamed inside a chat response | The edge proxy severs a streamed connection after about 100 seconds of quiet. A cold rules-parse alone runs about 75 seconds. The result lived only in the stream, so when the stream died, the result was gone, with no record it had ever run. |
-| Generation "keeps failing" | Design generation as a background task | Job state lived in an in-memory dictionary inside the API process. Every deploy restarts that process. Three deploys in one day meant zero successful generations, fleet-wide, and the client just hung. |
-| The account drains overnight | Conversational editing | One engaged user, inside every configured limit, ran a single long session that emptied the platform's shared AI account and took generation down for the entire beta the next morning. |
+| 游戏测试"悄然死亡" | 模拟在聊天响应内以流式传输 | 边缘代理会在约 100 秒无输出后切断流式连接。仅一次冷启动的规则解析就要跑约 75 秒。结果只存在于流中，流一断，结果就没了，连它曾经运行过的记录都没有。 |
+| 生成"持续失败" | 设计生成作为后台任务 | 任务状态存放在 API 进程内的一个内存字典里。每次部署都会重启该进程。一天三次部署意味着全平台零成功生成，而客户端只会一直挂起。 |
+| 账户一夜耗尽 | 对话式编辑 | 一位活跃用户在完全符合所有配置限额的情况下，进行了一次漫长的会话，掏空了平台的共享 AI 账户，并在次日清晨让整个内测的生成功能瘫痪。 |
 
-Three incidents, but they trace to three distinct failure modes. The dying playtests and the failing generations are one and the same: the Leash. Wired underneath them, and the reason the edits kept timing out too, is a second that is a cause more than an event: the Time Bomb. And the overnight drain is a third: the Invisible Bill.
+三起事故，却指向三种不同的失效模式。垂死的游戏测试与失败的生成是同一回事：缰绳（the Leash）。埋在它们之下、也是编辑操作不断超时的原因的，是第二种——与其说是事件，不如说是成因：定时炸弹（the Time Bomb）。而一夜耗尽是第三种：隐形账单（the Invisible Bill）。
 
-### The Leash
+### 缰绳（The Leash）
 
-The first two incidents are the same mistake wearing different clothes. A playtest simulation and a design generation are both multi-minute AI operations. In both cases, the *durability of the work* was tied to the *lifetime of a connection or a process*.
+前两起事故是同一个错误换上了不同的衣服。游戏测试模拟与设计生成都是耗时数分钟的 AI 操作。在这两种情况下，*工作的持久性*都被拴在了*连接或进程的生命周期*上。
 
-There are three such leashes in a typical stack, and our early code used all three: the client connection (browser through the edge proxy to the server), the process memory (state in a dictionary in the API container), and the request task itself (a long call awaited inside a request handler). A connection can drop. A process can restart on deploy. A request can be cancelled when the client disconnects. None of them is a safe place to store "is this multi-minute job still alive, and what is its result."
+典型的技术栈中有三条这样的缰绳，而我们早期的代码三条全用了：客户端连接（从浏览器经边缘代理到服务器）、进程内存（API 容器里字典中的状态），以及请求任务本身（在请求处理器内被 await 的长调用）。连接可能断开。进程可能因部署而重启。请求可能在客户端断开时被取消。它们都不是存放"这个耗时数分钟的任务还活着吗、它的结果是什么"的安全场所。
 
-The critical realization was that these were not three bugs. They were three faces of one architectural error. And the only component in the whole stack built to outlive connections, requests, and deploys is the database.
+关键的领悟在于：这不是三个 bug，而是同一个架构错误的三副面孔。而整个技术栈中唯一为比连接、请求和部署活得更久而设计的组件，就是数据库。
 
-### The Time Bomb
+### 定时炸弹（The Time Bomb）
 
-The Time Bomb is subtler, less a standalone incident than the cause running under the other two, and it is the one that indicts the bigger-window instinct directly.
+定时炸弹更隐蔽，与其说是一起独立事故，不如说是潜行于另外两起之下的成因，而正是它最直接地控诉了"更大窗口"的直觉。
 
-Every one of Nova's agent calls serialized the *entire* game ontology into the prompt. A one-line rule change re-sent the whole design. That makes each operation scale with the *size of the design* instead of the *size of the edit*, when it should be the other way around. On a 69 KB design that is roughly 17,000 input tokens on every single call. On a larger design in the wild it was 134 KB.
+Nova 的每一次智能体调用都会把*整个*游戏本体序列化进提示词。改动一行规则，就要重发整个设计。这让每次操作的开销随*设计的体积*而非*修改的体积*伸缩，而本应恰恰相反。对一个 69 KB 的设计来说，这意味着每次调用约 17,000 个输入 token。而在真实使用中，更大的设计达到了 134 KB。
 
-This is not just a cost problem. It is a *latency* problem, and the two are the same root cause. A bigger prompt means more tokens to ingest, slower time-to-first-token, longer completion, and therefore a call that drifts closer to and then past the timeout ceilings that caused the Leash. Successful runs were already sitting right at the 100-second edge. As designs grow, *every* design eventually tips over that line. Context bloat was not a separate issue from the timeouts. It was a latency multiplier actively pushing work off the cliff.
+这不仅是一个成本问题，更是一个*延迟*问题，而且两者同根同源。更大的提示词意味着要摄取更多 token、更慢的首 token 时间、更长的补全，因此调用会越来越贴近、然后越过导致缰绳问题的那些超时上限。成功的运行已经正好卡在 100 秒的边缘。随着设计不断增长，*每一个*设计最终都会翻过这条线。上下文膨胀从来不是独立于超时之外的问题，它是一个延迟放大器，主动把工作推向悬崖。
 
-The bigger-window reflex says hold more. We learned to do the opposite. The whole design was in the prompt, and that was the bug.
+更大窗口的反射说：装更多。我们学到的恰恰相反。整个设计都在提示词里，这本身就是 bug。
 
-### The Invisible Bill
+### 隐形账单（The Invisible Bill）
 
-The Leash was about work that died. The Time Bomb was about work that grew too heavy and slow to finish. The third failure was different in kind: the work ran perfectly. What broke was that nobody could see what it cost until it was already gone.
+缰绳关乎会死去的工作。定时炸弹关乎变得太重太慢而无法完成的工作。第三种失效在性质上不同：工作本身运行得完美无缺。坏掉的是：直到钱已经花光，都没有人能看见它花了多少。
 
-Then the account drained.
+然后，账户被掏空了。
 
-Nova traffic one day ran about ten times normal. Digging into it, the vast majority of it came from a single account, most of it in one long, unbroken session. The cadence was steady and human, a few minutes between messages. This was not a runaway loop or an abuse case. It was legitimate heavy use, a *good* user, the product working exactly as intended.
+某一天，Nova 的流量达到平时的十倍左右。深挖下去，绝大部分来自一个账户，其中大部分集中在一个漫长而不间断的会话里。节奏平稳而人性化，消息之间相隔几分钟。这不是失控的循环，也不是滥用案例。这是正当的重度使用，一个*优质*用户，产品完全按设计意图在运转。
 
-Where did the money go? Forty-four `modify_design` calls, each a reasoning pass over the whole ontology, roughly 18,000 input tokens apiece, plus the orchestrator loop wrapped around each one re-sending a large, stable prefix on every iteration with no caching at all. The playtests, widely assumed to be the expensive part, cost about two cents each and were negligible.
+钱花到哪儿去了？44 次 `modify_design` 调用，每次都是对整个本体的一轮推理，各约 18,000 个输入 token；再加上包裹每次调用的编排器循环，在每一轮迭代中重发一大段稳定不变的前缀，完全没有缓存。而被普遍认为最烧钱的游戏测试，每次只要大约两美分，几乎可以忽略。
 
-The ceiling that was supposed to prevent this counted *messages*, not *cost*. The account ran right up near the message cap without ever tripping it. But per-message cost spans a 30-to-50x range depending on design size, tool fan-out, and loop depth, and the cap saw none of that. It was a rate limiter pretending to be a budget. Worse, the conversational surface, by far the most token-intensive part of the system, was not metered against the credit ledger *at all*. Across a full day of heavy traffic, there were zero credit transactions.
+本应防止这种情况的上限，统计的是*消息数*，而不是*成本*。这个账户一路逼近消息上限却从未触发它。但单条消息的成本因设计体积、工具扇出和循环深度的不同，跨度可达 30 到 50 倍，而这个上限对此一无所知。它是一个冒充预算的限流器。更糟的是，对话界面——整个系统中 token 消耗最大的部分——*根本*没有接入积分账本计量。在一整天的重度流量中，积分交易记录为零。
 
-A good user, staying inside every configured limit, drained a shared resource because the system could not see what the collaboration cost. You cannot build a trustworthy long-running partner on a bill you cannot read.
-
----
-
-These were not a to-do list of bugs. Each failure pointed at a discipline the first design had skipped, and the fix in every case was structural rather than a smarter prompt. Here are the four, in the order the incidents forced them on us.
-
-## Discipline 1: Cut the Leash
-
-The fix for the Leash is not a longer or stronger leash. It is to cut it.
-
-Picture it from the designer's chair. You ask Nova to run a two-hundred-game playtest on your worker-placement prototype, watch it kick off, then close the laptop and go make dinner. Before this change, that run was pinned to your open connection: the moment the tab slept or the wifi blinked, it died mid-stream and left nothing behind, not even a record that it had started. After, the run is written to the database the instant it begins. You reopen the tab an hour later and the findings are simply waiting, or, if a deploy happened to interrupt it, a clean "interrupted, run again" rather than a spinner that never resolves. The work stopped depending on you staying present for it.
-
-![Durable jobs: work lives in the database]({{ site.baseurl }}images/beyond-the-context-window/Durable_Jobs.jpg)
-
-_Figure. Before: the result lives in the stream or an in-process dictionary, and dies with the connection or the deploy. After: a status row is created in the database before the work starts, a background worker updates it, and the client polls a cheap endpoint. Streaming is demoted from the source of truth to a progress hint._
-
-Any AI operation expected to run long becomes a database-backed job. A status row is created *before* the work begins. A worker updates progress on the row. The client sends a start request that returns in milliseconds with a job id, then polls a cheap sub-second endpoint. Streaming stays, but only as a progress *enhancement*, never as the thing that holds the result.
-
-The inversion is the whole point: **today streaming *is* the source of truth, so missing the stream loses the result; the fix makes the database row the source of truth, and demotes streaming to a hint.** Everything good follows from that one change:
-
-- The 100-second edge ceiling stops being reachable at all. There is no long-lived idle connection for the proxy to cut. The ceiling is not worked around with heartbeats, it is removed from the topology.
-- Deploy restarts stop losing state. The row survives the container swap. Even if the worker is killed mid-run, the *record* remains, so a deadline reaper flips a stale run to "failed" and the client's next poll gets a clean, retryable "interrupted, please retry" instead of hanging forever.
-- Failures stop being invisible. Because the row exists before the work starts, every attempt leaves a durable trace, regardless of outcome. The entire "died with no record" class that made these incidents so hard to diagnose simply ends.
-
-We did not invent this. An earlier comparison feature already used exactly this row-and-reaper pattern in production. The work here was extracting it into a shared service and applying it to the surfaces that still ran on a leash. That is the unglamorous truth of most reliability engineering: the clever part is recognizing that three unrelated-looking failures are one shape, and refusing to patch them three times.
+一位优质用户，遵守着每一项配置限额，却耗尽了一份共享资源，只因为系统看不见这场协作的成本。你无法在一张读不懂的账单之上，构建一个可信赖的长期伙伴。
 
 ---
 
-## Discipline 2: Send Less, Not More
+这些并不是一张待修的 bug 清单。每一次失效都指向初始设计跳过了的一门纪律，而每一次的修复都是结构性的，而非更聪明的提示词。以下就是这四门纪律，按事故迫使我们面对它们的先后顺序排列。
 
-The Time Bomb is where a persistent collaborator forces you to unlearn the bigger-window instinct completely.
+## 纪律一：剪断缰绳
 
-An LLM editing one mechanism does not need to *read* the other mechanisms, the components, and the scoring formulas. It needs two things: the target subtree it is editing, and enough awareness of *what else exists* to avoid creating a dangling reference. That second part is cheap. Our ontology layer already computes the lists of declared mechanism names, resource names, and card types.
+对缰绳的修复，不是换一条更长更结实的缰绳，而是把它剪断。
 
-![Scoped context: the funnel]({{ site.baseurl }}images/beyond-the-context-window/Scoped_Context_Funnel.jpg)
+不妨从设计师的座椅上想象这个场景。你让 Nova 对你的工人放置（worker placement）原型跑一次两百局的游戏测试，看着它启动，然后合上笔记本去做晚饭。在这次改动之前，那次运行被拴在你打开的连接上：标签页一休眠、Wi-Fi 一闪断，它就在半路死去，什么也不留下，连它已启动的记录都没有。改动之后，运行在开始的一瞬间就被写入数据库。一小时后你重新打开标签页，结果就在那里等着；如果碰巧有部署中断了它，你也会得到一个干净的"已中断，请重跑"，而不是一个永远转不完的加载动画。工作不再依赖于你是否在场守候。
 
-_Figure. A deterministic selector maps the edit to the sections it touches, follows the dependency closure, and always unions a small structural spine. The full 69 KB ontology (about 17,000 tokens) becomes a 5-to-15 KB payload: the target subtree, a compact registry summary of what else exists, and an index of the sections not shown._
+![持久化任务：工作存放在数据库中]({{ site.baseurl }}/images/beyond-the-context-window/Durable_Jobs.jpg)
 
-So instead of the whole design, a scoped call sends the target subtree, a compact summary of the registry, and a short index that says "these other sections exist but are not shown." On a large design, a one-phase rename that used to send about 18,000 tokens now sends 4,304, a 76% cut, measured against real telemetry, and it produces a correct patch with valid paths into the full design.
+_图示。改动前：结果存放在流或进程内字典中，随连接断开或部署而消失。改动后：工作开始之前先在数据库中创建状态行，由后台工作器更新它，客户端轮询一个廉价的端点。流式传输从事实来源降级为进度提示。_
 
-This is the direct counter-narrative to "just use a bigger window." The scaling win came from deciding, deterministically and per edit, what the model was allowed to *not* see. Selectivity, not capacity, was the lever.
+任何预期会长时运行的 AI 操作，都变成一个由数据库支撑的任务。状态行在*工作开始之前*创建。一个工作器在该行上更新进度。客户端发送一个启动请求，它在几毫秒内返回任务 id，然后轮询一个亚秒级响应的廉价端点。流式传输保留，但只作为进度的*增强*，绝不是承载结果的东西。
 
-The instinct to send everything feels safe, but it is the expensive kind of safe: every edit slower, pricier, and closer to the cliff, forever. On a long-running collaborator, sending less is what keeps the whole thing viable.
+这个反转就是全部要点：**如今流式传输*就是*事实来源，所以错过流就丢失结果；修复方案让数据库行成为事实来源，把流式传输降级为提示。**所有的好处都源自这一处改动：
 
----
+- 100 秒边缘上限根本不再可达。拓扑中不再存在可供代理切断的长时间空闲连接。这个上限不是靠心跳绕过去的，而是从拓扑中移除了。
+- 部署重启不再丢失状态。数据库行在容器切换中存活下来。即使工作器在运行中途被杀，*记录*仍然存在，于是一个超时收割器（deadline reaper）会把过期的运行标记为"失败"，客户端的下一次轮询就会得到一个干净、可重试的"已中断，请重试"，而不是永远挂起。
+- 失败不再是不可见的。因为状态行在工作开始前就存在，每一次尝试无论结果如何都会留下持久的痕迹。让这些事故如此难诊断的整个"死得无声无息"类别，就此终结。
 
-## Discipline 3: Verify the Whole, Even When the Model Sees a Part
-
-Discipline 2 invites an obvious objection, and the answer to it is the thing I most want you to take from this piece.
-
-If the model only sees one subtree, what stops a scoped edit from breaking something outside its view, referencing a mechanism it could not see, orphaning a resource, contradicting a rule in a section it never read?
-
-The answer is that **scoping narrows what the model *reads*, never what the system *validates against*.** The semantic validator, the safety net that checks for phantom references and structural contradictions, runs on the *full* post-edit design, exactly as it did when the model saw everything. The model's view got smaller. The system's guarantee did not move an inch.
-
-This is what makes aggressive context reduction *safe* rather than reckless. You can afford to give the model less precisely because your correctness guarantee does not depend on the model having seen everything. It depends on an independent check against the whole truth. When a scoped edit does reach for something outside its view, the validator catches it just as it always would, and a confidence gate falls back to the full design for genuinely cross-cutting intents.
-
-The general principle, well beyond board games: **trim the view, validate the whole.** The trust in a long-running AI collaborator cannot come from the model's diligence, because the model is working from a partial picture by design. It has to come from a verification layer that sees the complete state and is independent of what the model was shown. Get that separation right and you can be as stingy with context as you like.
+这并不是我们的发明。更早的一个对比功能已经在生产环境中用过完全相同的"行加收割器"模式。这里的工作是把它抽取成共享服务，并应用到那些仍在缰绳上的功能面。这就是大多数可靠性工程不炫目的真相：聪明之处在于识别出三个看似不相关的失败其实是同一个形态，并拒绝为它们打三次补丁。
 
 ---
 
-## Discipline 4: Meter What You Can't See
+## 纪律二：发送更少，而非更多
 
-The Invisible Bill was never going to be fixed by a smarter prompt. It was a measurement failure, and measurement failures are fixed by instrumentation, then by turning that instrumentation into a real budget.
+在定时炸弹这个问题上，持久的协作者迫使你把"更大窗口"的直觉彻底忘掉。
 
-![From a message count to a cost budget]({{ site.baseurl }}images/beyond-the-context-window/Token_To_Credit_Budget.jpg)
+一个正在编辑某条机制的 LLM，并不需要*读*其他机制、组件和计分公式。它需要两样东西：它正在编辑的目标子树，以及对*还有什么存在*的足够感知，以避免制造悬空引用。第二部分很便宜。我们的本体层已经在计算已声明的机制名、资源名和卡牌类型的列表。
 
-_Figure. Every turn's real token usage — input, output, and separately the cheap cached reads and the pricier cache writes — is priced at provider rates, converted to a single credit unit anchored at roughly one cent of real cost, and gated against a per-user budget. A message count that was blind to a 30-to-50x cost range becomes a real ceiling that sees the actual money._
+![限域上下文：漏斗]({{ site.baseurl }}/images/beyond-the-context-window/Scoped_Context_Funnel.jpg)
 
-Three moves, in order:
+_图示。确定性选择器将编辑映射到它所触及的章节，沿依赖闭包追踪，并始终并上一个小型结构脊柱。完整的 69 KB 本体（约 17,000 token）变成 5 到 15 KB 的载荷：目标子树、一份关于还有什么存在的紧凑注册表摘要，以及未展示章节的索引。_
 
-**See it.** We added per-call telemetry to every AI call site: input and output tokens, cache reads and writes, latency, which surface, how big the design was. Before this, the conversational surface computed its own token totals and then only wrote them to a log line. The cost of the most expensive part of the product was un-queryable until the account hit zero. Now every turn leaves a priced, queryable record.
+于是一次限域调用发送的不再是整个设计，而是目标子树、注册表的紧凑摘要，以及一条简短的索引，说明"这些其他章节存在但未展示"。在一个大型设计上，一次单阶段的改名过去要发送约 18,000 token，现在只发送 4,304 个——削减 76%，而且是对照真实遥测数据测得的——同时产出一个正确的补丁，其中的路径都能有效指回完整设计。
 
-**Make the repeats cheap.** The single largest waste in the drain was the orchestrator loop re-sending a large, stable prefix on every iteration with no caching. Provider-side prompt caching serves that stable prefix from cache on the repeated calls at roughly a tenth of the price, with zero change to the model's behavior. Since that prefix was most of what each loop iteration re-sent, caching took a large bite out of the cost of every tool-using turn. It was the highest cost-cut-per-unit-effort of anything we did, and not a model change at all, just refusing to pay full price for the same tokens twice.
+这正是对"直接换个更大的窗口就行"这一论调的正面反驳。伸缩性上的收益来自这样一个决定：对每一次编辑，确定性地判定允许模型*不*看见什么。起作用的杠杆是选择性，而不是容量。
 
-**Turn it into a budget.** Each turn is now priced from its real measured tokens and debited against a per-user credit budget, the same ledger that already governed generation. The formula rewards caching automatically, since a cached read is billed at a tenth of a fresh token, so a warm follow-up turn costs a single credit while a cold reasoning pass costs several. The ceiling finally sees the money. The usage that drained the account now hits a per-user daily budget after a session or two, and total platform exposure becomes a bounded, known number instead of an open tap.
-
-The goal was never to throttle the good user. Because caching and scoping had already cut per-turn cost substantially, far *more* engagement now fits under the same budget than during the incident. A budget like this does not punish depth; it makes going deep *affordable and bounded* instead of silently catastrophic.
-
-And measurement, once you have it, keeps paying off. We are currently running a live experiment: extending the cache lifetime from about five minutes to a full hour, on the theory that a designer who edits, thinks for fifteen minutes, then edits again should not pay a cold-cache penalty for the pause. The five-minute baseline is 44% cold turns at about 7.4 cents per turn. Whether the one-hour window is a win is not something to guess or assume from a vendor's docs. It is something the telemetry will tell us, against a baseline we captured first. That is the difference between engineering the cost of a collaboration and hoping for it.
+全量发送的直觉让人感觉安全，但那是昂贵的安全：每次编辑都更慢、更贵、离悬崖更近，而且永远如此。对一个长期运行的协作者来说，发送更少才是让整件事持续可行的关键。
 
 ---
 
-## Persistence Accumulates Entropy
+## 纪律三：模型只看见局部时，也要验证整体
 
-The first three failures broke loudly, and within weeks. There is a fourth that only a *persistent* collaborator suffers, and it breaks the opposite way: quietly, months after the damage is done. We hit it while writing this very post.
+纪律二会招来一个显而易见的质疑，而对它的回答，正是我最希望你从这篇文章带走的东西。
 
-A user reported that one design's critique view showed "part of this design's data is in an unexpected format," and that the consistency-fix step was failing. The cause, traced through the live data, was a single `null` value sitting in the middle of an array where the AI had written it, months earlier, during some ordinary editing session. The rendering code mapped over that array and read a field off the `null`, threw, and blanked the entire view. A second code path validated the same issues and rejected them all because one was malformed. One stray value the agent produced, poisoning two features long after it was written.
+如果模型只看见一棵子树，什么能阻止一次限域编辑破坏其视野之外的东西——引用一个它看不见的机制、遗弃一项资源、或与某个它从未读过的章节中的规则相矛盾？
 
-This is the tax of persistence. A stateless chatbot starts clean every session. A collaborator that writes into a durable, growing document *accumulates the consequences of its own imperfect output over time.* No matter how good the agent's write path is, over months it will occasionally produce something slightly malformed, and that artifact will outlive the session that created it.
+答案是：**限域收窄的是模型*读取*的范围，从来不是系统*校验*所依据的范围。**语义校验器——那张检查幻影引用与结构矛盾的安全网——运行在编辑后的*完整*设计上，与模型能看见一切时完全一样。模型的视野变小了，系统的保证却一寸未动。
 
-So the architecture has to be resilient to its own collaborator. The fix was defensive by construction: the view now filters out malformed entries and coerces every field to something safe to render, so a bad value degrades one item instead of destroying the whole tab. The apply path now tolerates the same content arriving under a slightly different field name instead of rejecting it. And the rejection now logs *why*, because the original failure had slipped through a gap in the telemetry and left no trace, the Invisible Bill lesson, in miniature, all over again.
+正是这一点，让激进的上下文削减变得*安全*而非鲁莽。你之所以给得起更少，恰恰是因为你的正确性保证不依赖于模型看过一切，而是依赖于一次针对完整真相的独立检查。当限域编辑确实伸手去够其视野之外的东西时，校验器会像往常一样抓住它；而对于真正横切多个部分的意图，一道置信度门控会回退到完整设计。
 
-The mindset shift is what matters: treat your own AI's historical output as untrusted input. This is not a judgment on the agent, just arithmetic. Over a large enough body of machine-written data, some fraction will be malformed, and a trustworthy system stays standing when it hits that fraction.
-
----
-
-## What "Trustworthy" Actually Means
-
-Put the four disciplines together with the tax of persistence, and a working definition of a trustworthy co-designer falls out. It has little to do with the size of its memory and everything to do with four properties of the system around it:
-
-- **Durable** — the work survives interruptions, deploys, and dropped connections, because its state lives somewhere built to outlive them.
-- **Affordable** — you can lean on it all day, because the cost of each turn is measured, cached, and bounded by a budget that can see the money.
-- **Grounded** — its edits are verified against the complete truth, independently of the partial view it was given, so you can safely feed it less.
-- **Resilient** — it stays standing when it hits its own accumulated mistakes, because the system treats machine-written history as an untrusted input.
-
-![The four pillars of a trustworthy co-designer]({{ site.baseurl }}images/beyond-the-context-window/What_Trustworthy_Means.jpg)
-
-_Figure. The co-designer stands on four pillars: durable (the work survives interruptions and deploys), affordable (its cost is measured and bounded), grounded (its edits are verified against the whole truth), and resilient (it withstands even its own accumulated mistakes). The intelligence is the figure; the trust is the structure beneath it._
-
-None of these is a model capability; each is a property of the system *around* the model. The Nova post was about the intelligence of the partner. This one is about the spine that lets you depend on it, and the spine is where the engineering lives.
+这条一般性原则远远超出桌游的范畴：**裁剪视野，验证整体。**对一个长期运行的 AI 协作者的信任，不可能来自模型的勤勉，因为模型按设计就是在凭一幅局部图景工作。它必须来自一个能看到完整状态、且独立于模型所见内容的验证层。把这道分离做对，你就可以在上下文上吝啬到任意程度。
 
 ---
 
-## The Real Bottleneck
+## 纪律四：为你看不见的东西装上计量
 
-The abstract conversation about long-context AI is having the wrong argument. It treats the frontier as capacity, as if the next larger window is what unlocks the reliable, months-long AI collaborator.
+隐形账单从来不可能靠一个更聪明的提示词来修复。它是一次测量失效，而测量失效要靠埋点来修，再把埋点变成一份真正的预算。
 
-The lived experience says the bottleneck is somewhere else entirely. It is architectural discipline: cutting the leash so the work survives, sending less instead of more, verifying the whole while showing the model a part, and metering what you otherwise cannot see. Reaching for a bigger window is the answer you give before you have run one of these in production. The real work is quieter: deciding, per operation, what the model does *not* need, and building the durable, observable, self-correcting structure underneath it. That structure is the difference between a demo you admire and a partner you lean your weight on.
+![从消息计数到成本预算]({{ site.baseurl }}/images/beyond-the-context-window/Token_To_Credit_Budget.jpg)
 
-To be honest about the limits: this is a field report from a beta, not a solved problem. Some long operations still survive a deploy only as a clean retry rather than continuing to completion, which needs a dedicated worker we have not built yet. Long-session compaction is deferred. Getting the pricing to durably reward that cheaper cost is an experiment still running. None of it is finished. But the shape of the answer is already clear, and it is not the one the bigger-window story would predict.
+_图示。每一轮的真实 token 用量——输入、输出，以及单独统计的廉价的缓存读取与更贵的缓存写入——按供应商费率计价，折算成一种以约一美分真实成本为锚定的统一积分单位，并按每用户预算进行门控。一个对 30 到 50 倍成本区间视而不见的消息计数，变成了一个看得见真金白银的真正上限。_
 
-In the first Nova article we ended on a line: the grammar does not write the poem, but with Nova the grammar remembers your voice. Here is the sequel to that promise, learned the hard way in production:
+三个动作，依次进行：
 
-*A co-designer you can trust is not the one with the largest memory. It is the one whose memory you can afford, survive, and verify.*
+**看见它。**我们在每一个 AI 调用点加入了逐调用遥测：输入输出 token、缓存读写、延迟、来自哪个界面、设计有多大。在此之前，对话界面自己算出 token 总量，然后只把它们写进一行日志。产品中最昂贵部分的成本无法查询，直到账户归零。现在，每一轮都会留下一条已计价、可查询的记录。
+
+**让重复变得便宜。**这次流失中最大的一笔浪费，是编排器循环在每一轮迭代中无缓存地重发一大段稳定前缀。供应商侧的提示词缓存（prompt caching）让重复调用中的那段稳定前缀直接由缓存提供，价格约为原来的十分之一，而模型行为毫无改变。由于这段前缀占了每轮循环重发内容的大部分，缓存大幅削薄了每个使用工具回合的成本。这是我们所有举措中单位投入降本最高的一项，而且根本不是模型改动——只是拒绝为同样的 token 付两次全价。
+
+**把它变成预算。**现在每一轮都按其真实测得的 token 计价，并从每用户积分预算中扣减——与一直在管束生成功能的正是同一本账。这个公式自动奖励缓存：一次缓存读取按新 token 十分之一的价格计费，于是一次温热的跟进回合只花 1 积分，而一次冷启动的推理要花好几积分。上限终于看得见钱了。那笔掏空账户的用量，如今在一两个会话之后就会撞上每用户每日预算；平台的总敞口也变成了一个有界、已知的数字，而不是一个敞开的水龙头。
+
+目标从来不是给优质用户踩刹车。由于缓存和限域已经大幅削减了每轮成本，同样的预算现在能容纳的互动量*远超*事故发生之时。这样的预算不惩罚深度，它让深入变得*可负担且有边界*，而不是悄无声息地酿成灾难。
+
+而测量一旦建立，就会持续产生回报。我们目前正在进行一项线上实验：把缓存寿命从约五分钟延长到整整一小时，依据是这样一个理念——一个编辑完、思考十五分钟、然后再编辑的设计师，不应该为这段停顿支付冷缓存惩罚。五分钟基线是 44% 的冷回合，每回合约 7.4 美分。一小时的窗口是否划算，不是靠猜测或从供应商文档里想当然能得出的，而是要靠遥测数据对照我们事先采集的基线来回答。这就是"把协作成本当作工程来掌控"与"只能祈求它别失控"之间的区别。
 
 ---
 
-### Series
+## 持久化会积累熵
 
-* [Nova: The AI Co-Designer That Learns Your Taste (Part 7)]({{ site.baseurl }}nova-the-ai-co-designer-that-learns-your-taste)
-* [Generative Ontology: From Game Knowledge to Game Creation (Part 8)]({{ site.baseurl }}generative-ontology-from-game-knowledge-to-game-creation)
-* [AI Playtesting: When Your Board Game Tests Itself (Part 9)]({{ site.baseurl }}ai-playtesting-when-your-game-tests-itself)
-* **>>** [Beyond the Context Window: The Architecture of a Trustworthy AI Co-Designer (Part 10)]({{ site.baseurl }}beyond-the-context-window-architecture-of-a-trustworthy-ai-co-designer)
+前三种失效都响亮地爆发，且都在几周之内。还有第四种，只有*持久*的协作者才会患上，它以相反的方式坏掉：悄无声息，且是在损害发生数月之后。我们正是在撰写这篇文章时撞上了它。
+
+一位用户报告说，某个设计的评阅视图显示"此设计的部分数据格式异常"，而一致性修复步骤一直失败。顺着线上数据追查，原因是数组中间躺着一个单独的 `null` 值——那是 AI 在几个月前某次再平常不过的编辑会话中写入的。渲染代码对这个数组做映射，从那个 `null` 上读取字段，抛出异常，整个视图随之空白。另一条代码路径在校验同一批问题时，因为其中一条格式损坏而把整批全部拒绝。一个智能体产生的游离值，在写入很久之后毒害了两个功能。
+
+这就是持久化之税。无状态的聊天机器人每个会话都从干净状态开始。而一个往持久增长文档里写入的协作者，*会随时间积累自身不完美输出的后果。*无论智能体的写入路径多么可靠，几个月下来它总会偶尔产出一些略微畸形的东西，而这些残骸会比创建它们的会话活得更久。
+
+因此，架构必须能抵御它自己的协作者。修复从构造上就是防御性的：视图现在会过滤掉畸形条目，并把每个字段强制转换成可安全渲染的值，于是一个坏值只降级一个条目，而不是毁掉整个标签页。应用路径现在能容忍相同内容以稍有不同的字段名到达，而不是拒绝它。而拒绝现在会记录*原因*，因为最初那次失效恰恰是从遥测的缝隙中溜走、没留下任何痕迹——隐形账单的教训，以微缩版重演了一遍。
+
+真正重要的是思维方式的转变：把你自己的 AI 的历史输出当作不可信的输入。这不是对智能体的评判，只是算术。在足够大的机器写入数据体量上，总有一部分会是畸形的，而可信赖的系统要在撞上那部分时依然屹立。
 
 ---
 
-## References
+## "可信赖"究竟意味着什么
 
-[1] Benny Cheung. [*Nova: The AI Co-Designer That Learns Your Taste*]({{ site.baseurl }}nova-the-ai-co-designer-that-learns-your-taste). bennycheung.github.io, Feb 2026.
-  - The introduction to Nova as a conversational co-designer: the reinforcement loop, grounded proposals, and the zero-write principle this article builds on.
+把四门纪律与持久化之税放在一起，一个可信赖联合设计师的可操作定义便自然浮现。它与记忆的容量关系不大，却与围绕它的系统的四种性质息息相关：
 
-[2] Benny Cheung. [*Generative Ontology: When Structured Knowledge Learns to Create*](https://arxiv.org/abs/2602.05636). arXiv:2602.05636, Feb 2026.
-  - The formal framework behind the structured game ontology that makes independent, full-state validation possible.
+- **持久**——工作能在中断、部署和断线中存活，因为它的状态存放在某个为比它们活得更久而设计的地方。
+- **可负担**——你可以一整天依赖它，因为每一轮的成本都被测量、被缓存，并受一份看得见钱的预算约束。
+- **有据**——它的编辑要对照完整真相验证，独立于它所得到的局部视野，因此你可以放心地喂给它更少。
+- **有韧性**——当它撞上自己积累的错误时依然屹立，因为系统把机器写入的历史当作不可信输入对待。
 
-[3] Ethan Mollick. [*Co-Intelligence: Living and Working with AI*](https://www.penguinrandomhouse.com/books/741805/co-intelligence-by-ethan-mollick/). Penguin, 2024.
-  - Treating AI as a collaborative partner rather than a tool, the framing at the center of the Nova series.
+![可信赖联合设计师的四根支柱]({{ site.baseurl }}/images/beyond-the-context-window/What_Trustworthy_Means.jpg)
 
-[4] Anthropic. [*Prompt caching*](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching).
-  - The provider-side caching mechanism used to make the repeated stable prefix of a long conversation cheap without changing model behavior.
+_图示。联合设计师立于四根支柱之上：持久（工作能在中断与部署中存活）、可负担（其成本被测量且有界）、有据（其编辑对照完整真相验证）、有韧性（甚至能承受自己积累的错误）。智能是画面中的人物，信任是人物脚下的结构。_
 
-[5] [GameGrammar](https://gamegrammar.dynamindresearch.com). Board game design platform.
-  - Where Nova lives: structured ontology, multi-agent generation, and conversational co-design.
+这些没有一项是模型能力；每一项都是模型*周围*那个系统的性质。关于 Nova 的那篇文章讲的是伙伴的智能，这一篇讲的是让你能够依赖它的脊柱，而脊柱正是工程施展之处。
+
+---
+
+## 真正的瓶颈
+
+关于长上下文 AI 的抽象讨论正在争论一个错误的问题。它把前沿当作容量，仿佛下一个更大的窗口就是解锁可靠、长达数月的 AI 协作者的钥匙。
+
+亲历的经验却说，瓶颈完全在别处。它是架构纪律：剪断缰绳让工作存活，发送更少而非更多，在给模型看局部的同时验证整体，以及为你原本看不见的东西装上计量。伸手去要更大的窗口，是你还没有在生产环境中运行过这类系统时给出的答案。真正的工作安静得多：对每一次操作判定模型*不*需要什么，并在其下构建持久、可观测、能自我纠正的结构。正是这个结构，区分了让你赞叹的演示与让你托付重量的伙伴。
+
+诚实地谈谈局限：这是一份来自内测阶段的实地报告，问题尚未被解决。一些长时操作在部署后仍然只能以干净重试的方式存活，而不是继续跑完——那需要一个我们尚未构建的专用工作器。长会话的压缩被推迟了。让计价方式持久地奖励那种更低的成本，则是一项仍在进行中的实验。这一切都没有完成。但答案的形状已经清晰，而且不是"更大窗口"叙事所预言的那个形状。
+
+在第一篇 Nova 文章里，我们以一句话作结：语法写不出诗，但有了 Nova，语法定会记住你的声音。下面是那个承诺的续篇，是在生产环境中付出代价换来的：
+
+*你可以信赖的联合设计师，不是拥有最大记忆的那一个，而是它的记忆你负担得起、经受得住、也验证得了的那一个。*
+
+---
+
+### 系列
+
+* [Nova：学习你品味的 AI 联合设计师（第 7 部分）]({{ site.baseurl }}/nova-the-ai-co-designer-that-learns-your-taste)
+* [生成式本体：从游戏知识到游戏创造（第 8 部分）]({{ site.baseurl }}/generative-ontology-from-game-knowledge-to-game-creation)
+* [AI 游戏测试：当你的桌游自己测试自己（第 9 部分）]({{ site.baseurl }}/ai-playtesting-when-your-game-tests-itself)
+* **>>** [超越上下文窗口：可信赖 AI 联合设计师的架构（第 10 部分）]({{ site.baseurl }}/beyond-the-context-window-architecture-of-a-trustworthy-ai-co-designer)
+
+---
+
+## 参考文献
+
+[1] Benny Cheung. [*Nova: The AI Co-Designer That Learns Your Taste*]({{ site.baseurl }}/nova-the-ai-co-designer-that-learns-your-taste)（Nova：学习你品味的 AI 联合设计师）. bennycheung.github.io, 2026 年 2 月.
+  - 作为对话式联合设计师的 Nova 之入门介绍：强化循环、有据可依的提案，以及本文所依托的零写入原则。
+
+[2] Benny Cheung. [*Generative Ontology: When Structured Knowledge Learns to Create*](https://arxiv.org/abs/2602.05636)（生成式本体：当结构化知识学会创造）. arXiv:2602.05636, 2026 年 2 月.
+  - 让独立的、全状态验证成为可能的结构化游戏本体背后的形式化框架。
+
+[3] Ethan Mollick. [*Co-Intelligence: Living and Working with AI*](https://www.penguinrandomhouse.com/books/741805/co-intelligence-by-ethan-mollick/)（协同智能：与 AI 共同生活与工作）. Penguin, 2024.
+  - 把 AI 视为协作伙伴而非工具——这正是 Nova 系列的核心立意。
+
+[4] Anthropic. [*Prompt caching*](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)（提示词缓存）.
+  - 供应商侧的缓存机制，用于让长对话中重复出现的稳定前缀变便宜，且不改变模型行为。
+
+[5] [GameGrammar](https://gamegrammar.dynamindresearch.com). 桌游设计平台。
+  - Nova 的栖身之所：结构化本体、多智能体生成与对话式协同设计。

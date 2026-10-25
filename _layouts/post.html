@@ -11,7 +11,7 @@ show_cat: false
 
 	{% if page.unlisted %}
 	<div class="unlisted-banner">
-		<i class="fa fa-eye-slash"></i> This post is unlisted — shared privately and not published on the public site.
+		<i class="fa fa-eye-slash"></i> 本文未公开列出——仅作私下分享，未发布在公共站点上。
 	</div>
 	{% endif %}
 
@@ -20,8 +20,8 @@ show_cat: false
 			style="{% if page.images.header %}background-image:url({{page.images.header}}){% endif %}">
 		</div>
 		<p class="artwork-credit">
-			{% if page.artwork.author %}artwork by
-				{% if page.artwork.url %}
+			{% if page.artwork.author %}插图作者：
+					{% if page.artwork.url %}
 					<a href="{{ page.artwork.url }}">{{ page.artwork.author }}</a>
 				{% else %}
 					{{ page.artwork.author }}
@@ -32,7 +32,7 @@ show_cat: false
 		{% assign words = content | number_of_words %}
 		{% assign reading_time = words | divided_by: 200 %}
 		{% if reading_time < 1 %}{% assign reading_time = 1 %}{% endif %}
-		<p class="post-meta">{{ page.date | date: "%b %-d, %Y" }} • {{ reading_time }} min read{% if page.author %} • {{ page.author }}{% endif %}{% if page.meta %} • {{ page.meta }}{% endif %}</p>
+		<p class="post-meta">{{ page.date | date: "%Y-%m-%d" }} • {{ reading_time }} 分钟阅读{% if page.author %} • {{ page.author }}{% endif %}{% if page.meta %} • {{ page.meta }}{% endif %}</p>
 
 		{% include post-tags.html %}
 
@@ -59,36 +59,36 @@ show_cat: false
 	<div class="post-nav-cards">
 	  {% if page.previous.url %}
 	  <a href="{{page.previous.url}}" class="post-nav-card prev-card">
-	    <span class="nav-label"><i class="fa fa-chevron-left"></i> Previous</span>
+	    <span class="nav-label"><i class="fa fa-chevron-left"></i> 上一篇</span>
 	    <div class="nav-card-content">
 	      {% if page.previous.featured and page.previous.images.cover %}
-	        <img src="/{{ page.previous.images.cover }}" alt="{{ page.previous.title }}" loading="lazy">
+	        <img src="{{ site.baseurl }}/{{ page.previous.images.cover }}" alt="{{ page.previous.title }}" loading="lazy">
 	      {% elsif page.previous.image %}
-	        <img src="/{{ page.previous.image }}" alt="{{ page.previous.title }}" loading="lazy">
+	        <img src="{{ site.baseurl }}/{{ page.previous.image }}" alt="{{ page.previous.title }}" loading="lazy">
 	      {% else %}
-	        <img src="{{ site.avatar }}" alt="{{ page.previous.title }}" loading="lazy">
+	        <img src="{{ site.baseurl }}{{ site.avatar }}" alt="{{ page.previous.title }}" loading="lazy">
 	      {% endif %}
 	      <div class="nav-card-info">
 	        <h4>{{ page.previous.title }}</h4>
-	        <p class="nav-card-meta">{{ page.previous.date | date: "%b %-d, %Y" }}</p>
+	        <p class="nav-card-meta">{{ page.previous.date | date: "%Y-%m-%d" }}</p>
 	      </div>
 	    </div>
 	  </a>
 	  {% endif %}
 	  {% if page.next.url %}
 	  <a href="{{page.next.url}}" class="post-nav-card next-card">
-	    <span class="nav-label">Next <i class="fa fa-chevron-right"></i></span>
+	    <span class="nav-label">下一篇 <i class="fa fa-chevron-right"></i></span>
 	    <div class="nav-card-content">
 	      {% if page.next.featured and page.next.images.cover %}
-	        <img src="/{{ page.next.images.cover }}" alt="{{ page.next.title }}" loading="lazy">
+	        <img src="{{ site.baseurl }}/{{ page.next.images.cover }}" alt="{{ page.next.title }}" loading="lazy">
 	      {% elsif page.next.image %}
-	        <img src="/{{ page.next.image }}" alt="{{ page.next.title }}" loading="lazy">
+	        <img src="{{ site.baseurl }}/{{ page.next.image }}" alt="{{ page.next.title }}" loading="lazy">
 	      {% else %}
-	        <img src="{{ site.avatar }}" alt="{{ page.next.title }}" loading="lazy">
+	        <img src="{{ site.baseurl }}{{ site.avatar }}" alt="{{ page.next.title }}" loading="lazy">
 	      {% endif %}
 	      <div class="nav-card-info">
 	        <h4>{{ page.next.title }}</h4>
-	        <p class="nav-card-meta">{{ page.next.date | date: "%b %-d, %Y" }}</p>
+	        <p class="nav-card-meta">{{ page.next.date | date: "%Y-%m-%d" }}</p>
 	      </div>
 	    </div>
 	  </a>

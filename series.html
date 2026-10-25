@@ -1,12 +1,12 @@
 ---
 layout: page
-title: Series
+title: 系列文章
 permalink: /series/
 toc: false
 ---
 
 <div class="series-landing">
-  <p class="text-muted">Multi-part article series exploring topics in depth.</p>
+  <p class="text-muted">多篇章系列文章，深入探讨各个主题。</p>
 
   {% comment %}
     Collect all unique series names from both old and new formats
@@ -72,12 +72,12 @@ toc: false
         <div class="series-header-top">
           <span class="series-toggle">{% if forloop.first %}▼{% else %}▶{% endif %}</span>
           <h2>{{ series_name }}</h2>
-          <span class="series-count">{{ series_posts.size }} parts</span>
+          <span class="series-count">{{ series_posts.size }} 篇</span>
         </div>
         {% if first_post.images.cover %}
-        <img class="series-header-banner" src="/{{ first_post.images.cover }}" alt="{{ series_name }}" loading="lazy">
+        <img class="series-header-banner" src="{{ site.baseurl }}/{{ first_post.images.cover }}" alt="{{ series_name }}" loading="lazy">
         {% elsif first_post.image %}
-        <img class="series-header-banner" src="/{{ first_post.image }}" alt="{{ series_name }}" loading="lazy">
+        <img class="series-header-banner" src="{{ site.baseurl }}/{{ first_post.image }}" alt="{{ series_name }}" loading="lazy">
         {% endif %}
       </div>
 
@@ -100,11 +100,11 @@ toc: false
             <div class="post-info">
               <h4>{{ post.title }}</h4>
               <p class="post-meta">
-                {{ post.date | date: "%b %-d, %Y" }}
+                {{ post.date | date: "%Y-%m-%d" }}
                 {% assign words = post.content | number_of_words %}
                 {% assign reading_time = words | divided_by: 200 %}
                 {% if reading_time < 1 %}{% assign reading_time = 1 %}{% endif %}
-                &bull; {{ reading_time }} min read
+                &bull; {{ reading_time }} 分钟阅读
               </p>
             </div>
           </a>
@@ -115,7 +115,7 @@ toc: false
   {% endfor %}
 
   {% if all_series.size == 0 %}
-  <p class="text-muted">No series found. Series will appear here when posts have <code>series</code> and <code>series_order</code> front matter.</p>
+  <p class="text-muted">未找到系列文章。当文章包含 <code>series</code> 和 <code>series_order</code> front matter 时，系列将显示在这里。</p>
   {% endif %}
 </div>
 
